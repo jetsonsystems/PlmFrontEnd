@@ -1,0 +1,15 @@
+-#
+-# photo-manager/templates/home/libary/import-image:
+-#
+-#  Args:
+-#    image - The image to render.
+-#
+%div{:class => "photo"}
+  != '{% var thumbnail = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'thumbnail.jpg\'; })); %}'
+
+  %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
+
+  %div{:class => "photo-caption"}
+    %img{:src => "/imgs/Checkbox.png"}
+    != "{{ image.get('name').replace(/^\$/, '') }}"
+    %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}

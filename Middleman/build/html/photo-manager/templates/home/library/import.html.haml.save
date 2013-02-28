@@ -1,0 +1,21 @@
+%div{:class => "photo-manager/home/library/import"}
+  %h4
+    = "{{ _.size(importImages) }} Photos"
+    %span{:class => "imported-timestamp"} Imported: 2012-12-07 11:46 PM
+
+  %hr
+
+  %div{:class => "photos-collection"}
+    = "<% importImages.length && importImages.each(function(image) { %>"
+      %div{:class => "photo"}
+        = "<% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; })); %>"
+        = "<% var fullSmall = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'full-small.jpg'; })); %>"
+
+        %img{:class => "photo-thumbnail", :src => "{{ thumbnail.url }}"}
+
+        %div{:class => "photo-caption"}
+          %img{:src => "/imgs/Checkbox.png"}
+          = "{{ image.get('name').replace(/^\$/, '') }}"
+          %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}
+
+    = "<% }); %>"

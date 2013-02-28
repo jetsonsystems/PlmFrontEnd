@@ -1,0 +1,100 @@
+=clearfix
+  *display: inline-block
+  &:after
+    content: " "
+    display: block
+    height: 0
+    clear: both
+    visibility: hidden
+
+=replace-text($img, $x: 50%, $y: 50%)
+  text-indent: -9999em
+  overflow: hidden
+  background:
+    image: url(unquote($img))
+    repeat: no-repeat
+    position: $x $y
+
+=rounded-corners($radius)
+  -moz-border-radius: $radius
+  -webkit-border-radius: $radius
+  border-radius: $radius
+
+=drop-shadow($x: 5px, $y: 5px, $blur: 5px, $color: black)
+  -webkit-box-shadow: $x $y $blur $color
+  -moz-box-shadow: $x $y $blur $color
+  box-shadow: $x $y $blur $color
+
+=opacity($opacity)
+  filter: "alpha(opacity=#{$opacity * 100})"
+  -moz-opacity: $opacity
+  -khtml-opacity: $opacity
+  opacity: $opacity
+
+=rgba-background($color, $opacity)
+  // position: relative
+  background: $color
+  background: rgba($color, $opacity)
+  -pie-background: rgba($color, $opacity)
+  // @include PIE
+  // behavior: url(/assets/PIE.htc)
+
+=sticky-footer($footer-height, $root-selector: unquote("#root"), $root-footer-selector: unquote("#root_footer"), $footer-selector: unquote("#footer"))
+  html, body
+    height: 100%
+  #{$root-selector}
+    clear: both
+    min-height: 100%
+    height: auto !important
+    height: 100%
+    margin-bottom: -$footer-height
+    #{$root-footer-selector}
+      height: $footer-height
+  #{$footer-selector}
+    clear: both
+    position: relative
+    height: $footer-height
+
+=vg-fixed-footer($footer-height, $additional-padding, $footer: unquote("#footer"), $root: unquote("#root"))
+  #{$footer}
+    position: fixed
+    bottom: 0
+    left: 0
+    width: 100%
+    z-index: 50
+  #{$root}
+    height: 100%
+    overflow: auto
+    padding-bottom: $footer-height + $additional-padding
+    // z-index: 10
+
+=font-face($family, $filename)
+  $prefix: "/assets/" + $family + "/" + $filename
+  // IE hack
+  @font-face
+    font-family: $family
+    src: url($prefix + ".eot?") format("embedded-opentype")
+
+  // Everybody else
+  @font-face
+    font-family: $family
+    src: local("☺"), url($prefix + ".woff") format("woff"), url($prefix + ".ttf") format("opentype"), url($prefix + ".eot"), url($prefix + ".svg#" + $filename + "'") format("svg")
+
+=shadow($color: #333333, $hoff: 0, $voff: 0, $blur: 5px, $spread: 10px)
+  -moz-box-shadow: $hoff $voff $blur $spread $color
+  -webkit-box-shadow: $hoff $voff $blur $spread $color
+  box-shadow: $hoff $voff $blur $spread $color
+  behavior: url(/assets/PIE.htc)
+
+// Preloader/Progress bar
+@-webkit-keyframes rotate
+  from
+    -webkit-transform: rotate(0deg)
+  to
+    -webkit-transform: rotate(360deg)
+
+=rotate($duration: 2s)
+  -webkit-animation-name: rotate
+  -webkit-animation-duration: $duration
+  -webkit-animation-iteration-count: infinite
+  -webkit-animation-timing-function: linear
