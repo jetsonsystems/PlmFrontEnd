@@ -204,7 +204,7 @@ define(
             
                            // Import started, rotate the logo
                            console.log(">> Import started, trying to rotate logo");
-                           $("#logo").addClass("rotate");
+                           // $("#logo").addClass("rotate");
                            $("#notifications-collection").show();
                            $("#notification").text("Now importing images");
             
