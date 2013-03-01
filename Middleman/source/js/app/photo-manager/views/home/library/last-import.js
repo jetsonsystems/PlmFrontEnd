@@ -7,12 +7,13 @@ define(
     'underscore',
     'backbone',
     'plmCommon/plm', 
-    'plmCommon/msg-bus', 
+    'plmCommon/msg-bus',
+    'app/models/image',
     'app/collections/last-import',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, LastImportCollection, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageModel, LastImportCollection, importTemplate, importImageTemplate) {
 
     //
     // LastImportView: The photo-manager/home/library/last-import view.
@@ -96,18 +97,18 @@ define(
       // _startIncrementalRender: Initialize the view to a new importer which will be incrementally rendered.
       //
       _startIncrementalRender: function(importer) {
-        console.log('photo-manager/views/home._startIncrementalRender: invoked...');
-        return this;
+        console.log('photo-manager/views/home/library/last-import._startIncrementalRender: invoked with importer - ' + JSON.stringify(importer));
         if ((this.status === this.STATUS_UNRENDERED) || (this.status === this.STATUS_RENDERED)) {
-          console.log('photo-manager/views/home._startIncrementalRender: ...');
+          console.log('photo-manager/views/home/library/last-import._startIncrementalRender: initiating incremental rendering...');
           //
           // Initialize with the new importer, but the collection will be empty.
           //
           this.lastImport = new LastImportCollection(null, {importer: importer});
-          var compiledTemplate = _.template(homeTemplate, { lastImportImages: this.lastImport,
-                                                               _: _ });
+          var compiledTemplate = _.template(importTemplate, { importImages: this.lastImport,
+                                                              imageTemplate: importImageTemplate,
+                                                              _: _ });
           this.$el.html(compiledTemplate);
-          this.status = this.INCREMENTALLY_RENDERING;
+          this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
         return this;
       },
@@ -116,10 +117,9 @@ define(
       // _addToIncrementalRender: Add an image to a view which is being incrementally rendered.
       //
       _addToIncrementalRender: function(image) {
-        console.log('photo-manager/views/home._addIncrementalRender: invoked...');
-        return this;
-        if (!this.lastImport.get(image.id)) {
-          console.log('photo-manager/views/home._addToIncrementalRender: adding image w/ id - ' + image.id + ', to view.');
+        console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: invoked with image - ' + JSON.stringify(image));
+        if ((this.status === this.STATUS_INCREMENTALLY_RENDERING) && !this.lastImport.get(image.id)) {
+          console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: adding image w/ id - ' + image.id + ', to view.');
           //
           // Add to the collection.
           //
@@ -128,8 +128,11 @@ define(
           //
           // Also add the image to the view.
           //
-          var compiledTemplate = _.template(lastImportImageTemplate, { image: imageModel });
-          $('.photos-collection').append(compiledTemplate);
+          var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
+          this.$el.find('.photos-collection').append(compiledTemplate);
+        }
+        else {
+          console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
         }
         return this;
       },
@@ -140,8 +143,7 @@ define(
       //  Currently, only change status to STATUS_RENDERED.
       //
       _finishIncrementalRender: function() {
-        console.log('photo-manager/views/home._finishIncrementalRender: invoked...');
-        return this;
+        console.log('photo-manager/views/home/library/last-import._finishIncrementalRender: invoked...');
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING) {
           this.status = this.STATUS_RENDERED;
         }
@@ -153,17 +155,19 @@ define(
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
                          function(msg) {
+                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import started, msg - ' + JSON.stringify(msg));
                            that._startIncrementalRender(msg.data);
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.image.saved',
                          function(msg) {
+                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
                            that._addToIncrementalRender(msg.data.doc);
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.completed',
                          function(msg) {
-                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed!');
+                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
                            that._finishIncrementalRender();
                          });
       }
