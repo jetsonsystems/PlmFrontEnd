@@ -8,13 +8,79 @@ the ./build folder.
 
 ## Getting Set Up
 
-## Notes on the Source Directory Structure
+In PlmFrontEnd's Middleman folder:
 
-  * ./source/html:
+    sudo gem install middleman
+    bundle update
+
+## Directory Structure
+
+The directory structure of the **source** and **build** folders mirrors that of what
+is deployed to the application, ie: the PLM app's **assets** folder. However,
+there are some bits which are not built, such as some boilerplate files.
+This is an overview of the structure:
+
+    |- html
+    |   |
+    |   |-- dashboard
+    |   |
+    |   |-- photo-manager
+    |   |     |
+    |   |     |--show.html
+    |   |     |--templates
+    |   |            |--home.html
+    |   |
+    |   |-- static-pages
+    |   |
+    |- js
+    |   |-- libs
+    |   |     |-- require
+    |   |     |      |-- require.js     - require.js is used to dynamically load all JS modules
+    |   |     |      |-- text.js        - require's text plugin
+    |   |     |
+    |   |     |-- jquery
+    |   |     |      |-- jquery.min.js
+    |   |     |
+    |   |     |-- underscore
+    |   |     |      |-- underscore.js
+    |   |     |
+    |   |     |-- backbone
+    |   |     |      |-- backbone.js
+    |   |     
+    |   |-- app
+    |   |     |-- bootstrap.js          - boilerplate, not built.
+    |   |     |-- boilerplate.js        - more boilerplate, not built.
+    |   |     |
+    |   |     |-- application.js        - This right now is empty. Hopefully it stays that way.
+    |   |     |      
+    |   |     |-- common                - A set of supporting code shared by all applications.
+    |   |     |      |-- plm.js         - Primarily initialization.
+    |   |     |      |-- msg-bus.js     - A message bus based upon postal.js to allow decoupling of views.
+    |   |     |      
+    |   |     |-- photo-manager
+    |   |     |      |-- main.js
+    |   |     |      |-- app.js
+    |   |     |      |-- router.js
+    |   |     |      |-- models/
+    |   |     |      |-- collections/
+    |   |     |      |-- views/
+    |   |
+
+
+## Things Which Don't get Built
+
+  * js/app/bootstrap.js: main.js boilerplate to use when creating a new app, ie: copy to js/app/<app>/main.js.
+  * js/app/boilerplate.js: app.js boilerplate to use when creating a new app, ie: copy to js/app/<app>/app.js.
 
 ## Notes on config.rb
 
+  * Anything which exists in the **source** folder but should **NOT** get built, add an ignore, such as `ignore '/js/app/bootstrap.js'`.
+  * Templates should have NO layout: `page "/html/photo-manager/templates/*", :layout => false`.
+  * Since in some cases we generate templates, turn of HTML sanitizing: `set :haml, { :format => :html5, :ugly => false, :escape_html => false }`.
+
 ## Build and Deploy Workflow
+
+## Templates
 
 ## Useful Command Line Examples
 

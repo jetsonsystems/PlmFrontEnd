@@ -44,6 +44,7 @@ define(
         console.log(this.id + '.LastImportView.initialize: initializing...');
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
+        this._respondToEvents();
       },
 
       render: function() {
@@ -95,7 +96,10 @@ define(
       // _startIncrementalRender: Initialize the view to a new importer which will be incrementally rendered.
       //
       _startIncrementalRender: function(importer) {
+        console.log('photo-manager/views/home._startIncrementalRender: invoked...');
+        return this;
         if ((this.status === this.STATUS_UNRENDERED) || (this.status === this.STATUS_RENDERED)) {
+          console.log('photo-manager/views/home._startIncrementalRender: ...');
           //
           // Initialize with the new importer, but the collection will be empty.
           //
@@ -105,12 +109,15 @@ define(
           this.$el.html(compiledTemplate);
           this.status = this.INCREMENTALLY_RENDERING;
         }
+        return this;
       },
 
       //
       // _addToIncrementalRender: Add an image to a view which is being incrementally rendered.
       //
       _addToIncrementalRender: function(image) {
+        console.log('photo-manager/views/home._addIncrementalRender: invoked...');
+        return this;
         if (!this.lastImport.get(image.id)) {
           console.log('photo-manager/views/home._addToIncrementalRender: adding image w/ id - ' + image.id + ', to view.');
           //
@@ -124,6 +131,7 @@ define(
           var compiledTemplate = _.template(lastImportImageTemplate, { image: imageModel });
           $('.photos-collection').append(compiledTemplate);
         }
+        return this;
       },
 
       //
@@ -132,9 +140,12 @@ define(
       //  Currently, only change status to STATUS_RENDERED.
       //
       _finishIncrementalRender: function() {
+        console.log('photo-manager/views/home._finishIncrementalRender: invoked...');
+        return this;
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING) {
           this.status = this.STATUS_RENDERED;
         }
+        return this;
       },
 
       _respondToEvents: function() {

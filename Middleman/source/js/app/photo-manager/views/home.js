@@ -51,13 +51,15 @@ define(
 
       id: 'photo-manager/home',
 
+      path: undefined,
+
       initialize: function(options) {
         console.log(this.id + '.HomeView.initialize: called...');
         options = options || {};
         options.path = options.path ? options.path : 'library/all-photos';
-        this.path = options.path;
         console.log(this.id + '.HomeView.initialize: path - ' + this.path);
-        this.contentView = new LastImportView();
+        this._updateView(options.path, { render: false });
+        this._handleLibraryEvents();
         this._enableImport();
         this._enableSync();
         this._respondToEvents();
@@ -74,6 +76,57 @@ define(
         return this;
       },
 
+      //
+      // _updateView: Handle updating the view.
+      //
+      //  Args:
+      //    path: path, ie: library/all-photos, library/last-import.
+      //    options:
+      //      render: true or false, default === false.
+      //
+      _updateView: function(path, options) {
+        options = options || {render: false};
+        options.render = _.has(options, 'render') ? options.render : false;
+        if (this.path != path) {
+          this.path = path;
+          //
+          // Handle the Library nav.
+          //
+          $("#library-list span").removeClass("selected");
+          if (this.path === 'library/last-import') {
+            this.contentView = new LastImportView();
+            $("#library-list .last-import span").addClass("selected");
+          }
+          else if (this.path === 'library/all-photos') {
+            this.contentView = new AllPhotosView();
+            $("#library-list .all-photos span").addClass("selected");
+          }
+          else {
+            console.log("_updateView: Don't know what to do with path - " + path);
+          }
+        }
+        else {
+          console.log("_updateView: nothing to do for path - " + path);
+        }
+        if (options.render) {
+          this.render();
+        }
+        return this;
+      },
+
+      _handleLibraryEvents: function() {
+        var that = this;
+        $("#library-list .all-photos a").live("click", function(el) {
+          console.log("Clicked library/all-photos");
+          that._updateView('library/all-photos', { render: true });
+        });
+
+        $("#library-list .last-import a").live("click", function(el) {
+          console.log("Clicked library/last-import");
+          that._updateView('library/last-import', { render: true });
+        });
+      },
+
       _enableImport: function() {
         $("#upload-photos").live("click", function(el){
           console.log("Trying to upload images...")
@@ -88,14 +141,16 @@ define(
             var dir = new String(files[0]);
             console.log(">> dir: " + dir);
 
+            var payload = JSON.stringify({
+              "import_dir" : dir
+            });
+
             $.ajax({
               url: 'http://appjs/api/media-manager/v0/importers',
               type: 'POST',
               contentType: 'application/json',
-              data: {
-                "import_dir": dir
-              },
-              // processData: false,
+              data: payload,
+              processData: false,
               success: function(data, textStatus, jqXHR) {
                 console.log(">> AJAX success");
               },

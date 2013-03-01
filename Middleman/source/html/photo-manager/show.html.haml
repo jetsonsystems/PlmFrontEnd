@@ -12,7 +12,7 @@
   %nav#top-nav
     %ul
       %li
-        %a{:href => '#'}
+        %a{:href => '/'}
           %img{:src => '/imgs/Four-Box.png'}
       %li
         %a{:href => '#'}
@@ -34,7 +34,7 @@
           %img{:src => '/imgs/Left-Right-Arrows.png'}
       %li
         %a{:href => '#'}
-          %img{:src => '/imgs/Cabinet.png'}
+          %img{:src => '/imgs/Cabinet-Blue.png'}
       %li
         %a{:href => '#'}
           %img{:src => '/imgs/Calendar.png'}
@@ -66,14 +66,14 @@
         %a{:href => '#'}
           %img{:src => '/imgs/Search.png'}
 
-  %div#main-body
+  %div{ :id => "main-body", :class => "photo-manager/show" }
     %div#tertiary-nav
       %ul
         %li
           %a{:href => '#'}
             %img{:src => '/imgs/Add-Gallery.png'}
         %li
-          %a{:href => '#'}
+          %a{:id => "upload-photos", :href => '#'}
             %img{:src => '/imgs/Upload.png'}
         %li
           %a{:href => '#'}
@@ -93,15 +93,15 @@
         Library
         %img{:src => '/imgs/White-Arrow-Circle-Down.png'}
 
-      %ul
-        %li
+      %ul#library-list
+        %li.all-photos
           %a{:href => '#'}
             %img{:src => '/imgs/All-Photos-Blue.png'}
-            <span class="selected">All Photos</span>
-        %li
+            %span All Photos
+        %li.last-import
           %a{:href => '#'}
             %img{:src => '/imgs/Last-Import.png'}
-            Last Import
+            %span Last Import
         %li
           %a{:href => '#'}
             %img{:src => '/imgs/Uncategorized.png'}
