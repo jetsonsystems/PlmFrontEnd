@@ -56,7 +56,7 @@ define([
              var onImportersSuccess = function(importersCollection, response) {
                if (importersCollection.length > 0) {
                  that.importer = importersCollection.at(0);
-                 console.log('Last importer fetched, w/ id - ' + that.importer.id);
+                 console.log('Last importer fetched, w/ id - ' + that.importer.id + ', completed at - ' + that.importer.completed_at);
                  Backbone.Collection.prototype.fetch.call(that, options);
                }
                else {

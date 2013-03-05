@@ -192,7 +192,7 @@ h4 {
   -webkit-animation-iteration-count: infinite;
 }
 /* line 102, global.sass */
-#wrapper div#notification-percentage {
+#wrapper div#notification-progress {
   float: right;
   width: 50px;
   font-size: 20px;
@@ -353,7 +353,7 @@ h4 {
   margin-right: 20px;
   color: #beff1a;
   font-weight: normal;
-  background: url("/images/Small-Search.png") no-repeat 10px 3px #555555;
+  background: url("/imgs/Small-Search.png") no-repeat 10px 3px #555555;
 }
 
 /* line 254, global.sass */

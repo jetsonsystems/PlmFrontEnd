@@ -1,7 +1,9 @@
 <div class='photo-manager/home/library/import'>
   <h4>
-    {{_.size(importImages)}} Photos
-    <span class='imported-timestamp'>Imported: 2012-12-07 11:46 PM</span>
+    <span class='import-size'>{{_.size(importImages)}} Photos</span>
+    <span class='imported-timestamp'>
+      Imported: {{importer.completed_at}}
+    </span>
   </h4>
   <hr>
   <div class='photos-collection'>

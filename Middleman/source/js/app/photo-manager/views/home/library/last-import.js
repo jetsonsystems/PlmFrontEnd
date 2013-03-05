@@ -79,6 +79,7 @@ define(
           Plm.showFlash('You\' most recent import has no images!');
         }
         else {
+          console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.completed_at);
           this.lastImport.each(function(image) {
             console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
             var variants = image.get('variants');
@@ -87,7 +88,8 @@ define(
             console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
           });
         }
-        var compiledTemplate = _.template(importTemplate, { importImages: this.lastImport,
+        var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
+                                                            importImages: this.lastImport,
                                                             imageTemplate: importImageTemplate,
                                                             _: _ });
         this.$el.html(compiledTemplate);
@@ -104,7 +106,8 @@ define(
           // Initialize with the new importer, but the collection will be empty.
           //
           this.lastImport = new LastImportCollection(null, {importer: importer});
-          var compiledTemplate = _.template(importTemplate, { importImages: this.lastImport,
+          var compiledTemplate = _.template(importTemplate, { importer: importer,
+                                                              importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
           this.$el.html(compiledTemplate);
@@ -126,6 +129,10 @@ define(
           var imageModel = new ImageModel(image);
           this.lastImport.add(imageModel);
           //
+          // Update the size of the import.
+          //
+          this.$el.find('.import-size').text(this.lastImport.size() + " Photos");
+          //
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
@@ -142,9 +149,10 @@ define(
       //
       //  Currently, only change status to STATUS_RENDERED.
       //
-      _finishIncrementalRender: function() {
+      _finishIncrementalRender: function(importer) {
         console.log('photo-manager/views/home/library/last-import._finishIncrementalRender: invoked...');
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING) {
+          this.$el.find(".imported-timestamp").text(" Imported: " + importer.completed_at);
           this.status = this.STATUS_RENDERED;
         }
         return this;
@@ -168,7 +176,7 @@ define(
                          'import.completed',
                          function(msg) {
                            console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
-                           that._finishIncrementalRender();
+                           that._finishIncrementalRender(msg.data);
                          });
       }
 

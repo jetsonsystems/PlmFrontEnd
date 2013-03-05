@@ -8,11 +8,12 @@ define(
     'underscore',
     'backbone',
     'plmCommon/plm', 
-    'plmCommon/msg-bus', 
+    'plmCommon/msg-bus',
+    'plmCommon/plm-ui',
     'app/views/home/library/last-import',
     'app/views/home/library/all-photos'
   ],
-  function($, _, Backbone, Plm, MsgBus, LastImportView, AllPhotosView) {
+  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView) {
 
     var ws = undefined;
 
@@ -193,38 +194,45 @@ define(
         // Use this variable to keep track of the number of images imported
         var current_imported_images_count = 0;
         var total_images_to_import_count = 0;
+        var import_in_progress = false;
 
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
                          function(msg) {
                            console.log('photo-manager/views/home._respondToEvents: import started, msg.data - ' + msg.data);
 
-                           $('#content-top-nav a.import').addClass('active');
-                           Plm.showFlash('Media import started!');
-            
-                           // Import started, rotate the logo
-                           console.log(">> Import started, trying to rotate logo");
-                           // $("#logo").addClass("rotate");
-                           $("#notifications-collection").show();
-                           $("#notification").text("Now importing images");
-            
-                           total_images_to_import_count = msg.data.num_to_import;
-            
-                           $("#notification-percentage").text(current_imported_images_count + "/" + total_images_to_import_count);
-                           $("#num-images-imported").text(current_imported_images_count);
-                           console.log(">> Number of files to import: " + msg.data.num_to_import);
-                           console.log(">> Current number of images imported: " + current_imported_images_count);
+                           if (import_in_progress) {
+                             Plm.showFlash('An import is already in progress, please wait til the current import finishes!');
+                           }
+                           else {
+                             import_in_progress = true;
+                             $('#content-top-nav a.import').addClass('active');
+                             Plm.showFlash('Media import started!');
+
+                             total_images_to_import_count = msg.data.num_to_import;
+                             PlmUI.notif.start("Now importing images",
+                                               {
+                                                 progressText: current_imported_images_count + "/" + total_images_to_import_count,
+                                                 rotateLogo: false
+                                               }
+                                              );
+
+                             console.log(">> Number of files to import: " + msg.data.num_to_import);
+                             console.log(">> Current number of images imported: " + current_imported_images_count);
+                           }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.image.saved',
                          function(msg) {
-                           current_imported_images_count++;
-                           console.log(">> Current number of images imported: " + current_imported_images_count);
-                           $("#notification-percentage").text(current_imported_images_count + "/" + total_images_to_import_count);
-                           $("#num-images-imported").text(current_imported_images_count);
+                           if (import_in_progress) {
+                             current_imported_images_count++;
+                             console.log(">> Current number of images imported: " + current_imported_images_count);
 
-                           console.log('photo-manager/views/home._respondToEvents: import image saved!');
+                             PlmUI.notif.update({progressText: current_imported_images_count + "/" + total_images_to_import_count});
+
+                             console.log('photo-manager/views/home._respondToEvents: import image saved!');
+                           }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/importers',
@@ -232,16 +240,19 @@ define(
                          function(msg) {
                            console.log('photo-manager/views/home._respondToEvents: import completed!');
 
-                           Plm.showFlash('Media import completed!');
-                           $('#content-top-nav a.import').removeClass('active');
+                           if (import_in_progress) {
+                             Plm.showFlash('Media import completed!');
+                             $('#content-top-nav a.import').removeClass('active');
 
-                           // Import started, rotate the logo
-                           console.log(">> Import ended, trying to stop logo rotation");
-                           $("#logo").removeClass("rotate");
-                           $("#notification").text("Finished importing images");
-                           // $("#notification-percentage").text("100%");
-                           $("#notification-percentage").text(current_imported_images_count + "/" + total_images_to_import_count);
-                           $('#notifications-collection').delay(5000).fadeOut();
+                             PlmUI.notif.end("Finished importing images",
+                                             {
+                                               progressText: current_imported_images_count + "/" + total_images_to_import_count
+                                             });
+
+                             current_imported_images_count = 0;
+                             total_images_to_import_count = 0;
+                             import_in_progress = false
+                           }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
