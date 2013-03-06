@@ -32,7 +32,7 @@ define([
            //  options:
            //    importer - initialize with a specific instance of an importer.
            //
-           initialize: function(options) {
+           initialize: function(models, options) {
              if (options && _.has(options, 'importer')) {
                this.importer = new ImporterModel(options.importer);
                this.importers = new ImportersCollection([this.importer], 

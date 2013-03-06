@@ -2,7 +2,10 @@
   <h4>
     <span class='import-size'>{{_.size(importImages)}} Photos</span>
     <span class='imported-timestamp'>
-      Imported: {{importer.get('completed_at')}}
+      {% var importedDate = importer.has('completed_at') ? importer.get('completed_at') : ''; %}
+      {% importedDate = (importedDate === '') && importer.has('updated_at') ? importer.get('updated_at') : importedDate; %}
+      {% importedDate = (importedDate === '') && importer.has('started_at') ? importer.get('started_at') : importedDate; %}
+      Imported: {{importedDate}}
     </span>
   </h4>
   <hr>

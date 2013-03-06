@@ -37,6 +37,8 @@ define(
       STATUS_RENDERED: 1,
       STATUS_INCREMENTALLY_RENDERING: 2,
       status: undefined,
+
+      lastImport: undefined,
     
       initialize: function() {
         console.log(this.id + '.LastImportView.initialize: initializing...');
@@ -106,7 +108,7 @@ define(
           // Initialize with the new importer, but the collection will be empty.
           //
           this.lastImport = new LastImportCollection(null, {importer: importer});
-          var compiledTemplate = _.template(importTemplate, { importer: importer,
+          var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });

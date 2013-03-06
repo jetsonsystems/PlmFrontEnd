@@ -32,9 +32,8 @@ define(
       //    options:
       //      numToFetch: Number of importers to fetch.
       //
-      initialize: function() {
-        if (arguments.length > 1) {
-          var options = arguments[1];
+      initialize: function(models, options) {
+        if (options) {
           if (_.has(options, 'numToFetch') && options.numToFetch) {
             this.numToFetch = options.numToFetch;
           }
