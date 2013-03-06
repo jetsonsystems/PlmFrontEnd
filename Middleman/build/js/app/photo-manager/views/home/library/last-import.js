@@ -32,13 +32,10 @@ define(
       //  STATUS_UNRENDERED: view has not be rendered.
       //  STATUS_RENDERED: the view has been rendered.
       //  STATUS_INCREMENTALLY_RENDERING: the view is being incrementally rendered one image at a time.
-      //  STATUS_OBSOLETE: the view is rendered by obsolute. For example, may have seen an importer document from another
-      //    app instance via the changes feed that will require re-rendering.
       //
       STATUS_UNRENDERED: 0,
       STATUS_RENDERED: 1,
       STATUS_INCREMENTALLY_RENDERING: 2,
-      STATUS_OBSOLETE: 3,
       status: undefined,
     
       initialize: function() {
@@ -73,26 +70,29 @@ define(
       _doRender: function() {
         // console.log('photo-manager/views/home._doRender: Will render ' + _.size(this.lastImport) + ' images...');
         if (this.lastImport.importer === undefined) {
+          console.log('photo-manager/views/home._doRender: No images have yet been imported!');
           Plm.showFlash('You have not yet imported any images!');
         }
-        else if (this.lastImport.length === 0) {
-          Plm.showFlash('You\' most recent import has no images!');
-        }
         else {
-          console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.completed_at);
-          this.lastImport.each(function(image) {
-            console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
-            var variants = image.get('variants');
-            console.log('photo-manager/views/home._doRender:   have ' + variants.length + ' variants...');
-            var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
-            console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
-          });
+          if (this.lastImport.length === 0) {
+            Plm.showFlash('You\' most recent import has no images!');
+          }
+          else {
+            console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.get('completed_at'));
+            this.lastImport.each(function(image) {
+              console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
+              var variants = image.get('variants');
+              console.log('photo-manager/views/home._doRender:   have ' + variants.length + ' variants...');
+              var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
+              console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
+            });
+          }
+          var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
+                                                              importImages: this.lastImport,
+                                                              imageTemplate: importImageTemplate,
+                                                              _: _ });
+          this.$el.html(compiledTemplate);
         }
-        var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
-                                                            importImages: this.lastImport,
-                                                            imageTemplate: importImageTemplate,
-                                                            _: _ });
-        this.$el.html(compiledTemplate);
       },
 
       //

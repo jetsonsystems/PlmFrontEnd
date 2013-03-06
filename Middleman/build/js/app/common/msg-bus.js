@@ -20,8 +20,8 @@
  *
  *      Notifications API events:
  *
- *        * There is a channel for each resource which emits events via the notifications API. The 
- *          channels are named as follows:
+ *        * channels: There is a channel for each resource which emits events via the 
+ *          notifications API. The channels are named as follows:
  *
  *          _notif-api:<resource name>
  *
@@ -29,11 +29,11 @@
  *
  *          _notif-api:/importers
  *
- *        * An api event is a topic.
+ *        * topics: An api event is a topic.
  *
  *      Client views:
  *
- *        * Each view has a channel, named as follows:
+ *        * channels: Each view has a channel, named as follows:
  *
  *          _client.view:/<app>/<path to view>
  *

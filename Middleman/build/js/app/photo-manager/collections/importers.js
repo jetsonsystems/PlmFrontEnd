@@ -1,37 +1,82 @@
 // Filename: photo-manager/collections/importers
-define([
-  'underscore',
-  'backbone',
-  // Grab the Image model as recent-uploads is just a collection of images.
-  'app/models/importer'
-],
-       function(_, Backbone, ImporterModel) {
-         var ImportersCollection = Backbone.Collection.extend({
-           model: ImporterModel,
+define(
+  [
+    'underscore',
+    'backbone',
+    // Grab the Image model as recent-uploads is just a collection of images.
+    'app/models/importer'
+  ],
+  function(_, Backbone, ImporterModel) {
 
-           numToFetch: undefined,
+    //
+    // ImportersCollection:
+    //
+    //  Args:
+    //    models: stardard.
+    //    options:
+    //      numToFetch: number to return.
+    //      filterWithoutStartedAt: don't return any which do NOT have a started_at attributed.
+    //        These are imports which failed to trigger for some reason.
+    //
+    var ImportersCollection = Backbone.Collection.extend({
+      model: ImporterModel,
 
-           initialize: function() {
-             if (arguments.length > 1) {
-               var options = arguments[1];
-               if (_.has(options, 'numToFetch') && options.numToFetch) {
-                 this.numToFetch = options.numToFetch;
-               }
-             }
-           },
+      numToFetch: undefined,
 
-           url: function() {
-             var url = '/api/media-manager/v0/importers';
-             if (this.numToFetch) {
-               url = url + '?n=' + this.numToFetch;
-             }
-             return url;
-           },
+      filterWithoutStartedAt: false,
 
-           parse: function(response) {
-             return response.importers;
-           }
-         });
+      //
+      // initialize:
+      //
+      //  Args:
+      //    options:
+      //      numToFetch: Number of importers to fetch.
+      //
+      initialize: function() {
+        if (arguments.length > 1) {
+          var options = arguments[1];
+          if (_.has(options, 'numToFetch') && options.numToFetch) {
+            this.numToFetch = options.numToFetch;
+          }
+          if (_.has(options, 'filterWithoutStartedAt')) {
+            this.filterWithoutStartedAt = options.filterWithoutStartedAt;
+          }
+        }
+      },
 
-         return ImportersCollection;
-       });
+      url: function() {
+        var url = '/api/media-manager/v0/importers';
+        if (!this.filterWithoutStartedAt) {
+          if (this.numToFetch) {
+            url = url + '?n=' + this.numToFetch;
+          }
+        }
+        return url;
+      },
+
+      //
+      // parse: Return response.importers. If we asked to filter those
+      //  without a 'started_at' attribute, filter them, and return the
+      //  proper number.
+      //
+      parse: function(response) {
+        if (this.filterWithoutStartedAt) {
+          var filtered = _.filter(response.importers,
+                                  function(importer) { return _.has(importer, 'started_at'); });
+          if (this.numToFetch) {
+            return _.first(filtered, this.numToFetch);
+          }
+          else {
+            return filtered;
+          }
+        }
+        else {
+          return response.importers;
+        }
+      }
+
+    });
+
+    return ImportersCollection;
+  }
+);
