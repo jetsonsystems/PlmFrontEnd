@@ -1,4 +1,5 @@
-%div{:class => "photo-manager/home/library/import"}
+{% var startedAt = importer.has('started_at') ? Date.parse(importer.get('started_at')) : -1; %}
+%div{:id => "import-{{importer.id.replace('$', '')}}", :class => "photo-manager/home/library/import", "data-started_at" => "{{startedAt}}"}
   %h4
     %span{:class => "import-size"} {{_.size(importImages)}} Photos
     %span{:class => "imported-timestamp"}

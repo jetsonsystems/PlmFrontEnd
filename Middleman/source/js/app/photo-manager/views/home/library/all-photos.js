@@ -8,12 +8,13 @@ define(
     'backbone',
     'plmCommon/plm', 
     'plmCommon/msg-bus', 
+    'app/models/importer',
     'app/collections/importers',
     'app/collections/importers-images',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImportersCollection, ImportersImagesCollection, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImportersCollection, ImportersImagesCollection, importTemplate, importImageTemplate) {
 
     //
     // AllPhotosView: The photo-manager/home/library/all-photos view.
@@ -37,6 +38,12 @@ define(
       STATUS_INCREMENTALLY_RENDERING_IMPORT: 3,
       status: undefined,
 
+      importers: undefined,
+
+      importRenderingInc: undefined,
+      importRenderingIncImages: undefined,
+      $importRenderingInc: undefined,
+
       initialize: function() {
         console.log(this.id + '.AllPhotosView.initialize: initializing...');
         this.status = this.STATUS_UNRENDERED;
@@ -44,7 +51,7 @@ define(
                                                  {
                                                    filterWithoutStartedAt: true
                                                  });
-        // this._respondToEvents();
+        this._respondToEvents();
       },
 
       //
@@ -132,28 +139,84 @@ define(
         }
       },
 
+      //
+      // _startIncrementallyRenderingImport: We have a new import.
+      //
+      _startIncrementallyRenderingImport: function(importer) {
+        var that = this;
+        if (that.status === that.STATUS_RENDERED) {
+          console.log(that.id + '._startIncrementallyRenderingImport: Starting to incrementally render import, importer - ' + JSON.stringify(importer));
+
+          that.status = that.STATUS_INCREMENTALLY_RENDERING_IMPORT;
+
+          that.importRenderingInc = new ImporterModel(importer);
+          that.importRenderingIncImages = new ImportersImagesCollection(undefined, {importerId: importer.id});
+          //
+          // We have 2 cases, either there is a import element already in the DOM,
+          // in which case we will just append images to it. Or, we insert a new
+          // one, in the correct place based upon the data-started_at attribute.
+          //
+          var importElId = 'import-' + importer.id.replace('$');
+          var importEl = $('#' + importElId);
+
+          if (importEl.length > 0) {
+            console.log(that.id + '._startIncrementallyRenderingImport: import already in DOM, will use it...');
+            that.$importRenderingInc = importEl;
+            that.$importRenderingInc.find('.import-size').html('0 Photos');
+            that.$importRenderingInc.find('.photos-collection').html('');
+          }
+          else {
+            console.log(that.id + '._startIncrementallyRenderingImport: compiling initial template for import...');
+
+            var compiledTemplate = _.template(importTemplate, { importer: that.importRenderingInc,
+                                                                importImages: that.importRenderingIncImages,
+                                                                imageTemplate: importImageTemplate,
+                                                                _: _ });
+            that.$el.prepend(compiledTemplate);
+            that.$importRenderingInc = $('#' + importElId);
+            console.log(that.id + '._startIncrementallyRenderingImport: compiled initial template for import, length - ' + that.$importRenderingInc.length);
+          }
+          that.status = that.STATUS_INCREMENTALLY_RENDERING_IMPORT;
+        }
+        return that;
+      },
+
+      _addToIncrementalImportRender: function(image) {
+        var that = this;
+        if (that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+          console.log(that.id + '._addToIncrementalImportRender: Adding to import...');
+        }
+        return that;
+      },
+
+      _finishImportImportRender: function(importer) {
+        if (this.status === this.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+          this.importRenderingInc = undefined;
+          this.importRenderingIncImages = undefined;
+          this.$importRenderingInc = undefined;
+          this.status = this.STATUS_RENDERED;
+        }
+      },
+
       _respondToEvents: function() {
         var that = this;
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import started!');
-                           // console.log(that.id + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
-                           // that._startIncrementallyRenderingImport(msg.data);
+                           console.log(that.id + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
+                           that._startIncrementallyRenderingImport(msg.data);
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.image.saved',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import image saved!');
-                           // console.log(that.id + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
-                           // that._addToIncrementalImportRender(msg.data.doc);
+                           console.log(that.id + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
+                           that._addToIncrementalImportRender(msg.data.doc);
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.completed',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import completed!');
-                           // console.log(that.id + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
-                           // that._finishImportImportRender(msg.data);
+                           console.log(that.id + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
+                           that._finishImportImportRender(msg.data);
                          });
       }
 
