@@ -9,12 +9,13 @@ define(
     'plmCommon/plm', 
     'plmCommon/msg-bus', 
     'app/models/importer',
+    'app/models/image',
     'app/collections/importers',
     'app/collections/importers-images',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImportersCollection, ImportersImagesCollection, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, importTemplate, importImageTemplate) {
 
     //
     // AllPhotosView: The photo-manager/home/library/all-photos view.
@@ -38,8 +39,19 @@ define(
       STATUS_INCREMENTALLY_RENDERING_IMPORT: 3,
       status: undefined,
 
+      //
+      // The collection of importers representing this view.
+      //
       importers: undefined,
 
+      //
+      // When an active import is going on, we utilize these:
+      //
+      //  importRenderingInc: Set to ImporterModel.
+      //  importRenderingIncImages: ImportersImagesCollection to access images.
+      //  $importRenderingInc: jQuery reference to compiled importTemplate to be updated
+      //    as new images come in.
+      //
       importRenderingInc: undefined,
       importRenderingIncImages: undefined,
       $importRenderingInc: undefined,
@@ -156,7 +168,7 @@ define(
           // in which case we will just append images to it. Or, we insert a new
           // one, in the correct place based upon the data-started_at attribute.
           //
-          var importElId = 'import-' + importer.id.replace('$');
+          var importElId = 'import-' + importer.id.replace('$', '');
           var importEl = $('#' + importElId);
 
           if (importEl.length > 0) {
@@ -174,7 +186,7 @@ define(
                                                                 _: _ });
             that.$el.prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
-            console.log(that.id + '._startIncrementallyRenderingImport: compiled initial template for import, length - ' + that.$importRenderingInc.length);
+            console.log(that.id + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
           that.status = that.STATUS_INCREMENTALLY_RENDERING_IMPORT;
         }
@@ -184,13 +196,28 @@ define(
       _addToIncrementalImportRender: function(image) {
         var that = this;
         if (that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
-          console.log(that.id + '._addToIncrementalImportRender: Adding to import...');
+          console.log(that.id + '._addToIncrementalImportRender: Adding image to import w/ id - ' + image.id + ', to view.');
+          //
+          // Add to the collection.
+          //
+          var imageModel = new ImageModel(image);
+          this.importRenderingIncImages.add(imageModel);
+          //
+          // Update the size of the import.
+          //
+          this.$importRenderingInc.find('.import-size').text(this.importRenderingIncImages.size() + " Photos");
+          //
+          // Also add the image to the view.
+          //
+          var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
+          this.$importRenderingInc.find('.photos-collection').append(compiledTemplate);
         }
         return that;
       },
 
       _finishImportImportRender: function(importer) {
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+          this.$importRenderingInc.find(".imported-timestamp").text(" Imported: " + importer.completed_at);
           this.importRenderingInc = undefined;
           this.importRenderingIncImages = undefined;
           this.$importRenderingInc = undefined;
