@@ -1,3 +1,4 @@
+@charset "US-ASCII";
 /* Reset */
 /* line 7, _reset.sass */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
@@ -84,35 +85,46 @@ body:after {
   clear: both;
 }
 
+/* Fonts */
+@font-face {
+  font-family: "entypo";
+  src: url("/fonts/entypo/entypo-webfont.eot?") format("embedded-opentype");
+}
+
+@font-face {
+  font-family: "entypo";
+  src: local("☺"), url("/fonts/entypo/entypo-webfont.woff") format("woff"), url("/fonts/entypo/entypo-webfont.ttf") format("opentype"), url("/fonts/entypo/entypo-webfont.eot"), url("/fonts/entypo/entypo-webfont.svg#entypo-webfont'") format("svg");
+}
+
 /* Image path */
 /* Tell the browser to render HTML 5 elements as block */
-/* line 20, global.sass */
+/* line 23, global.sass */
 header, footer, aside, nav, article, section {
   display: block;
 }
 
-/* line 23, global.sass */
+/* line 26, global.sass */
 body {
   background: black;
 }
 
-/* line 26, global.sass */
+/* line 29, global.sass */
 a {
   text-decoration: none;
   color: white;
 }
 
-/* line 30, global.sass */
+/* line 33, global.sass */
 a:hover {
   color: #6dcff6;
 }
 
-/* line 33, global.sass */
+/* line 36, global.sass */
 .selected {
   color: #6dcff6;
 }
 
-/* line 36, global.sass */
+/* line 39, global.sass */
 hr {
   border: 0;
   border-top: 1px solid #101010;
@@ -120,7 +132,7 @@ hr {
   background-color: #363636;
 }
 
-/* line 43, global.sass */
+/* line 46, global.sass */
 h3 {
   color: white;
   font-size: 24px;
@@ -129,12 +141,12 @@ h3 {
   margin-top: 20px;
   margin-left: 20px;
 }
-/* line 51, global.sass */
+/* line 54, global.sass */
 h3 img {
   margin-left: 10px;
 }
 
-/* line 55, global.sass */
+/* line 58, global.sass */
 h4 {
   color: #c2c2c2;
   font-family: Arial;
@@ -145,23 +157,23 @@ h4 {
   margin-top: 10px;
 }
 
-/* line 64, global.sass */
+/* line 67, global.sass */
 .imported-timestamp {
   margin-left: 40px;
 }
 
-/* line 67, global.sass */
+/* line 70, global.sass */
 #wrapper {
   overflow: hidden;
   background: black;
 }
-/* line 72, global.sass */
+/* line 75, global.sass */
 #wrapper #logo {
   position: absolute;
   top: 10px;
   right: 10px;
 }
-/* line 79, global.sass */
+/* line 82, global.sass */
 #wrapper div#notifications-collection {
   color: white;
   width: 300px;
@@ -180,7 +192,7 @@ h4 {
   clear: both;
   visibility: hidden;
 }
-/* line 90, global.sass */
+/* line 93, global.sass */
 #wrapper div#notification {
   float: left;
   text-align: right;
@@ -191,7 +203,7 @@ h4 {
   -webkit-animation-duration: 3s;
   -webkit-animation-iteration-count: infinite;
 }
-/* line 102, global.sass */
+/* line 105, global.sass */
 #wrapper div#notification-progress {
   float: right;
   width: 50px;
@@ -201,25 +213,25 @@ h4 {
   -webkit-animation-iteration-count: infinite;
 }
 
-/* line 113, global.sass */
+/* line 116, global.sass */
 #top-nav {
   height: 40px;
   background: black;
   color: white;
 }
-/* line 118, global.sass */
+/* line 121, global.sass */
 #top-nav ul {
   display: block;
   margin-top: 20px;
   margin-left: 80px;
 }
-/* line 123, global.sass */
+/* line 126, global.sass */
 #top-nav ul li {
   display: inline;
   margin-right: 20px;
 }
 
-/* line 129, global.sass */
+/* line 132, global.sass */
 #left-nav {
   width: 60px;
   background: black;
@@ -227,13 +239,37 @@ h4 {
   float: left;
   min-height: 740px;
 }
-/* line 140, global.sass */
+/* line 143, global.sass */
 #left-nav ul li {
   margin-left: 20px;
   margin-bottom: 20px;
 }
+/* line 148, global.sass */
+#left-nav ul li.sync {
+  font-family: "entypo";
+  font-size: 50px;
+  width: 60px;
+  cursor: pointer;
+  text-align: center;
+  border-left: 5px solid black;
+  border-right: 5px solid black;
+  cursor: pointer;
+}
+/* line 158, global.sass */
+#left-nav ul li.sync a {
+  display: block;
+  font-family: "entypo";
+  font-size: 50px;
+}
+/* line 163, global.sass */
+#left-nav ul li.sync:hover, #left-nav ul li.sync.selected {
+  color: #6dcff6;
+  background: #2a2a2a;
+  border-right: 5px solid #2a2a2a;
+  border-left: 5px solid #6dcff6;
+}
 
-/* line 145, global.sass */
+/* line 169, global.sass */
 #main-body {
   background: #474747;
   *display: inline-block;
@@ -247,7 +283,7 @@ h4 {
   visibility: hidden;
 }
 
-/* line 149, global.sass */
+/* line 173, global.sass */
 #tertiary-nav {
   height: 50px;
   background-color: #292929;
@@ -260,20 +296,20 @@ h4 {
   background-image: -webkit-linear-gradient(bottom, #393939 0%, #494949 100%);
   background-image: linear-gradient(bottom, #393939 0%, #494949 100%);
 }
-/* line 163, global.sass */
+/* line 187, global.sass */
 #tertiary-nav ul {
   display: block;
   float: right;
   margin-top: 10px;
   margin-right: 50px;
 }
-/* line 169, global.sass */
+/* line 193, global.sass */
 #tertiary-nav ul li {
   display: inline;
   margin-right: 10px;
 }
 
-/* line 173, global.sass */
+/* line 197, global.sass */
 #left-column {
   float: left;
   width: 380px;
@@ -282,13 +318,13 @@ h4 {
   margin-top: 1px;
   border-right: 1px solid #101010;
 }
-/* line 181, global.sass */
+/* line 205, global.sass */
 #left-column ul {
   margin-left: 40px;
   margin-top: 20px;
   margin-bottom: 40px;
 }
-/* line 186, global.sass */
+/* line 210, global.sass */
 #left-column ul li {
   margin-bottom: 20px;
   text-transform: uppercase;
@@ -296,16 +332,16 @@ h4 {
   font-size: 14px;
   font-weight: bold;
 }
-/* line 194, global.sass */
+/* line 218, global.sass */
 #left-column ul li img {
   margin-right: 10px;
   margin-bottom: -5px;
 }
-/* line 202, global.sass */
+/* line 226, global.sass */
 #left-column ul#galleries-list li {
   margin-bottom: 40px;
 }
-/* line 207, global.sass */
+/* line 231, global.sass */
 #left-column ul#galleries-list li a {
   font-family: Arial;
   font-size: 18px;
@@ -313,33 +349,33 @@ h4 {
   color: #c2c2c2;
   text-transform: none;
 }
-/* line 214, global.sass */
+/* line 238, global.sass */
 #left-column ul#galleries-list li a img.gallery-icon {
   margin-bottom: -10px;
 }
-/* line 219, global.sass */
+/* line 243, global.sass */
 #left-column ul#galleries-list li a .gallery-caption {
   font-size: 13px;
   font-weight: normal;
   margin-left: 40px;
 }
-/* line 225, global.sass */
+/* line 249, global.sass */
 #left-column ul#galleries-list li a .gallery-caption img.gray-circle {
   float: right;
   margin-top: -15px;
 }
-/* line 233, global.sass */
+/* line 257, global.sass */
 #left-column ul#galleries-list li a:hover {
   color: #6dcff6;
 }
 
-/* line 236, global.sass */
+/* line 260, global.sass */
 #search-collection {
   position: absolute;
   bottom: 40px;
 }
 
-/* line 241, global.sass */
+/* line 265, global.sass */
 #search-box {
   width: 300px;
   border: 0px;
@@ -356,7 +392,7 @@ h4 {
   background: url("/imgs/Small-Search.png") no-repeat 10px 3px #555555;
 }
 
-/* line 254, global.sass */
+/* line 278, global.sass */
 #right-column {
   float: left;
   display: block;
@@ -365,7 +401,7 @@ h4 {
   border-left: 1px solid #636363;
   margin-top: 1px;
 }
-/* line 262, global.sass */
+/* line 286, global.sass */
 #right-column hr {
   border: 0;
   border-top: 1px solid black;
@@ -373,7 +409,7 @@ h4 {
   background-color: #555555;
 }
 
-/* line 268, global.sass */
+/* line 292, global.sass */
 .photos-collection {
   margin-left: 15px;
   margin-bottom: 40px;
@@ -388,29 +424,29 @@ h4 {
   visibility: hidden;
 }
 
-/* line 274, global.sass */
+/* line 298, global.sass */
 .photo {
   padding: 10px;
   float: left;
 }
-/* line 279, global.sass */
+/* line 303, global.sass */
 .photo img.photo-thumbnail {
   border: 1px solid black;
 }
 
-/* line 282, global.sass */
+/* line 306, global.sass */
 .photo:hover {
   background: #555555;
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
   box-shadow: 0px 0px 10px #333333;
 }
-/* line 286, global.sass */
+/* line 310, global.sass */
 .photo:hover img.edit-photo {
   display: block;
 }
 
-/* line 290, global.sass */
+/* line 314, global.sass */
 .photo-caption {
   font-size: 13px;
   font-family: Arial;
@@ -418,19 +454,19 @@ h4 {
   color: #c2c2c2;
   margin-top: 10px;
 }
-/* line 297, global.sass */
+/* line 321, global.sass */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 303, global.sass */
+/* line 327, global.sass */
 .photo-caption img.edit-photo {
   float: right;
   margin-right: 0;
   display: none;
 }
 
-/* line 309, global.sass */
+/* line 333, global.sass */
 #footer {
   background: black;
   color: white;
@@ -440,66 +476,66 @@ h4 {
   font-weight: bold;
 }
 
-/* line 318, global.sass */
+/* line 342, global.sass */
 #floor-level-buttons {
   margin-top: 20px;
   margin-left: 20px;
 }
 
-/* line 322, global.sass */
+/* line 346, global.sass */
 #floorplan {
   margin-top: 20px;
   margin-left: 40px;
 }
 
-/* line 326, global.sass */
+/* line 350, global.sass */
 .lighting-load {
   display: inline-block;
   color: white;
   cursor: pointer;
 }
-/* line 332, global.sass */
+/* line 356, global.sass */
 .lighting-load img {
   display: block;
   margin: 5px auto;
 }
 
-/* line 336, global.sass */
+/* line 360, global.sass */
 #courtyard {
   position: absolute;
   top: 500px;
   left: 850px;
 }
 
-/* line 341, global.sass */
+/* line 365, global.sass */
 #living-room {
   position: absolute;
   top: 250px;
   left: 840px;
 }
 
-/* line 346, global.sass */
+/* line 370, global.sass */
 #kitchen {
   position: absolute;
   top: 320px;
   left: 640px;
 }
 
-/* line 359, global.sass */
+/* line 383, global.sass */
 .surveillance #surveillance-sidebar #surveillance-collection {
   padding: 40px;
   padding-bottom: 0;
 }
-/* line 366, global.sass */
+/* line 390, global.sass */
 .surveillance #surveillance-sidebar #surveillance-collection .surveillance-medium-thumb .surveillance-medium {
   border: 1px solid black;
   width: 280px;
 }
-/* line 370, global.sass */
+/* line 394, global.sass */
 .surveillance #surveillance-sidebar #surveillance-collection .surveillance-medium-thumb .surveillance-medium:hover {
   border: 1px solid white;
 }
-/* line 373, global.sass */
+/* line 397, global.sass */
 .surveillance #surveillance-sidebar #surveillance-collection .surveillance-medium-thumb .surveillance-thumb-overlay {
   color: white;
   font-size: 10px;
@@ -512,13 +548,13 @@ h4 {
   z-index: 200;
   position: absolute;
 }
-/* line 383, global.sass */
+/* line 407, global.sass */
 .surveillance #surveillance-sidebar #surveillance-collection .surveillance-medium-thumb-title {
   color: white;
   text-align: center;
   padding: 10px;
 }
-/* line 388, global.sass */
+/* line 412, global.sass */
 .surveillance #surveillance-sidebar #surveillance-thumbs-collection {
   padding: 20px 40px;
   margin-top: 0;
@@ -532,23 +568,23 @@ h4 {
   clear: both;
   visibility: hidden;
 }
-/* line 396, global.sass */
+/* line 420, global.sass */
 .surveillance #surveillance-sidebar #surveillance-thumbs-collection .surveillance-small-thumb {
   float: left;
   margin-left: 10px;
   margin-bottom: 10px;
 }
-/* line 401, global.sass */
+/* line 425, global.sass */
 .surveillance #surveillance-sidebar #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small {
   border: 1px solid black;
   width: 132px;
   height: 100px;
 }
-/* line 406, global.sass */
+/* line 430, global.sass */
 .surveillance #surveillance-sidebar #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small:hover {
   border: 1px solid white;
 }
-/* line 409, global.sass */
+/* line 433, global.sass */
 .surveillance #surveillance-sidebar #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small-thumb-overlay {
   color: white;
   font-size: 10px;
@@ -562,7 +598,7 @@ h4 {
   position: absolute;
 }
 
-/* line 423, global.sass */
+/* line 447, global.sass */
 #logo.rotate {
   -webkit-animation-name: rotate;
   -webkit-animation-duration: 2s;
@@ -570,7 +606,7 @@ h4 {
   -webkit-animation-timing-function: linear;
 }
 
-/* line 426, global.sass */
+/* line 450, global.sass */
 #notifications {
   color: #ff8712;
   font-size: 11px;
@@ -583,17 +619,17 @@ h4 {
 }
 
 @-webkit-keyframes pulse {
-  /* line 442, global.sass */
+  /* line 466, global.sass */
   0% {
     color: #6dcff6;
   }
 
-  /* line 444, global.sass */
+  /* line 468, global.sass */
   50% {
     color: white;
   }
 
-  /* line 446, global.sass */
+  /* line 470, global.sass */
   100% {
     color: #6dcff6;
   }

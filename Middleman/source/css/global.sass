@@ -13,6 +13,9 @@
 /* Semantic Grid
 @import _grid
 
+/* Fonts
++font-face("entypo", "entypo-webfont")
+
 /* Image path
 $image-path: "/images/"
 
@@ -141,6 +144,27 @@ h4
       // border: 1px dashed red
       margin-left: 20px
       margin-bottom: 20px
+
+    li.sync
+      font-family: 'entypo'
+      font-size: 50px
+      width: 60px
+      cursor: pointer
+      text-align: center
+      border-left: 5px solid $black
+      border-right: 5px solid $black
+      cursor: pointer
+
+      a
+        display: block
+        font-family: 'entypo'
+        font-size: 50px
+
+    li.sync:hover, li.sync.selected
+      color: $blue
+      background: $left-column-gray-bg
+      border-right: 5px solid $left-column-gray-bg
+      border-left: 5px solid $blue
 
 #main-body
   background: $right-column-gray-bg
