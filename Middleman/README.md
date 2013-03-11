@@ -17,55 +17,8 @@ In PlmFrontEnd's Middleman folder:
 
 The directory structure of the **source** and **build** folders mirrors that of what
 is deployed to the application, ie: the PLM app's **assets** folder. However,
-there are some bits which are not built, such as some boilerplate files.
-This is an overview of the structure:
-
-    |- html
-    |   |
-    |   |-- dashboard
-    |   |
-    |   |-- photo-manager
-    |   |     |
-    |   |     |--show.html
-    |   |     |--templates
-    |   |            |--home.html
-    |   |
-    |   |-- static-pages
-    |   |
-    |- js
-    |   |-- libs
-    |   |     |-- require
-    |   |     |      |-- require.js     - require.js is used to dynamically load all JS modules
-    |   |     |      |-- text.js        - require's text plugin
-    |   |     |
-    |   |     |-- jquery
-    |   |     |      |-- jquery.min.js
-    |   |     |
-    |   |     |-- underscore
-    |   |     |      |-- underscore.js
-    |   |     |
-    |   |     |-- backbone
-    |   |     |      |-- backbone.js
-    |   |     
-    |   |-- app
-    |   |     |-- bootstrap.js          - boilerplate, not built.
-    |   |     |-- boilerplate.js        - more boilerplate, not built.
-    |   |     |
-    |   |     |-- application.js        - This right now is empty. Hopefully it stays that way.
-    |   |     |      
-    |   |     |-- common                - A set of supporting code shared by all applications.
-    |   |     |      |-- plm.js         - Primarily initialization.
-    |   |     |      |-- msg-bus.js     - A message bus based upon postal.js to allow decoupling of views.
-    |   |     |      
-    |   |     |-- photo-manager
-    |   |     |      |-- main.js
-    |   |     |      |-- app.js
-    |   |     |      |-- router.js
-    |   |     |      |-- models/
-    |   |     |      |-- collections/
-    |   |     |      |-- views/
-    |   |
-
+there are some bits which are not built, such as some boilerplate files. See the directory description in the
+[PlmFrontEnd README](../README.md).
 
 ## Things Which Don't get Built
 
