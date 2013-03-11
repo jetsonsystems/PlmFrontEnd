@@ -63,6 +63,18 @@ This is an overview of the application's directory structure:
 For example, in the context of the [PLM application](https://github.com/jetsonsystems/PlmApp), the above structure
 would be found in the *./app/assets* folder.
 
+## Notes on Styles
+
+The styling is performed using SASS. The following are some notes with respect to techniques being used
+that a developer should be aware of.
+
+### box-sizing
+
+The [reset styles](./Middleman/source/css/_reset.sass) coutain set *box-sizing: border-box*. For reference,
+see the discussion by [Paul Irish](http://paulirish.com/2012/box-sizing-border-box-ftw/). Note, one of the 
+recent comments mentioned that this technique can cause images to get scaled down, which one should be cautious
+of.
+
 ## Dependencies Which Have Been Modified
 
 ### [postaljs/postal.js](https://github.com/postaljs/postal.js) 
