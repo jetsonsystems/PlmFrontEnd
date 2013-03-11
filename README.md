@@ -12,7 +12,7 @@ deploying to the [PLM application]:(https://github.com/jetsonsystems/PlmApp), on
 
 ## Directory Structure
 
-This is an overview of the structure the applications directory structure:
+This is an overview of the application's directory structure:
 
     |- html
     |   |
@@ -59,3 +59,6 @@ This is an overview of the structure the applications directory structure:
     |   |     |      |-- collections/
     |   |     |      |-- views/
     |   |
+
+For example, in the context of the [PLM application](https://github.com/jetsonsystems/PlmApp), the above structure
+would be found in the *./app/assets* folder.
