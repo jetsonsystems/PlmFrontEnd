@@ -7,7 +7,7 @@ alone mode with some limitations.
 
 The code is managed by a [Middleman project](./Middleman). All source shoud be edited in the ./Middleman/source 
 directory. Once built, it should be possible to simply deploy the ./Middleman/build directory. For example, if 
-deploying to the [PLM application]:(https://github.com/jetsonsystems/PlmApp), one could simply 
+deploying to the [PLM application](https://github.com/jetsonsystems/PlmApp), one could simply 
 `rsync ./Middleman/build <PLM app root directory>/assets`.
 
 ## Directory Structure
