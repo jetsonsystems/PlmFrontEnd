@@ -3,10 +3,17 @@
 - if content_for?(:page_name)
   - page = yield_content :page_name
   - page.chomp!
-- view = ""
+
+- view = "__none__"
 - if content_for?(:view_name)
   - view = yield_content :view_name
   - view.chomp!
+
+- action = "__none__"
+- if content_for?(:action_name)
+  - action = yield_content :action_name
+  - action.chomp!
+
 %html
   %head
     %title
@@ -15,7 +22,185 @@
       = page_title
     = stylesheet_link_tag "global"
   %body
-    = yield
+    %section#container
+
+      %h1#logo
+        %img{:src => '/imgs/PLM-Logo.png'}
+
+      %header
+
+        %ul
+          // Four Box
+          - is_selected = view == "dashboard" ? "selected" : "unselected"
+          %li{:class => is_selected}
+            %a{:href => "/", :class => is_selected}
+              \&#62977
+
+          // Light Bulb
+          - is_selected = view == "lighting" ? "selected" : "unselected"
+          %li{:class => is_selected}
+            %a{:href => "/lights", :class => is_selected}
+              \&#128161
+
+          // Thermostat
+          %li
+            %a{:href => "#"}
+              \&#128255
+
+          // Key for Access
+          %li
+            %a{:href => "#"}
+              \&#128273
+
+          // Camera for photographs
+          - is_selected = view == "photo-manager" ? "selected" : "unselected"
+          %li{:class => is_selected}
+            %a{:href => "/photos", :class => is_selected}
+              \&#128247
+
+          // Eyeball for video surveillance
+          - is_selected = view == "surveillance" ? "selected" : "unselected"
+          %li{:class => is_selected}
+            %a{:href => "/videos", :class => is_selected}
+              \&#59146
+
+      %div#row
+
+        %nav
+          %ul
+            // Home icon
+            %li
+              %a{:href => "#"}
+                \&#8962
+
+            // Left/Right arrows
+            %li
+              %a{:href => "#"}
+                \&#8646
+
+            // File cabinet
+            %li
+              %a{:href => "#"}
+                \&#59392
+
+            // Calendar
+            %li
+              %a{:href => "#"}
+                \&#128197
+
+            // List
+            %li
+              %a{:href => "#"}
+                \&#57349
+
+            // Music
+            %li
+              %a{:href => "#"}
+                \&#9835
+
+            // Dollars
+            %li
+              %a{:href => "#"}
+                \&#128318
+
+            // Home
+            %li
+              %a{:href => "#"}
+                \&#8962
+
+            // Globe
+            %li
+              %a{:href => "#"}
+                \&#127758
+
+            // Jumbled box
+            %li
+              %a{:href => "#"}
+                \&#9871
+
+            // Sync
+            %li
+              %a{:href => "#"}
+                \&#128260
+
+            // Gears
+            %li
+              %a{:href => "#"}
+                \&#9881
+
+        %main
+          %div.title-bar
+
+            %div#page-title-collection
+              // Hamburger
+              %div.icon-button
+                %a{:href => "#hamburger", :class => "hamburger-button"}
+                  \&#9776
+
+              // Page title
+              %h1
+
+            %div#main-button-collection
+              // Globe
+              %div.icon-button
+                %a{:href => "#"}
+                  \&#127758
+
+              // Person
+              %div.icon-button
+                %a{:href => "#"}
+                  \&#128100
+
+              // Floorplan
+              %div.icon-button
+                %a{:href => "#"}
+                  \&#59175
+
+            %div#search-gear-collection
+
+              // Search
+              %div.icon-button
+                %a{:href => "#"}
+                  \&#128269
+
+              // Gear
+              %div.icon-button
+                %a{:href => "#"}
+                  \&#9881
+
+          %div{ :id => "content", :class => "#{view}/#{action}" }
+            = yield
+
+          %div#hamburger
+            - if content_for?(:hamburger_items)
+              = yield_content :hamburger_items
+
+      %footer
+        %div#account-collection
+          %ul
+            %li
+              %a
+                Account
+            %li
+              %a
+                Setup
+            %li
+              %a
+                Settings
+            %li
+              %a
+                Logout
+
+        %div#weather-collection
+          %ul
+            %li.location
+              London 4:16 PM
+            %li
+              Clear 22&deg;
+            %li
+              High 38&deg;F
+            %li
+              Low 21&deg;F
 
     -#
     -# Load applications.js in case there's something global that we need.

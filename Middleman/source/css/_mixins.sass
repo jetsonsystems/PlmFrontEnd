@@ -69,6 +69,7 @@
     // z-index: 10
 
 =font-face($family, $filename)
+  // $prefix: "/assets/" + $family + "/" + $filename
   $prefix: "/fonts/" + $family + "/" + $filename
   // IE hack
   @font-face
@@ -98,3 +99,18 @@
   -webkit-animation-duration: $duration
   -webkit-animation-iteration-count: infinite
   -webkit-animation-timing-function: linear
+
+// Make an element a flexbox
+=display-flex
+  display: -webkit-flex
+  display: flex
+
+// Flex direction: row | row-reverse | column | column-reverse
+=flex-direction($direction)
+  -webkit-flex-direction: $direction
+  flex-direction: $direction
+
+// How much space the box should take
+=flex-ratio($ratio)
+  -webkit-flex: $ratio
+  flex: $ratio
