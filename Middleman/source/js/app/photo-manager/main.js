@@ -37,6 +37,7 @@ addEventListener('app-ready', function(e){
     paths: {
       text: 'require/text',
       jquery: 'jquery/jquery.min',
+      jqueryPageSlide: 'jquery/jquery.pageslide.min',
       underscore: 'underscore/underscore',
       backbone: 'backbone/backbone',
       postal: 'postal/postal',
@@ -48,6 +49,7 @@ addEventListener('app-ready', function(e){
     // Non-AMD modules like underscore / backbone.
     //
     shim: {
+      jqueryPageSlide: ["jquery"],
       underscore: {
         exports: "_"
       },
