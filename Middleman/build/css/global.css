@@ -155,6 +155,45 @@ hr {
 }
 
 /* line 61, global.sass */
+section#container div#notifications-collection {
+  color: white;
+  width: 300px;
+  display: block;
+  position: absolute;
+  top: 24px;
+  right: 80px;
+  *display: inline-block;
+  display: none;
+}
+/* line 3, _mixins.sass */
+section#container div#notifications-collection:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* line 72, global.sass */
+section#container div#notification {
+  float: left;
+  text-align: right;
+  width: 230px;
+  margin-top: 4px;
+  font-size: 11px;
+  -webkit-animation-name: pulse;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+}
+/* line 84, global.sass */
+section#container div#notification-progress {
+  float: right;
+  width: 50px;
+  font-size: 20px;
+  -webkit-animation-name: pulse;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+}
+/* line 95, global.sass */
 section#container .icon-button {
   width: 30px;
   height: 30px;
@@ -174,36 +213,36 @@ section#container .icon-button {
   margin-right: 5px;
   background: #2a2a2a;
 }
-/* line 83, global.sass */
+/* line 117, global.sass */
 section#container .icon-button a {
   display: block;
   font-family: "entypo";
   font-size: 40px;
   color: #989898;
 }
-/* line 89, global.sass */
+/* line 123, global.sass */
 section#container .icon-button:hover, section#container .icon-button.selected {
   color: #6dcff6;
 }
-/* line 96, global.sass */
+/* line 130, global.sass */
 section#container .icon-button:hover a:hover, section#container .icon-button.selected a:hover {
   color: #6dcff6;
 }
-/* line 100, global.sass */
+/* line 134, global.sass */
 section#container .flex-horizontal {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-/* line 105, global.sass */
+/* line 139, global.sass */
 section#container .flex-vertical {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
 }
-/* line 110, global.sass */
+/* line 144, global.sass */
 section#container .title-bar {
   height: 42px;
   background-color: #292929;
@@ -221,7 +260,7 @@ section#container .title-bar {
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-/* line 131, global.sass */
+/* line 165, global.sass */
 section#container .title-bar #page-title-collection {
   width: 380px;
   padding-left: 10px;
@@ -229,33 +268,33 @@ section#container .title-bar #page-title-collection {
   display: -webkit-flex;
   display: flex;
 }
-/* line 138, global.sass */
+/* line 172, global.sass */
 section#container .title-bar #page-title-collection h1 {
   font-size: 25px;
   font-family: Helvetica;
   margin-top: 8px;
   margin-left: 10px;
 }
-/* line 144, global.sass */
+/* line 178, global.sass */
 section#container .title-bar #main-button-collection {
   -webkit-flex: 3;
   flex: 3;
   border-left: 1px solid #636363;
   padding-left: 10px;
 }
-/* line 150, global.sass */
+/* line 184, global.sass */
 section#container .title-bar #search-gear-collection {
   display: -webkit-flex;
   display: flex;
   width: 130px;
 }
-/* line 159, global.sass */
+/* line 193, global.sass */
 section#container header {
   height: 60px;
   background: black;
   padding-left: 60px;
 }
-/* line 166, global.sass */
+/* line 200, global.sass */
 section#container header ul {
   display: -webkit-flex;
   display: flex;
@@ -263,7 +302,7 @@ section#container header ul {
   flex-direction: row;
   height: 60px;
 }
-/* line 178, global.sass */
+/* line 212, global.sass */
 section#container header ul li {
   font-family: "entypo";
   font-size: 50px;
@@ -271,19 +310,19 @@ section#container header ul li {
   text-align: center;
   border-top: 5px solid black;
 }
-/* line 188, global.sass */
+/* line 222, global.sass */
 section#container header ul li a {
   font-family: "entypo";
   font-size: 50px;
   display: block;
 }
-/* line 193, global.sass */
+/* line 227, global.sass */
 section#container header ul li:hover, section#container header ul li.selected {
   color: #6dcff6;
   background: #474747;
   border-top: 5px solid #6dcff6;
 }
-/* line 201, global.sass */
+/* line 235, global.sass */
 section#container footer {
   height: 30px;
   background: black;
@@ -299,44 +338,44 @@ section#container footer:after {
   clear: both;
   visibility: hidden;
 }
-/* line 210, global.sass */
+/* line 244, global.sass */
 section#container footer ul {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-/* line 214, global.sass */
+/* line 248, global.sass */
 section#container footer ul li {
   font-size: 10px;
 }
-/* line 217, global.sass */
+/* line 251, global.sass */
 section#container footer ul li:after {
   content: "|";
   margin-left: 5px;
   margin-right: 10px;
 }
-/* line 222, global.sass */
+/* line 256, global.sass */
 section#container footer ul li:last-child:after {
   content: "";
 }
-/* line 226, global.sass */
+/* line 260, global.sass */
 section#container footer ul li.location {
   margin-right: 60px;
 }
-/* line 229, global.sass */
+/* line 263, global.sass */
 section#container footer ul li.location:after {
   content: "";
 }
-/* line 232, global.sass */
+/* line 266, global.sass */
 section#container footer #account-collection {
   float: left;
 }
-/* line 235, global.sass */
+/* line 269, global.sass */
 section#container footer #weather-collection {
   float: right;
 }
-/* line 238, global.sass */
+/* line 272, global.sass */
 section#container #row {
   display: -webkit-flex;
   display: flex;
@@ -344,12 +383,12 @@ section#container #row {
   flex-direction: row;
   min-height: 800px;
 }
-/* line 243, global.sass */
+/* line 277, global.sass */
 section#container #row nav {
   width: 60px;
   background: black;
 }
-/* line 247, global.sass */
+/* line 281, global.sass */
 section#container #row nav ul {
   display: -webkit-flex;
   display: flex;
@@ -357,7 +396,7 @@ section#container #row nav ul {
   flex-direction: column;
   height: 600px;
 }
-/* line 252, global.sass */
+/* line 286, global.sass */
 section#container #row nav ul li {
   font-family: "entypo";
   font-size: 50px;
@@ -369,27 +408,27 @@ section#container #row nav ul li {
   border-right: 5px solid black;
   cursor: pointer;
 }
-/* line 263, global.sass */
+/* line 297, global.sass */
 section#container #row nav ul li a {
   font-family: "entypo";
   font-size: 50px;
   display: block;
 }
-/* line 268, global.sass */
+/* line 302, global.sass */
 section#container #row nav ul li:hover, section#container #row nav ul li.selected {
   color: #6dcff6;
   background: #2a2a2a;
   border-right: 5px solid #2a2a2a;
   border-left: 5px solid #6dcff6;
 }
-/* line 280, global.sass */
+/* line 314, global.sass */
 section#container #row main {
   -webkit-flex: 2;
   flex: 2;
   background: #474747;
   border-left: 1px solid #636363;
 }
-/* line 285, global.sass */
+/* line 319, global.sass */
 section#container #row main #content {
   display: -webkit-flex;
   display: flex;
@@ -397,92 +436,92 @@ section#container #row main #content {
   flex-direction: row;
   min-height: 800px;
 }
-/* line 291, global.sass */
+/* line 325, global.sass */
 section#container #row main #content #left-column {
   width: 380px;
   background: #2a2a2a;
 }
-/* line 298, global.sass */
+/* line 332, global.sass */
 section#container #row main #content #left-column #lighting-load {
   margin-left: 15px;
   padding-top: 20px;
 }
-/* line 303, global.sass */
+/* line 337, global.sass */
 section#container #row main #content #middle-column {
   -webkit-flex: 2;
   flex: 2;
 }
-/* line 308, global.sass */
+/* line 342, global.sass */
 section#container #row main #content #middle-column #floorplan {
   padding-top: 40px;
   margin-left: 40px;
 }
-/* line 313, global.sass */
+/* line 347, global.sass */
 section#container #row main #content #middle-column #floorplan img {
   width: 700px;
 }
-/* line 317, global.sass */
+/* line 351, global.sass */
 section#container #row main #content #middle-column #floorplan .light, section#container #row main #content #middle-column #floorplan .video {
   width: 100px;
   cursor: pointer;
 }
-/* line 322, global.sass */
+/* line 356, global.sass */
 section#container #row main #content #middle-column #floorplan .light .title, section#container #row main #content #middle-column #floorplan .video .title {
   font-size: 15px;
   text-align: center;
 }
-/* line 326, global.sass */
+/* line 360, global.sass */
 section#container #row main #content #middle-column #floorplan .light .title:hover, section#container #row main #content #middle-column #floorplan .video .title:hover {
   color: #6dcff6;
 }
-/* line 329, global.sass */
+/* line 363, global.sass */
 section#container #row main #content #middle-column #floorplan .light .icon, section#container #row main #content #middle-column #floorplan .video .icon {
   font-family: "entypo";
   font-size: 40px;
   text-align: center;
 }
-/* line 334, global.sass */
+/* line 368, global.sass */
 section#container #row main #content #middle-column #floorplan .light .icon:hover, section#container #row main #content #middle-column #floorplan .video .icon:hover {
   color: #6dcff6;
 }
-/* line 342, global.sass */
+/* line 376, global.sass */
 section#container #row main #content #middle-column #floorplan div#kitchen-light, section#container #row main #content #middle-column #floorplan div#kitchen-video {
   margin-top: -320px;
   margin-left: 130px;
 }
-/* line 347, global.sass */
+/* line 381, global.sass */
 section#container #row main #content #middle-column #floorplan div#dining-light, section#container #row main #content #middle-column #floorplan div#dining-video {
   margin-top: 55px;
   margin-left: 90px;
 }
-/* line 352, global.sass */
+/* line 386, global.sass */
 section#container #row main #content #middle-column #floorplan div#living-light, section#container #row main #content #middle-column #floorplan div#living-video {
   margin-top: -40px;
   margin-left: 220px;
 }
-/* line 357, global.sass */
+/* line 391, global.sass */
 section#container #row main #content #middle-column #floorplan div#entertainment-light, section#container #row main #content #middle-column #floorplan div#entertainment-video {
   margin-top: 0px;
   margin-left: 410px;
 }
-/* line 362, global.sass */
+/* line 396, global.sass */
 section#container #row main #content #middle-column #floorplan div#patio-light, section#container #row main #content #middle-column #floorplan div#patio-video {
   margin-top: -300px;
   margin-left: 460px;
 }
-/* line 366, global.sass */
+/* line 400, global.sass */
 section#container #row main #content #right-column {
   border: 1px dashed red;
   width: 380px;
 }
-/* line 372, global.sass */
+/* line 406, global.sass */
 section#container #row aside {
   -webkit-flex: 1;
   flex: 1;
   background: #474747;
 }
 
-/* line 377, global.sass */
+/* line 411, global.sass */
 #pageslide {
   display: none;
   position: fixed;
@@ -493,12 +532,12 @@ section#container #row aside {
   color: white;
 }
 
-/* line 400, global.sass */
+/* line 434, global.sass */
 #hamburger {
   display: none;
 }
 
-/* line 403, global.sass */
+/* line 437, global.sass */
 .hamburger-header-item {
   height: 80px;
   *display: inline-block;
@@ -511,7 +550,7 @@ section#container #row aside {
   clear: both;
   visibility: hidden;
 }
-/* line 408, global.sass */
+/* line 442, global.sass */
 .hamburger-header-item .icon {
   font-family: "entypo";
   color: white;
@@ -520,7 +559,7 @@ section#container #row aside {
   margin-left: 20px;
   margin-top: 10px;
 }
-/* line 417, global.sass */
+/* line 451, global.sass */
 .hamburger-header-item h2 {
   font-size: 20px;
   float: left;
@@ -528,14 +567,14 @@ section#container #row aside {
   margin-left: 10px;
 }
 
-/* line 423, global.sass */
+/* line 457, global.sass */
 .hamburger-header-item:hover {
   background: #2a2a2a;
   border-bottom: 1px solid black;
   color: #6dcff6;
 }
 
-/* line 428, global.sass */
+/* line 462, global.sass */
 .hamburger-item {
   padding-left: 50px;
   padding-top: 13px;
@@ -550,45 +589,45 @@ section#container #row aside {
   clear: both;
   visibility: hidden;
 }
-/* line 435, global.sass */
+/* line 469, global.sass */
 .hamburger-item .icon {
   font-family: "entypo";
   font-size: 40px;
   float: left;
 }
-/* line 441, global.sass */
+/* line 475, global.sass */
 .hamburger-item .text {
   margin-left: 15px;
   float: left;
 }
-/* line 446, global.sass */
+/* line 480, global.sass */
 .hamburger-item .text .title {
   font-size: 18px;
 }
 
-/* line 449, global.sass */
+/* line 483, global.sass */
 .hamburger-item:hover {
   background: #2a2a2a;
   border-bottom: 1px solid black;
   color: #6dcff6;
 }
 
-/* line 454, global.sass */
+/* line 488, global.sass */
 .hamburger-item.photos {
   margin-padding: 5px;
   height: 40px;
 }
-/* line 459, global.sass */
+/* line 493, global.sass */
 .hamburger-item.photos .icon {
   margin-top: -12px;
 }
 
-/* line 466, global.sass */
+/* line 500, global.sass */
 .hamburger-item.selected {
   color: #6dcff6;
   background: #2a2a2a;
 }
-/* line 470, global.sass */
+/* line 504, global.sass */
 .hamburger-item.selected a {
   color: #6dcff6;
 }

@@ -58,6 +58,40 @@ hr
 
 section#container
 
+  div#notifications-collection
+    // border: 1px solid red
+    color: $white
+    width: 300px
+    display: block
+    position: absolute
+    top: 24px
+    right: 80px
+    +clearfix
+    display: none
+
+  div#notification
+    float: left
+    text-align: right
+    // border: 1px dashed green
+    width: 230px
+    margin-top: 4px
+    font-size: 11px
+
+    -webkit-animation-name: pulse
+    -webkit-animation-duration: 3s
+    -webkit-animation-iteration-count: infinite
+
+  div#notification-progress
+    float: right
+    // border: 1px dashed blue
+    // display: inline
+    width: 50px
+    font-size: 20px
+
+    -webkit-animation-name: pulse
+    -webkit-animation-duration: 3s
+    -webkit-animation-iteration-count: infinite
+
   .icon-button
     width: 30px
     height: 30px
