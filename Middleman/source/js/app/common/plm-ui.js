@@ -5,9 +5,10 @@
 define(
   [
     'jquery',
+    'jqueryPageSlide',
     'underscore'
   ],
-  function($, _) {
+  function($, PageSlide, _) {
 
     //
     // showFlash: Render a flash message. 
@@ -38,42 +39,9 @@ define(
 
       onReady: function() {
 
-        //
-        // Make sure the currently loaded page is set as active.
-        //
-        if ($('#content').hasClass('dashboard/show')) {
-          console.log('common/plm-ui.navManager.onReady: Active content - dashboard/show');
-          $('#top-nav-dashboard').addClass('active');        
-        }
-        else if ($('#content').hasClass('photo-manager/show')) {
-          console.log('common/plm-ui.navManager.onReady: Active content - photo-manager/show');
-          $('.side-nav-photos').addClass('active');
-        }
-        
-        //
-        // Setup click events.
-        //
-        $('.top-bar section li.top-nav-icon').click(function(el) {
-          console.log('Have top bar click event!');
-          navManager.onTopBarClick(el);
-        });
+        // Activate the hamburger slider
+        $(".hamburger-button").pageslide({ direction: "right", modal: false });
 
-        $('.side-nav li').click(function(el) {
-          navManager.onSideBarClick(el);
-        });
-
-      },
-
-      onTopBarClick: function(el) {
-	      $('.top-bar li').removeClass('active');
-	      $('.side-nav li').removeClass('active');
-        $(el).addClass('active');
-      },
-
-      onSideBarClick: function(el) {
-	      $('.top-bar li').removeClass('active');
-	      $('.side-nav li').removeClass('active');
-        $(el).addClass('active');
       }
 
     };

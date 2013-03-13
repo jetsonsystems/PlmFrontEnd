@@ -31,7 +31,7 @@ define(
         var view = new HomeView({path: path});
         view.once(view.id + ":rendered",
                   function() {
-                    $('#right-column').html(view.$el);
+                    $('#middle-column').html(view.$el);
                   });
         view.render();
       }

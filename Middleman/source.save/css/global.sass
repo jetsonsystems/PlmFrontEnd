@@ -1,0 +1,471 @@
+/* Reset
+@import _reset
+
+/* Mixins
+@import _mixins
+
+/* Colors
+@import _colors
+
+/* Dimensions
+@import _dimensions
+
+/* Semantic Grid
+@import _grid
+
+/* Fonts
++font-face("entypo", "entypo-webfont")
+
+/* Image path
+$image-path: "/images/"
+
+/* Tell the browser to render HTML 5 elements as block
+header, footer, aside, nav, article, section
+  display: block
+
+body
+  background: $black
+
+a
+  text-decoration: none
+  color: $white
+
+a:hover
+  color: $blue
+
+.selected
+  color: $blue
+
+hr
+  border: 0
+  border-top: 1px solid $emboss-dark
+  height: 1px
+  background-color: #363636
+
+// Left column main headers: 24px bold Arial
+h3
+  color: $white
+  font-size: 24px
+  font-family: Arial
+  font-weight: bold
+  margin-top: $standard-spacing
+  margin-left: $standard-spacing
+
+  img
+    margin-left: $small-spacing
+
+// Right column headers: 14px bold Arial
+h4
+  color: $gray-text
+  font-family: Arial
+  font-size: 14px
+  font-weight: bold
+  text-transform: uppercase
+  margin-left: $standard-spacing
+  margin-top: $small-spacing
+
+.imported-timestamp
+  margin-left: $standard-spacing*2
+
+#wrapper
+  overflow: hidden
+  background: $black
+  // border: 1px dashed red
+
+  #logo
+    // border: 1px dotted red
+    position: absolute
+    top: 10px
+    right: 10px
+    // +rotate
+
+  div#notifications-collection
+    // border: 1px solid red
+    color: $white
+    width: 300px
+    display: block
+    position: absolute
+    top: 24px
+    right: 80px
+    +clearfix
+    display: none
+
+  div#notification
+    float: left
+    text-align: right
+    // border: 1px dashed green
+    width: 230px
+    margin-top: 4px
+    font-size: 11px
+
+    -webkit-animation-name: pulse
+    -webkit-animation-duration: 3s
+    -webkit-animation-iteration-count: infinite
+
+  div#notification-progress
+    float: right
+    // border: 1px dashed blue
+    // display: inline
+    width: 50px
+    font-size: 20px
+
+    -webkit-animation-name: pulse
+    -webkit-animation-duration: 3s
+    -webkit-animation-iteration-count: infinite
+
+#top-nav
+  height: 40px
+  background: $black
+  color: $white
+
+  ul
+    display: block
+    margin-top: 20px
+    margin-left: 80px
+
+    li
+      display: inline
+      // border: 1px dotted red
+      // width: 200px
+      margin-right: 20px
+
+#left-nav
+  width: 60px
+  background: $black
+  color: $white
+  float: left
+  min-height: $min-body-height + 51px
+  // border: 1px dashed red
+
+  ul
+    // border: 1px dashed gray
+
+    li
+      // border: 1px dashed red
+      margin-left: 20px
+      margin-bottom: 20px
+
+    li.sync
+      font-family: 'entypo'
+      font-size: 50px
+      width: 60px
+      cursor: pointer
+      text-align: center
+      border-left: 5px solid $black
+      border-right: 5px solid $black
+      cursor: pointer
+
+      a
+        display: block
+        font-family: 'entypo'
+        font-size: 50px
+
+    li.sync:hover, li.sync.selected
+      color: $blue
+      background: $left-column-gray-bg
+      border-right: 5px solid $left-column-gray-bg
+      border-left: 5px solid $blue
+
+#main-body
+  background: $right-column-gray-bg
+  +clearfix
+
+#tertiary-nav
+  height: 50px
+
+  // Background Gradient
+  background-color: #292929
+  -moz-box-shadow: 1px 1px 0 #1f1f1f, inset 1px 1px 0 rgba(255,255,255,.14)
+  -webkit-box-shadow: 1px 1px 0 #1f1f1f, inset 1px 1px 0 rgba(255,255,255,.14)
+  box-shadow: 1px 1px 0 #1f1f1f, inset 1px 1px 0 rgba(255,255,255,.14)
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM5MzkzOSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzQ5NDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+)
+  background-image: -moz-linear-gradient(bottom, #393939 0%, #494949 100%)
+  background-image: -o-linear-gradient(bottom, #393939 0%, #494949 100%)
+  background-image: -webkit-linear-gradient(bottom, #393939 0%, #494949 100%)
+  background-image: linear-gradient(bottom, #393939 0%, #494949 100%)
+
+  ul
+    display: block
+    float: right
+    margin-top: 10px
+    margin-right: 50px
+
+    li
+      display: inline
+      margin-right: $small-spacing
+
+#left-column
+  float: left
+  width: 380px
+  min-height: $min-body-height
+  background: $left-column-gray-bg
+  margin-top: 1px
+  border-right: 1px solid $emboss-dark
+
+  ul
+    margin-left: $standard-spacing*2
+    margin-top: $standard-spacing
+    margin-bottom: $standard-spacing*2
+
+    li
+      margin-bottom: $standard-spacing
+      // Left column secondary headers: 14px bold Arial
+      text-transform: uppercase
+      font-family: Arial
+      font-size: 14px
+      font-weight: bold
+
+      img
+        margin-right: $small-spacing
+        margin-bottom: -5px
+
+  // Left column Homes: 18px bold Arial
+  ul#galleries-list
+    // border: 1px dashed red
+
+    li
+      // border: 1px dashed red
+      margin-bottom: $standard-spacing * 2
+      // border-bottom: 1px solid $emboss-dark
+
+      a
+        font-family: Arial
+        font-size: 18px
+        font-weight: bold
+        color: $gray-text
+        text-transform: none
+
+        img.gallery-icon
+          // border: 1px dashed red
+          margin-bottom: -10px
+
+        // Left column text under Homes: 14px Arial regular
+        .gallery-caption
+          font-size: 13px
+          font-weight: normal
+          margin-left: $standard-spacing*2
+          // border: 1px dotted green
+
+          img.gray-circle
+            // border: 1px dashed red
+            // position: absolute
+            // top: -10px
+            // right: -20px
+            float: right
+            margin-top: -15px
+
+      a:hover
+        color: $blue
+
+#search-collection
+  // border: 1px dashed red
+  position: absolute
+  bottom: 40px
+
+#search-box
+  width: 300px
+  border: 0px
+  +rounded-corners(10px)
+  font-size: 12px
+  padding: 3px
+  padding-left: 35px
+  margin-left: $standard-spacing
+  margin-right: $standard-spacing
+  color: #beff1a
+  font-weight: normal
+  background: url('/imgs/Small-Search.png') no-repeat 10px 3px $highlighted-gray-bg
+
+#right-column
+  float: left
+  display: block
+  min-height: $min-body-height
+  background: $right-column-gray-bg
+  border-left: 1px solid $emboss-light
+  margin-top: 1px
+
+  hr
+    border: 0
+    border-top: 1px solid $black
+    height: 1px
+    background-color: #555555
+
+.photos-collection
+  // border: 1px dashed red
+  margin-left: $standard-spacing - 5px
+  margin-bottom: $standard-spacing * 2
+  +clearfix
+
+.photo
+  // border: 1px dashed white
+  padding: $small-spacing
+  float: left
+
+  img.photo-thumbnail
+    border: 1px solid black
+
+.photo:hover
+  background: $highlighted-gray-bg
+  +drop-shadow(0px, 0px, 10px, #333333)
+
+  img.edit-photo
+    display: block
+
+// Right column photo labels: 13px Arial bold
+.photo-caption
+  font-size: 13px
+  font-family: Arial
+  font-weight: bold
+  color: $gray-text
+  margin-top: $small-spacing
+
+  img
+    // margin-top: $small-spacing
+    margin-bottom: -5px
+    margin-right: $small-spacing
+    // border: none
+
+  img.edit-photo
+    float: right
+    margin-right: 0
+    display: none
+    // border: none
+
+#footer
+  background: $black
+  color: $white
+  height: $footer-height
+  font-size: 11px
+  font-family: Arial
+  font-weight: bold
+
+// Lighting module
+#floor-level-buttons
+  margin-top: $standard-spacing
+  margin-left: $standard-spacing
+
+#floorplan
+  margin-top: $standard-spacing
+  margin-left: $standard-spacing * 2
+
+.lighting-load
+  // border: 1px dashed red
+  display: inline-block
+  color: $white
+  cursor: pointer
+
+  img
+    display: block
+    margin: 5px auto
+
+#courtyard
+  position: absolute
+  top: 500px
+  left: 850px
+
+#living-room
+  position: absolute
+  top: 250px
+  left: 840px
+
+#kitchen
+  position: absolute
+  top: 320px
+  left: 640px
+
+// Margin around search box: 15px
+// Left column Homes: 18px bold Arial
+// Left column text under Homes: 14px Arial regular
+
+.surveillance
+  // border: 1px dashed red
+  #surveillance-sidebar
+
+    #surveillance-collection
+      // border: 1px dashed red
+      padding: $standard-spacing*2
+      padding-bottom: 0
+
+      .surveillance-medium-thumb
+
+        .surveillance-medium
+          border: 1px solid black
+          width: 280px
+
+        .surveillance-medium:hover
+          border: 1px solid white
+
+        .surveillance-thumb-overlay
+          color: $white
+          font-size: 10px
+          padding: $small-spacing
+          +rgba-background($black, 0.4)
+          width: 261px
+          margin-top: -33px
+          z-index: 200
+          position: absolute
+
+      .surveillance-medium-thumb-title
+        color: $white
+        text-align: center
+        padding: $small-spacing
+
+    #surveillance-thumbs-collection
+      padding: $standard-spacing $standard-spacing*2
+      // border: 1px dotted red
+      // max-height: 200px
+      // overflow: auto
+      margin-top: 0
+      +clearfix
+
+      .surveillance-small-thumb
+        float: left
+        margin-left: $small-spacing
+        margin-bottom: $small-spacing
+
+        .surveillance-small
+          border: 1px solid black
+          width: 132px
+          height: 100px
+
+        .surveillance-small:hover
+          border: 1px solid white
+
+        .surveillance-small-thumb-overlay
+          color: $white
+          font-size: 10px
+          padding: $small-spacing/2
+          +rgba-background($black, 0.4)
+          width: 124px
+          margin-top: -24px
+          z-index: 200
+          position: absolute
+          // position: relative
+
+// Preloader/Progress bar
+
+// Use this class to rotate the logo while loading background images
+#logo.rotate
+  +rotate
+
+#notifications
+  // border: 1px solid red
+  // color: $white
+  color: $orange
+  font-size: 11px
+  margin-top: -45px
+  margin-left: 75px
+  // text-transform: uppercase
+  display: none
+
+  -webkit-animation-name: pulse
+  -webkit-animation-duration: 3s
+  -webkit-animation-iteration-count: infinite
+
+// Pulse effect for preloader text
+@-webkit-keyframes pulse
+  0%
+    color: $blue
+  50%
+    color: $white
+  100%
+    color: $blue
