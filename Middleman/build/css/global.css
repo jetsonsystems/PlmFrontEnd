@@ -582,3 +582,13 @@ section#container #row aside {
 .hamburger-item.photos .icon {
   margin-top: -12px;
 }
+
+/* line 466, global.sass */
+.hamburger-item.selected {
+  color: #6dcff6;
+  background: #2a2a2a;
+}
+/* line 470, global.sass */
+.hamburger-item.selected a {
+  color: #6dcff6;
+}

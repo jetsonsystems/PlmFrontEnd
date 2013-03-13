@@ -6,20 +6,20 @@
   = "show"
 
 - content_for :hamburger_items do
-  %div.hamburger-item.photos
+  %div.hamburger-item.photos.all-photos
     %div.icon
       // Photos
       \&#127748
     %div.text
-      %div.title
+      %a{:href => "/photos#home/library/all-photos", :class => "title"}
         All Photos
 
-  %div.hamburger-item.photos
+  %div.hamburger-item.photos.last-import
     %div.icon
       // Photos
       \&#127748
     %div.text
-      %div.title
+      %a{:href => "/photos#home/library/last-import", :class => "title"}
         Last Import
 
   %div.hamburger-item.photos
@@ -27,7 +27,7 @@
       // Photos
       \&#59255
     %div.text
-      %div.title
+      %a{:href => "#", :class => "title"}
         Uncategorized
 
   %div.hamburger-item.photos
@@ -35,7 +35,7 @@
       // Photos
       \&#59177
     %div.text
-      %div.title
+      %a{:href => "#", :class => "title"}
         Trash
 
 -# %div#left-column

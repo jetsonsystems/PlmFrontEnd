@@ -42,18 +42,6 @@ define(
         // Activate the hamburger slider
         $(".hamburger-button").pageslide({ direction: "right", modal: false });
 
-      },
-
-      onTopBarClick: function(el) {
-	      $('.top-bar li').removeClass('active');
-	      $('.side-nav li').removeClass('active');
-        $(el).addClass('active');
-      },
-
-      onSideBarClick: function(el) {
-	      $('.top-bar li').removeClass('active');
-	      $('.side-nav li').removeClass('active');
-        $(el).addClass('active');
       }
 
     };

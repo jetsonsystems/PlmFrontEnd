@@ -60,7 +60,6 @@ define(
         options.path = options.path ? options.path : 'library/all-photos';
         console.log(this.id + '.HomeView.initialize: path - ' + this.path);
         this._updateView(options.path, { render: false });
-        this._handleLibraryEvents();
         this._enableImport();
         this._enableSync();
         this._respondToEvents();
@@ -93,14 +92,14 @@ define(
           //
           // Handle the Library nav.
           //
-          $("#library-list span").removeClass("selected");
+          $("#hamburger .hamburger-item").removeClass("selected");
           if (this.path === 'library/last-import') {
             this.contentView = new LastImportView();
-            $("#library-list .last-import span").addClass("selected");
+            $("#hamburger .hamburger-item.last-import").addClass("selected");
           }
           else if (this.path === 'library/all-photos') {
             this.contentView = new AllPhotosView();
-            $("#library-list .all-photos span").addClass("selected");
+            $("#hamburger .hamburger-item.all-photos").addClass("selected");
           }
           else {
             console.log("_updateView: Don't know what to do with path - " + path);
@@ -113,19 +112,6 @@ define(
           this.render();
         }
         return this;
-      },
-
-      _handleLibraryEvents: function() {
-        var that = this;
-        $("#library-list .all-photos a").live("click", function(el) {
-          console.log("Clicked library/all-photos");
-          that._updateView('library/all-photos', { render: true });
-        });
-
-        $("#library-list .last-import a").live("click", function(el) {
-          console.log("Clicked library/last-import");
-          that._updateView('library/last-import', { render: true });
-        });
       },
 
       _enableImport: function() {
