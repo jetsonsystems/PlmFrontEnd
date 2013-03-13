@@ -115,8 +115,8 @@ define(
       },
 
       _enableImport: function() {
-        $("#upload-photos").live("click", function(el){
-          console.log("Trying to upload images...")
+        $("#main-button-collection .import").live("click", function(el){
+          console.log("Trying to import images...")
           window.frame.openDialog({
             type: 'open', // Either open or save
             title: 'Open...', // Dialog title, default is window title

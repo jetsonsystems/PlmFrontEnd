@@ -24,6 +24,10 @@
   %body
     %section#container
 
+      %div#notifications-collection
+        %div#notification
+        %div#notification-progress
+
       %h1#logo
         %img{:src => '/imgs/PLM-Logo.png'}
 
@@ -155,6 +159,11 @@
               %div.icon-button
                 %a{:href => "#"}
                   \&#59175
+
+              // Import
+              %div.icon-button
+                %a{:class => "import", :href => "#"}
+                  \&#128228
 
             %div#search-gear-collection
 
