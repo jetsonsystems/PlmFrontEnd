@@ -4,6 +4,8 @@
   = "photo-manager"
 - content_for :action_name do
   = "show"
+- content_for :view_specific_styles do
+  = stylesheet_link_tag "photo-manager"
 
 - content_for :hamburger_items do
   %div.hamburger-item.photos.all-photos

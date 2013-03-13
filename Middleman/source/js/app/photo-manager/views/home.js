@@ -155,7 +155,7 @@ define(
       },
 
       _enableSync: function() {
-        $('#content-top-nav a.sync').click(function(el) {
+        $('#row nav a.sync').click(function(el) {
           console.log('photo-manager/views/home: clicked sync!');
           $.ajax({url: 'http://appjs/api/media-manager/v0/storage/synchronizers',
                   type: 'POST',
@@ -181,6 +181,7 @@ define(
         var current_imported_images_count = 0;
         var total_images_to_import_count = 0;
         var import_in_progress = false;
+        var sync_in_progress = false;
 
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
@@ -192,9 +193,7 @@ define(
                            }
                            else {
                              import_in_progress = true;
-                             $('#content-top-nav a.import').addClass('active');
-                             Plm.showFlash('Media import started!');
-
+                             // $('#content-top-nav a.import').addClass('active');
                              total_images_to_import_count = msg.data.num_to_import;
                              PlmUI.notif.start("Now importing images",
                                                {
@@ -227,9 +226,7 @@ define(
                            console.log('photo-manager/views/home._respondToEvents: import completed!');
 
                            if (import_in_progress) {
-                             Plm.showFlash('Media import completed!');
-                             $('#content-top-nav a.import').removeClass('active');
-
+                             // $('#content-top-nav a.import').removeClass('active');
                              PlmUI.notif.end("Finished importing images",
                                              {
                                                progressText: current_imported_images_count + "/" + total_images_to_import_count
@@ -237,24 +234,41 @@ define(
 
                              current_imported_images_count = 0;
                              total_images_to_import_count = 0;
-                             import_in_progress = false
+                             import_in_progress = false;
                            }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                          'sync.started',
                          function(msg) {
-                           console.log('photo-manager/views/home._respondToEvents: sync started!');
-                           $('#content-top-nav a.sync').addClass('active');
-                           Plm.showFlash('Media sync started!');
+                           console.log('photo-manager/views/home._respondToEvents: sync started, msg.data - ' + msg.data);
+                           if (sync_in_progress) {
+                             Plm.showFlash('A sync is already in progress, please wait til the current sync finishes!');
+                           }
+                           else {
+                             sync_in_progress = true;
+                             // $('#content-top-nav a.sync').addClass('active');
+                             PlmUI.notif.start("Syncing documents and meta-data",
+                                               {
+                                                 progressText: "",
+                                                 rotateLogo: false
+                                               }
+                                              );
+                           }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                          'sync.completed',
                          function(msg) {
                            console.log('photo-manager/views/home._respondToEvents: sync completed!');
-                           Plm.showFlash('Media sync completed!');
-                           $('#content-top-nav a.sync').removeClass('active');
+                           if (sync_in_progress) {
+                             // $('#content-top-nav a.sync').removeClass('active');
+                             PlmUI.notif.end("Finished syncing",
+                                             {
+                                               progressText: ""
+                                             });
+                             sync_in_progress = false;
+                           }
                          });
       }
 
