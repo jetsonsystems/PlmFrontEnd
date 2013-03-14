@@ -503,3 +503,68 @@ section#container
 
   a
     color: $blue
+    
+// This is here temporarely Marek, don't hyperventilate
+// just trying to get it done before the demo
+//  Surveillance
+#surveillance-collection
+  // border: 1px dashed red
+  padding: $standard-spacing*2
+  padding-bottom: 0
+
+  .surveillance-medium-thumb
+
+    .surveillance-medium
+      border: 1px solid black
+      width: 280px
+
+    .surveillance-medium:hover
+      border: 1px solid white
+
+    .surveillance-thumb-overlay
+      color: $white
+      font-size: 10px
+      padding: $small-spacing
+      +rgba-background($black, 0.4)
+      width: 280px
+      margin-top: -33px
+      z-index: 200
+      position: absolute
+
+  .surveillance-medium-thumb-title
+    color: $white
+    text-align: center
+    padding: $small-spacing
+
+#surveillance-thumbs-collection
+  padding: $standard-spacing $standard-spacing*2
+  // border: 1px dotted red
+  // max-height: 200px
+  // overflow: auto
+  margin-top: 0
+  +clearfix
+
+  .surveillance-small-thumb
+    float: left
+    margin-left: $small-spacing
+    margin-bottom: $small-spacing
+
+    .surveillance-small
+      border: 1px solid black
+      width: 132px
+      height: 100px
+
+    .surveillance-small:hover
+      border: 1px solid white
+
+    .surveillance-small-thumb-overlay
+      color: $white
+      font-size: 10px
+      padding: $small-spacing/2
+      +rgba-background($black, 0.4)
+      width: 132px
+      margin-top: -23px
+      z-index: 200
+      position: absolute
+      // position: relative
+

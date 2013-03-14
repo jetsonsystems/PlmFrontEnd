@@ -5,3 +5,78 @@
 - content_for :action_name do
   = "show"
 
+%div#left-column
+
+  %div#surveillance-collection
+
+    %div.surveillance-medium-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/92_front_yard_axis/stream", :class => "surveillance-medium"}
+      %div.surveillance-thumb-overlay
+        Front Yard
+
+    %div.surveillance-medium-thumb-title
+      Front Yard
+
+    %hr
+
+  %div#surveillance-thumbs-collection
+
+    %div.surveillance-small-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/si2_front_entrance_axis/stream", :class => "surveillance-small"}
+      %div.surveillance-small-thumb-overlay
+        SI Front Entrance
+
+    %div.surveillance-small-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/boca_dock_axis/stream", :class => "surveillance-small"}
+      %div.surveillance-small-thumb-overlay
+        Boca Dock Ent
+
+    %div.surveillance-small-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/srl_main_entrance_axis/stream", :class => "surveillance-small"}
+      %div.surveillance-small-thumb-overlay
+        SRL Main Ent
+
+    %div.surveillance-small-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/boca_dock_ptz_axis/stream", :class => "surveillance-small"}
+      %div.surveillance-small-thumb-overlay
+        Boca Dock
+
+    %div.surveillance-small-thumb
+      %img{:style => "-webkit-user-select: none; cursor: -webkit-zoom-in;", :src => "http://core2.jetsonsys.com:10080/data/srl_bar_axis/stream", :class => "surveillance-small"}
+      %div.surveillance-small-thumb-overlay
+        SRL Bar
+
+%div#middle-column
+
+  %div#floorplan
+    %img{:src => '/imgs/demo/surveillance/Floorplan.png'}
+
+    %div.video#kitchen-video
+      %div.title
+        Kitchen
+      %div.icon
+        \&#59146
+
+    %div.video#dining-video
+      %div.title
+        Dining Room
+      %div.icon
+        \&#59146
+
+    %div.video#living-video
+      %div.title
+        Living Room
+      %div.icon
+        \&#59146
+
+    %div.video#entertainment-video
+      %div.title
+        Entertainment Room
+      %div.icon
+        \&#59146
+
+    %div.video#patio-video
+      %div.title
+        Patio
+      %div.icon
+        \&#59146
