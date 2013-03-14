@@ -21,6 +21,8 @@
       - page_title = page_title + " | #{page}" if page != ""
       = page_title
     = stylesheet_link_tag "global"
+    - if content_for?(:view_specific_styles)
+      = yield_content :view_specific_styles
   %body
     %section#container
 
@@ -124,7 +126,7 @@
 
             // Sync
             %li
-              %a{:href => "#"}
+              %a{:href => "#", :class => "sync"}
                 \&#128260
 
             // Gears

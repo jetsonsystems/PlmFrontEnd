@@ -10,10 +10,11 @@ define(
     'plmCommon/msg-bus',
     'app/models/image',
     'app/collections/last-import',
+    'text!/html/photo-manager/templates/home/library/last-import.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageModel, LastImportCollection, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
     //
     // LastImportView: The photo-manager/home/library/last-import view.
@@ -49,6 +50,8 @@ define(
 
       render: function() {
         var that = this;
+        var compiledTemplate = _.template(lastImportTemplate);
+        that.$el.append(compiledTemplate);
         var onSuccess = function(lastImport,
                                  response,
                                  options) {
@@ -93,7 +96,7 @@ define(
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
-          this.$el.html(compiledTemplate);
+          this.$el.find('.import').replaceWith(compiledTemplate);
         }
       },
 
@@ -112,7 +115,7 @@ define(
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
-          this.$el.html(compiledTemplate);
+          this.$el.find('.import').replaceWith(compiledTemplate);
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
         return this;

@@ -12,10 +12,11 @@ define(
     'app/models/image',
     'app/collections/importers',
     'app/collections/importers-images',
+    'text!/html/photo-manager/templates/home/library/all-photos.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     //
     // AllPhotosView: The photo-manager/home/library/all-photos view.
@@ -71,6 +72,8 @@ define(
       //
       render: function() {
         var that = this;
+        var compiledTemplate = _.template(allPhotosTemplate);
+        that.$el.append(compiledTemplate);
         var onSuccess = function() {
           that._renderImports({
             success: function(importer) {
@@ -124,7 +127,7 @@ define(
                                                                   importImages: importerImages,
                                                                   imageTemplate: importImageTemplate,
                                                                   _: _ });
-              that.$el.append(compiledTemplate);
+              that.$el.find('.imports').append(compiledTemplate);
               if (options && options.success) {
                 options.success(importer);
               }
@@ -184,7 +187,7 @@ define(
                                                                 importImages: that.importRenderingIncImages,
                                                                 imageTemplate: importImageTemplate,
                                                                 _: _ });
-            that.$el.prepend(compiledTemplate);
+            that.$el.find('.imports').prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
             console.log(that.id + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }

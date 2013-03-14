@@ -1,5 +1,5 @@
 {% var startedAt = importer.has('started_at') ? Date.parse(importer.get('started_at')) : -1; %}
-<div class='photo-manager/home/library/import' data-started_at='{{startedAt}}' id="import-{{importer.id.replace('$', '')}}">
+<div class='photo-manager/home/library/import import' data-started_at='{{startedAt}}' id="import-{{importer.id.replace('$', '')}}">
   <h4>
     <span class='import-size'>{{_.size(importImages)}} Photos</span>
     <span class='imported-timestamp'>

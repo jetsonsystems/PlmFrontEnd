@@ -1,0 +1,97 @@
+/* Mixins */
+@-webkit-keyframes rotate {
+  /* line 92, _mixins.sass */
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  /* line 94, _mixins.sass */
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+/* Colors */
+/* Variable colors */
+/* Dimensions */
+/* Variable dimensions */
+/* line 10, photo-manager.sass */
+.photos-header {
+  padding: 20px;
+}
+/* line 14, photo-manager.sass */
+.photos-header h2 {
+  font-size: 25px;
+}
+
+/* line 18, photo-manager.sass */
+.import h4 {
+  color: #c2c2c2;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+/* line 27, photo-manager.sass */
+.import .imported-timestamp {
+  margin-left: 40px;
+}
+
+/* line 30, photo-manager.sass */
+.photos-collection {
+  margin-left: 15px;
+  margin-bottom: 40px;
+  *display: inline-block;
+}
+/* line 3, _mixins.sass */
+.photos-collection:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* line 37, photo-manager.sass */
+.photo {
+  padding: 10px;
+  float: left;
+}
+/* line 42, photo-manager.sass */
+.photo img.photo-thumbnail {
+  border: 1px solid black;
+}
+
+/* line 45, photo-manager.sass */
+.photo:hover {
+  background: #555555;
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+}
+/* line 49, photo-manager.sass */
+.photo:hover img.edit-photo {
+  display: block;
+}
+
+/* line 53, photo-manager.sass */
+.photo-caption {
+  font-size: 13px;
+  font-family: Arial;
+  font-weight: bold;
+  color: #c2c2c2;
+  margin-top: 10px;
+}
+/* line 60, photo-manager.sass */
+.photo-caption img {
+  margin-bottom: -5px;
+  margin-right: 10px;
+}
+/* line 66, photo-manager.sass */
+.photo-caption img.edit-photo {
+  float: right;
+  margin-right: 0;
+  display: none;
+}
