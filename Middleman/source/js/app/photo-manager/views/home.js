@@ -55,10 +55,10 @@ define(
       path: undefined,
 
       initialize: function(options) {
-        console.log(this.id + '.HomeView.initialize: called...');
+        !Plm.debug || console.log(this.id + '.HomeView.initialize: called...');
         options = options || {};
         options.path = options.path ? options.path : 'library/all-photos';
-        console.log(this.id + '.HomeView.initialize: path - ' + this.path);
+        !Plm.debug || console.log(this.id + '.HomeView.initialize: path - ' + this.path);
         this._updateView(options.path, { render: false });
         this._enableImport();
         this._enableSync();
@@ -102,11 +102,11 @@ define(
             $("#hamburger .hamburger-item.all-photos").addClass("selected");
           }
           else {
-            console.log("_updateView: Don't know what to do with path - " + path);
+            !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);
           }
         }
         else {
-          console.log("_updateView: nothing to do for path - " + path);
+          !Plm.debug || console.log("_updateView: nothing to do for path - " + path);
         }
         if (options.render) {
           this.render();
@@ -116,7 +116,7 @@ define(
 
       _enableImport: function() {
         $("#main-button-collection .import").live("click", function(el){
-          console.log("Trying to import images...")
+          !Plm.debug || console.log("Trying to import images...")
           window.frame.openDialog({
             type: 'open', // Either open or save
             title: 'Open...', // Dialog title, default is window title
@@ -126,7 +126,7 @@ define(
           }, function( err , files ) {
 
             var dir = new String(files[0]);
-            console.log(">> dir: " + dir);
+            !Plm.debug || console.log(">> dir: " + dir);
 
             var payload = JSON.stringify({
               "import_dir" : dir
@@ -139,10 +139,10 @@ define(
               data: payload,
               processData: false,
               success: function(data, textStatus, jqXHR) {
-                console.log(">> AJAX success");
+                !Plm.debug || console.log(">> AJAX success");
               },
               error: function() {
-                console.log(">> AJAX failure");
+                !Plm.debug || console.log(">> AJAX failure");
               }
             });
             // End of AJAX call
@@ -156,17 +156,17 @@ define(
 
       _enableSync: function() {
         $('#row nav a.sync').click(function(el) {
-          console.log('photo-manager/views/home: clicked sync!');
+          !Plm.debug || console.log('photo-manager/views/home: clicked sync!');
           $.ajax({url: 'http://appjs/api/media-manager/v0/storage/synchronizers',
                   type: 'POST',
                   contentType: 'application/json',
                   data: "",
                   processData: false,
                   success: function(data, textStatus, jqXHR) {
-                    console.log('photo-manager/views/home._doRender: sync triggered...');
+                    !Plm.debug || console.log('photo-manager/views/home._doRender: sync triggered...');
                   },
                   error: function() {
-                    console.log('photo-manager/views/home._doRender: sync request error!');
+                    !Plm.debug || console.log('photo-manager/views/home._doRender: sync request error!');
                   }
                  });
         });
@@ -186,7 +186,7 @@ define(
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
                          function(msg) {
-                           console.log('photo-manager/views/home._respondToEvents: import started, msg.data - ' + msg.data);
+                           !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import started, msg.data - ' + msg.data);
 
                            if (import_in_progress) {
                              Plm.showFlash('An import is already in progress, please wait til the current import finishes!');
@@ -202,8 +202,8 @@ define(
                                                }
                                               );
 
-                             console.log(">> Number of files to import: " + msg.data.num_to_import);
-                             console.log(">> Current number of images imported: " + current_imported_images_count);
+                             !Plm.debug || console.log(">> Number of files to import: " + msg.data.num_to_import);
+                             !Plm.debug || console.log(">> Current number of images imported: " + current_imported_images_count);
                            }
                          });
 
@@ -212,18 +212,18 @@ define(
                          function(msg) {
                            if (import_in_progress) {
                              current_imported_images_count++;
-                             console.log(">> Current number of images imported: " + current_imported_images_count);
+                             !Plm.debug || console.log(">> Current number of images imported: " + current_imported_images_count);
 
                              PlmUI.notif.update({progressText: current_imported_images_count + "/" + total_images_to_import_count});
 
-                             console.log('photo-manager/views/home._respondToEvents: import image saved!');
+                             !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import image saved!');
                            }
                          });
 
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.completed',
                          function(msg) {
-                           console.log('photo-manager/views/home._respondToEvents: import completed!');
+                           !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import completed!');
 
                            if (import_in_progress) {
                              // $('#content-top-nav a.import').removeClass('active');
@@ -241,7 +241,8 @@ define(
         MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                          'sync.started',
                          function(msg) {
-                           console.log('photo-manager/views/home._respondToEvents: sync started, msg.data - ' + msg.data);
+                           !Plm.debug || console.log('photo-manager/views/home._respondToEvents: sync started...');
+                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._respondToEvents: msg.data - ' + msg.data);
                            if (sync_in_progress) {
                              Plm.showFlash('A sync is already in progress, please wait til the current sync finishes!');
                            }
@@ -260,7 +261,7 @@ define(
         MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                          'sync.completed',
                          function(msg) {
-                           console.log('photo-manager/views/home._respondToEvents: sync completed!');
+                           !Plm.debug || console.log('photo-manager/views/home._respondToEvents: sync completed!');
                            if (sync_in_progress) {
                              // $('#content-top-nav a.sync').removeClass('active');
                              PlmUI.notif.end("Finished syncing",

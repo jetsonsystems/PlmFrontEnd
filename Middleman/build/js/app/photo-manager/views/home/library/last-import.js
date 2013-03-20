@@ -16,6 +16,9 @@ define(
   ],
   function($, _, Backbone, Plm, MsgBus, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
+    var moduleName = 'photo-manager/views/home/library/last-import';
+    var debugPrefix = moduleName + '.LastImportView';
+
     //
     // LastImportView: The photo-manager/home/library/last-import view.
     //
@@ -39,10 +42,12 @@ define(
       STATUS_INCREMENTALLY_RENDERING: 2,
       status: undefined,
 
+      dirty: false,
+
       lastImport: undefined,
     
       initialize: function() {
-        console.log(this.id + '.LastImportView.initialize: initializing...');
+        !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
         this._respondToEvents();
@@ -55,13 +60,13 @@ define(
         var onSuccess = function(lastImport,
                                  response,
                                  options) {
-          console.log('photo-manager/views/home: successfully loaded recent uploads...');
+          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: successfully loaded recent uploads...');
           that._doRender();
           that.status = that.STATUS_RENDERED;
           that.trigger(that.id + ":rendered");
         };
         var onError = function(lastImport, xhr, options) {
-          console.log('photo-manager/views/home: error loading recent uploads.');
+          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: error loading recent uploads.');
           that.trigger(that.id + ":rendered");
         };
         this.lastImport.fetch({success: onSuccess,
@@ -70,12 +75,26 @@ define(
       },
 
       //
+      // _reRender: a combination of initialize + render to fetch
+      //  the true last import and re-render the view.
+      //   
+      _reRender: function() {
+        !Plm.debug || console.log(debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        this.status = this.STATUS_UNRENDERED;
+        this.$el.html('');
+        this.lastImport = new LastImportCollection();
+        this.render();
+        this.dirty = false;
+        return this;
+      },
+
+      //
       // _doRender: We have loaded the data, its safe to render.
       //
       _doRender: function() {
-        // console.log('photo-manager/views/home._doRender: Will render ' + _.size(this.lastImport) + ' images...');
+        // !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._doRender: Will render ' + _.size(this.lastImport) + ' images...');
         if (this.lastImport.importer === undefined) {
-          console.log('photo-manager/views/home._doRender: No images have yet been imported!');
+          !Plm.debug || console.log('photo-manager/views/home._doRender: No images have yet been imported!');
           Plm.showFlash('You have not yet imported any images!');
         }
         else {
@@ -83,13 +102,13 @@ define(
             Plm.showFlash('You\' most recent import has no images!');
           }
           else {
-            console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.get('completed_at'));
+            !Plm.debug || console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.get('completed_at'));
             this.lastImport.each(function(image) {
-              console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
+              !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
               var variants = image.get('variants');
-              console.log('photo-manager/views/home._doRender:   have ' + variants.length + ' variants...');
+              !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._doRender:   have ' + variants.length + ' variants...');
               var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
-              console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
+              !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
             });
           }
           var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
@@ -104,9 +123,10 @@ define(
       // _startIncrementalRender: Initialize the view to a new importer which will be incrementally rendered.
       //
       _startIncrementalRender: function(importer) {
-        console.log('photo-manager/views/home/library/last-import._startIncrementalRender: invoked with importer - ' + JSON.stringify(importer));
+        !Plm.debug || console.log('photo-manager/views/home/library/last-import._startIncrementalRender: invoked with importer w/ id - ' + importer.id);
+        !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._startIncrementalRender: importer - ' + JSON.stringify(importer));
         if ((this.status === this.STATUS_UNRENDERED) || (this.status === this.STATUS_RENDERED)) {
-          console.log('photo-manager/views/home/library/last-import._startIncrementalRender: initiating incremental rendering...');
+          !Plm.debug || console.log('photo-manager/views/home/library/last-import._startIncrementalRender: initiating incremental rendering...');
           //
           // Initialize with the new importer, but the collection will be empty.
           //
@@ -125,9 +145,10 @@ define(
       // _addToIncrementalRender: Add an image to a view which is being incrementally rendered.
       //
       _addToIncrementalRender: function(image) {
-        console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: invoked with image - ' + JSON.stringify(image));
+        !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: invoked with image w/ id - ' + image.id);
+        !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: image - ' + JSON.stringify(image));
         if ((this.status === this.STATUS_INCREMENTALLY_RENDERING) && !this.lastImport.get(image.id)) {
-          console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: adding image w/ id - ' + image.id + ', to view.');
+          !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: adding image w/ id - ' + image.id + ', to view.');
           //
           // Add to the collection.
           //
@@ -144,7 +165,7 @@ define(
           this.$el.find('.photos-collection').append(compiledTemplate);
         }
         else {
-          console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
+          !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
         }
         return this;
       },
@@ -155,7 +176,7 @@ define(
       //  Currently, only change status to STATUS_RENDERED.
       //
       _finishIncrementalRender: function(importer) {
-        console.log('photo-manager/views/home/library/last-import._finishIncrementalRender: invoked...');
+        !Plm.debug || console.log('photo-manager/views/home/library/last-import._finishIncrementalRender: invoked...');
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING) {
           this.$el.find(".imported-timestamp").text(" Imported: " + importer.completed_at);
           this.status = this.STATUS_RENDERED;
@@ -167,21 +188,72 @@ define(
         var that = this;
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
+                         //
+                         // import.started callback:
+                         //  Handle 2 cases:
+                         //    1. the view's status is NOT STATUS_INCREMENTALLY_RENDERING (no import is going on)
+                         //    2. the view's status is STATUS_INCREMENTALLY_RENDERING (import is in progress)
+                         //  In 2, the view will now become 'dirty'.
+                         //
                          function(msg) {
-                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import started, msg - ' + JSON.stringify(msg));
-                           that._startIncrementalRender(msg.data);
+                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import started...');
+                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                           if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
+                             !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: incremental render in progress; marking view as dirty...');
+                             that.dirty = true;
+                           }
+                           else {
+                             !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: About to start incremental render...');
+                             that._startIncrementalRender(msg.data);
+                           }
                          });
+
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.image.saved',
+                         //
+                         // import.image.saved callback:
+                         //  Handle 2 cases:
+                         //    1. Its an image associated with the current 'incremental render' which is in progress.
+                         //    2. Its an image from some other import (weird), set the view as dirty.
+                         //
                          function(msg) {
-                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
-                           that._addToIncrementalRender(msg.data.doc);
+                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import image saved...');
+                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
+                             that._addToIncrementalRender(msg.data.doc);
+                           }
+                           else {
+                             that.dirty = true;
+                           }
                          });
+
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.completed',
+                         //
+                         // import.completed callback:
+                         //  Again, 2 cases:
+                         //    1. Its the end of the current 'incremental render', which is inprogress:
+                         //      - finish rendering it.
+                         //      - if the view is dirty, re-render it to ensure we are show the most recent.
+                         //    2. Its the end of some other import.
+                         //      a. we have a current 'incremental render' going on:
+                         //        - mark the view as dirty.
+                         //      b. we don't have an 'incremental render' going on:
+                         //        - update the view with a new 'last import' to ensure its up to date.
+                         //
                          function(msg) {
-                           console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
-                           that._finishIncrementalRender(msg.data);
+                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed...');
+                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
+                             that._finishIncrementalRender(msg.data);
+                             !that.dirty || that._reRender();
+                           }
+                           else if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
+                             that.dirty = true;
+                           }
+                           else {
+                             that._reRender();
+                           }
                          });
       }
 
