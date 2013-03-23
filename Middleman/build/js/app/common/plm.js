@@ -24,7 +24,6 @@ define(
     'plmCommon/plm-ui'
   ],
   function($, _, PlmUI) {
-    console.log('/js/app/common/plm: Loading, typeof $ - ' + typeof($));
 
     var PLM = {};
 
