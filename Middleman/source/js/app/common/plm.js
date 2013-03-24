@@ -23,13 +23,14 @@ define(
     'plmCommon/plm-ui'
   ],
   function($, _, PlmUI) {
-    console.log('/js/app/common/plm: Loading, typeof $ - ' + typeof($));
 
     var PLM = {};
 
     PLM.VERSION = '0.1';
 
     PLM.debug = true;
+
+    PLM.verbose = false;
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.

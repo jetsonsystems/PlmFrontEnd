@@ -83,8 +83,16 @@ define(
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.started') ||
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.saved') ||
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.completed') ||
+
           (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.started') ||
-          (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.completed');
+          (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.completed') ||
+
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.created') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.updated') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.deleted') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.created') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.updated') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.deleted');
         return isValid;
       };
 
@@ -101,6 +109,12 @@ define(
           "event": "subscribe",
           "data": {
             "resource": "/importers"
+          }}));
+        ws.send(JSON.stringify({
+          "resource": "_client",
+          "event": "subscribe",
+          "data": {
+            "resource": "/storage/changes-feed"
           }}));
         console.log('photo-manager/views/home._respondToEvents: Subscribed to notification events');
       };
