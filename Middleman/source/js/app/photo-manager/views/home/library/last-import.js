@@ -60,13 +60,13 @@ define(
         var onSuccess = function(lastImport,
                                  response,
                                  options) {
-          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: successfully loaded recent uploads...');
+          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onSuccess: successfully loaded recent uploads...');
           that._doRender();
           that.status = that.STATUS_RENDERED;
           that.trigger(that.id + ":rendered");
         };
         var onError = function(lastImport, xhr, options) {
-          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: error loading recent uploads.');
+          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onError: error loading recent uploads.');
           that.trigger(that.id + ":rendered");
         };
         this.lastImport.fetch({success: onSuccess,
@@ -275,7 +275,7 @@ define(
                          //   view as being dirty.
                          //
                          function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync started...');
+                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
                            !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
                            that.dirty = true;
                          });
@@ -291,7 +291,9 @@ define(
                            !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
                            if (that.dirty) {
                              !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
-                             that._reRender();
+                             if (that.status !== that.STATUS_INCREMENTALLY_RENDERING) {
+                               that._reRender();
+                             }
                            }
                          });
 
