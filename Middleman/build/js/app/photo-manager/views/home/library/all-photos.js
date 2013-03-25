@@ -18,6 +18,9 @@ define(
   ],
   function($, _, Backbone, Plm, MsgBus, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
+    var moduleName = 'photo-manager/views/home/library/all-photos';
+    var debugPrefix = moduleName + '.LastImportView';
+
     //
     // AllPhotosView: The photo-manager/home/library/all-photos view.
     //
@@ -39,6 +42,8 @@ define(
       STATUS_RENDERING_IMPORTS: 2,
       STATUS_INCREMENTALLY_RENDERING_IMPORT: 3,
       status: undefined,
+
+      dirty: false,
 
       //
       // The collection of importers representing this view.
@@ -93,6 +98,23 @@ define(
         };
         this.importers.fetch({success: onSuccess,
                               error: onError});
+        return this;
+      },
+
+      //
+      // _reRender: a combination of initialize + render to fetch
+      //  the true last import and re-render the view.
+      //   
+      _reRender: function() {
+        !Plm.debug || console.log(debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        this.status = this.STATUS_UNRENDERED;
+        this.$el.html('');
+        this.importers = new ImportersCollection(undefined, 
+                                                 {
+                                                   filterWithoutStartedAt: true
+                                                 });
+        this.render();
+        this.dirty = false;
         return this;
       },
 
@@ -233,21 +255,66 @@ define(
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.started',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
-                           that._startIncrementallyRenderingImport(msg.data);
+                           !Plm.debug || console.log(that.id + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
+                           if (that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+                             that.dirty = true;
+                           }
+                           else {
+                             that._startIncrementallyRenderingImport(msg.data);
+                           }
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.image.saved',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
-                           that._addToIncrementalImportRender(msg.data.doc);
+                           !Plm.debug || console.log(that.id + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
+                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) && (that.importRenderingInc.id === msg.data.id)) {
+                             that._addToIncrementalImportRender(msg.data.doc);
+                           }
+                           else {
+                             that.dirty = true;
+                           }
                          });
         MsgBus.subscribe('_notif-api:' + '/importers',
                          'import.completed',
                          function(msg) {
-                           console.log(that.id + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
-                           that._finishImportImportRender(msg.data);
+                           !Plm.debug || console.log(that.id + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
+                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) && (that.importRenderingInc.id === msg.data.id)) {
+                             that._finishImportImportRender(msg.data);
+                             !that.dirty || that._reRender();
+                           }
+                           else if (that.status === that.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+                             that.dirty = true;
+                           }
+                           else {
+                             that._reRender();
+                           }
                          });
+
+        MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
+                         'doc.*.*',
+                         //
+                         // doc.*.* callback: Any importer / image document changes
+                         //   from a different instance of the APP. Just flag the
+                         //   view as being dirty.
+                         //
+                         function(msg) {
+                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
+                           that.dirty = true;
+                         });
+
+        MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
+                         'sync.completed',
+                         function(msg) {
+                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                           if (that.dirty) {
+                             !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                             if (that.status !== that.STATUS_INCREMENTALLY_RENDERING_IMPORT) {
+                               that._reRender();
+                             }
+                           }
+                         });
+
       }
 
     });

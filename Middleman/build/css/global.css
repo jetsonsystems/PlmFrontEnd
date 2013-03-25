@@ -631,3 +631,81 @@ section#container #row aside {
 .hamburger-item.selected a {
   color: #6dcff6;
 }
+
+/* line 510, global.sass */
+#surveillance-collection {
+  padding: 40px;
+  padding-bottom: 0;
+}
+/* line 517, global.sass */
+#surveillance-collection .surveillance-medium-thumb .surveillance-medium {
+  border: 1px solid black;
+  width: 280px;
+}
+/* line 521, global.sass */
+#surveillance-collection .surveillance-medium-thumb .surveillance-medium:hover {
+  border: 1px solid white;
+}
+/* line 524, global.sass */
+#surveillance-collection .surveillance-medium-thumb .surveillance-thumb-overlay {
+  color: white;
+  font-size: 10px;
+  padding: 10px;
+  background: black;
+  background: rgba(0, 0, 0, 0.4);
+  -pie-background: rgba(0, 0, 0, 0.4);
+  width: 280px;
+  margin-top: -33px;
+  z-index: 200;
+  position: absolute;
+}
+/* line 534, global.sass */
+#surveillance-collection .surveillance-medium-thumb-title {
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+/* line 539, global.sass */
+#surveillance-thumbs-collection {
+  padding: 20px 40px;
+  margin-top: 0;
+  *display: inline-block;
+}
+/* line 3, _mixins.sass */
+#surveillance-thumbs-collection:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* line 547, global.sass */
+#surveillance-thumbs-collection .surveillance-small-thumb {
+  float: left;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+/* line 552, global.sass */
+#surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small {
+  border: 1px solid black;
+  width: 132px;
+  height: 100px;
+}
+/* line 557, global.sass */
+#surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small:hover {
+  border: 1px solid white;
+}
+/* line 560, global.sass */
+#surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small-thumb-overlay {
+  color: white;
+  font-size: 10px;
+  padding: 5px;
+  background: black;
+  background: rgba(0, 0, 0, 0.4);
+  -pie-background: rgba(0, 0, 0, 0.4);
+  width: 132px;
+  margin-top: -23px;
+  z-index: 200;
+  position: absolute;
+}
