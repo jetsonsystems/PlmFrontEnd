@@ -31,7 +31,7 @@ define(
 
     PLM.debug = true;
 
-    PLM.verbose = false;
+    PLM.verbose = true;
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.
