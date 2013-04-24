@@ -16,6 +16,9 @@
  *    other modules.
  *
  */
+
+var ApiWorkers = require('MediaManagerAppSupport/lib/ApiWorkers');
+
 define(
   [
     'jquery',

@@ -57,7 +57,14 @@
 //
 // WebSocket: Bring in the node.js Notifications web-socket like interface.
 //
-var WebSocket = require('MediaManagerApi/lib/NotificationsWsLike');
+// var WebSocket = require('MediaManagerApi/lib/NotificationsWsLike');
+
+if (WebSocket) {
+  console.log('/js/app/common/msg-bus: WebSockets are supported...');
+}
+else {
+  console.log('/js/app/common/msg-bus: WebSockets are NOT supported');
+}
 
 console.log('/js/app/common/msg-bus: Running...');
 
@@ -102,13 +109,13 @@ define(
           "resource": "_client",
           "event": "subscribe",
           "data": {
-            "resource": "/storage/synchronizers"
+            "resource": "/importers"
           }}));
         ws.send(JSON.stringify({
           "resource": "_client",
           "event": "subscribe",
           "data": {
-            "resource": "/importers"
+            "resource": "/storage/synchronizers"
           }}));
         ws.send(JSON.stringify({
           "resource": "_client",
@@ -117,6 +124,10 @@ define(
             "resource": "/storage/changes-feed"
           }}));
         console.log('photo-manager/views/home._respondToEvents: Subscribed to notification events');
+      };
+
+      ws.onerror = function() {
+        console.log('js/app/common/msg-bus: websocket error!');
       };
 
       ws.onmessage = function(msg) {
@@ -158,7 +169,7 @@ define(
         console.log('app/msg-bus.initialize: Creating web-socket...');
 
         var that = this;
-        ws = new WebSocket('ws://appjs/notifications');
+        ws = new WebSocket('ws://localhost:9002/notifications');
 
         _listenToApiEvents();
 

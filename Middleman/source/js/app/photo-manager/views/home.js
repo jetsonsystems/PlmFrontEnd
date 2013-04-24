@@ -2,6 +2,9 @@
 // Filename: photo-manager/views/home.js
 //
 
+var apiResources = require('MediaManagerAppSupport/lib/ApiResources');
+var apiWorkers = require('MediaManagerAppSupport/lib/ApiWorkers');
+
 define(
   [
     'jquery',
@@ -125,27 +128,27 @@ define(
             initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
           }, function( err , files ) {
 
-            var dir = new String(files[0]);
+            var dir = String(files[0]);
+
             !Plm.debug || console.log(">> dir: " + dir);
 
-            var payload = JSON.stringify({
+            var payload = {
               "import_dir" : dir
-            });
+            };
 
             $.ajax({
-              url: 'http://appjs/api/media-manager/v0/importers',
+              url: 'http://localhost:9001/api/media-manager/v0/importers',
               type: 'POST',
               contentType: 'application/json',
-              data: payload,
+              data: JSON.stringify(payload),
               processData: false,
               success: function(data, textStatus, jqXHR) {
                 !Plm.debug || console.log(">> AJAX success");
               },
-              error: function() {
-                !Plm.debug || console.log(">> AJAX failure");
+              error: function(jqXHR) {
+                !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
               }
             });
-            // End of AJAX call
 
           });
           // End of Open Save Dialog
@@ -157,18 +160,19 @@ define(
       _enableSync: function() {
         $('#row nav a.sync').click(function(el) {
           !Plm.debug || console.log('photo-manager/views/home: clicked sync!');
-          $.ajax({url: 'http://appjs/api/media-manager/v0/storage/synchronizers',
-                  type: 'POST',
-                  contentType: 'application/json',
-                  data: "",
-                  processData: false,
-                  success: function(data, textStatus, jqXHR) {
-                    !Plm.debug || console.log('photo-manager/views/home._doRender: sync triggered...');
-                  },
-                  error: function() {
-                    !Plm.debug || console.log('photo-manager/views/home._doRender: sync request error!');
-                  }
-                 });
+          $.ajax({
+            url: 'http://localhost:9001/api/media-manager/v0/storage/synchronizers',
+            type: 'POST',
+            contentType: 'application/json',
+            data: "",
+            processData: false,
+            success: function(data, textStatus, jqXHR) {
+              !Plm.debug || console.log('photo-manager/views/home._doRender: sync triggered...');
+            },
+            error: function() {
+              !Plm.debug || console.log('photo-manager/views/home._doRender: sync request error!');
+            }
+          });
         });
       },
 
