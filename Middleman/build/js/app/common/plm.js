@@ -17,6 +17,9 @@
  *
  */
 
+
+var ApiWorkers = require('MediaManagerAppSupport/lib/ApiWorkers');
+
 define(
   [
     'jquery',
@@ -24,7 +27,6 @@ define(
     'plmCommon/plm-ui'
   ],
   function($, _, PlmUI) {
-    console.log('/js/app/common/plm: Loading, typeof $ - ' + typeof($));
 
     var PLM = {};
 
@@ -32,7 +34,7 @@ define(
 
     PLM.debug = true;
 
-    PLM.verbose = false;
+    PLM.verbose = true;
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.

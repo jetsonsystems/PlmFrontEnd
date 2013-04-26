@@ -57,7 +57,14 @@
 //
 // WebSocket: Bring in the node.js Notifications web-socket like interface.
 //
-var WebSocket = require('MediaManagerApi/lib/NotificationsWsLike');
+// var WebSocket = require('MediaManagerApi/lib/NotificationsWsLike');
+
+if (WebSocket) {
+  console.log('/js/app/common/msg-bus: WebSockets are supported...');
+}
+else {
+  console.log('/js/app/common/msg-bus: WebSockets are NOT supported');
+}
 
 console.log('/js/app/common/msg-bus: Running...');
 
@@ -83,13 +90,27 @@ define(
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.started') ||
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.saved') ||
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.completed') ||
+
           (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.started') ||
-          (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.completed');
+          (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.completed') ||
+
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.created') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.updated') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.image.deleted') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.created') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.updated') ||
+          (parsedMsg.resource === '/storage/changes-feed' && parsedMsg.event === 'doc.importer.deleted');
         return isValid;
       };
 
       function doSubscriptions(ws) {
         console.log('photo-manager/views/home._respondToEvents: Subscribing to notification events');
+        ws.send(JSON.stringify({
+          "resource": "_client",
+          "event": "subscribe",
+          "data": {
+            "resource": "/importers"
+          }}));
         ws.send(JSON.stringify({
           "resource": "_client",
           "event": "subscribe",
@@ -100,9 +121,13 @@ define(
           "resource": "_client",
           "event": "subscribe",
           "data": {
-            "resource": "/importers"
+            "resource": "/storage/changes-feed"
           }}));
         console.log('photo-manager/views/home._respondToEvents: Subscribed to notification events');
+      };
+
+      ws.onerror = function() {
+        console.log('js/app/common/msg-bus: websocket error!');
       };
 
       ws.onmessage = function(msg) {
@@ -144,7 +169,7 @@ define(
         console.log('app/msg-bus.initialize: Creating web-socket...');
 
         var that = this;
-        ws = new WebSocket('ws://appjs/notifications');
+        ws = new WebSocket('ws://localhost:9002/notifications');
 
         _listenToApiEvents();
 

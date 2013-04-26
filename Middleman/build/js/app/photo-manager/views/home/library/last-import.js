@@ -60,13 +60,13 @@ define(
         var onSuccess = function(lastImport,
                                  response,
                                  options) {
-          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: successfully loaded recent uploads...');
+          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onSuccess: successfully loaded recent uploads...');
           that._doRender();
           that.status = that.STATUS_RENDERED;
           that.trigger(that.id + ":rendered");
         };
         var onError = function(lastImport, xhr, options) {
-          !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home: error loading recent uploads.');
+          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onError: error loading recent uploads.');
           that.trigger(that.id + ":rendered");
         };
         this.lastImport.fetch({success: onSuccess,
@@ -255,6 +255,48 @@ define(
                              that._reRender();
                            }
                          });
+
+        //
+        // Subscribe to changes feed events, where the topics can be any of:
+        //  doc.<doc type>.<change type>, where:
+        //
+        //    <doc type> ::= importer | image
+        //    <change type> ::= created | updated | deleted
+        //
+        //  Note, all emitted events should be for documents where the app. ID
+        //  that of another instance of the APP. So, the documents arrived via
+        //  a sync.
+        //
+        MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
+                         'doc.*.*',
+                         //
+                         // doc.*.* callback: Any importer / image document changes
+                         //   from a different instance of the APP. Just flag the
+                         //   view as being dirty.
+                         //
+                         function(msg) {
+                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
+                           that.dirty = true;
+                         });
+
+        //
+        // Subscribe to sync.completed:
+        //
+        //  If the view is dirty, re-render it.
+        //
+        MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
+                         'sync.completed',
+                         function(msg) {
+                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                           if (that.dirty) {
+                             !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                             if (that.status !== that.STATUS_INCREMENTALLY_RENDERING) {
+                               that._reRender();
+                             }
+                           }
+                         });
+
       }
 
     });
