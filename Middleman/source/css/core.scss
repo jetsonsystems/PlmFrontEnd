@@ -1,0 +1,21 @@
+// Project setup file
+
+// 1. Setup Components
+
+@import "vars";
+@import "includes";
+
+// 2. Reset file
+
+@import "reset";
+
+// 3. Base styles
+
+@import "grid";
+@import "base";
+
+// 4. App-specific styles
+
+
+@import "photo-manager";
+@import "property-manager";

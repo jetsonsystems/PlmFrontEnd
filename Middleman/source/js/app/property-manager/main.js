@@ -6,14 +6,14 @@
 
 // var requirejs = undefined;
 
-console.log('app/photo-manager/main: Adding app-ready event listener...');
+console.log('app/property-manager/main: Adding app-ready event listener...');
 
 addEventListener('app-ready', function(e){
 
   console.log('Got app-ready event!');
 
   if (processedAppReady) {
-    console.log('app/photo-manager/main: App ready already processed...');
+    console.log('app/property-manager/main: App ready already processed...');
     return;
   }
 
@@ -43,7 +43,7 @@ addEventListener('app-ready', function(e){
       postal: 'postal/postal',
       plm: '../app',
       plmCommon: '../app/common',
-      app: '../app/photo-manager'
+      app: '../app/property-manager'
     },
     //
     // Non-AMD modules like underscore / backbone.
@@ -69,7 +69,7 @@ addEventListener('app-ready', function(e){
   requirejs(['plmCommon/plm', 
              'app/app'],
             function(Plm, App) {
-              !Plm.debug || console.log('/js/app/photo-manager/main: Loading, typeof Plm - ' + typeof(Plm) + ', typeof is - ' + typeof(App));
+              !Plm.debug || console.log('/js/app/property-manager/main: Loading, typeof Plm - ' + typeof(Plm) + ', typeof is - ' + typeof(App));
               App.initialize();
             });
 });

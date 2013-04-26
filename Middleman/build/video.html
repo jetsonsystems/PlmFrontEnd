@@ -1,229 +1,451 @@
-<!--
-  Built by The Varoqua Group
-  varoquagroup.com
--->
 <!DOCTYPE html>
 <html>
   <head>
     <title>
-      PPM
+      Personal Life Manager
     </title>
-    <link href="/css/global.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/core.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <section id='wrapper'>
+    <section id='container'>
+      <div id='notifications-collection'>
+        <div id='notification'></div>
+        <div id='notification-progress'></div>
+      </div>
       <h1 id='logo'>
         <img src='/imgs/PLM-Logo.png'>
       </h1>
-      <nav id='top-nav'>
+      <header>
         <ul>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Four-Box.png'>
+          <!-- / Four Box -->
+          <li class='unselected'>
+            <a class='unselected' href='/'>
+              &#62977
             </a>
           </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Lighting-Blue.png'>
+          <!-- / Light Bulb -->
+          <li class='unselected'>
+            <a class='unselected' href='/lighting'>
+              &#128161
             </a>
           </li>
+          <!-- / Thermostat -->
           <li>
             <a href='#'>
-              <img src='/imgs/Folders.png'>
+              &#128255
             </a>
           </li>
+          <!-- / Key for Access -->
           <li>
             <a href='#'>
-              <img src='/imgs/Video.png'>
+              &#128273
+            </a>
+          </li>
+          <!-- / Camera for photographs -->
+          <li class='unselected'>
+            <a class='unselected' href='/photos'>
+              &#128247
+            </a>
+          </li>
+          <!-- / Eyeball for video surveillance -->
+          <li class='unselected'>
+            <a class='unselected' href='/surveillance'>
+              &#59146
             </a>
           </li>
         </ul>
-      </nav>
-      <nav id='left-nav'>
-        <ul>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Home-Solid.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Left-Right-Arrows.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Cabinet.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Calendar.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/List.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Music-Note.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Dollar.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Hollow-Home.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Globe.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Staggered-Boxes.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Steering-Wheel.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Gear.png'>
-            </a>
-          </li>
-          <li>
-            <a href='#'>
-              <img src='/imgs/Search.png'>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <div id='main-body'>
-        <div id='tertiary-nav'>
+      </header>
+      <div id='row'>
+        <nav>
+          <ul>
+            <!-- / Home icon -->
+            <li>
+              <a href='#'>
+                &#8962
+              </a>
+            </li>
+            <!-- / Left/Right arrows -->
+            <li>
+              <a href='#'>
+                &#8646
+              </a>
+            </li>
+            <!-- / File cabinet -->
+            <li>
+              <a href='#'>
+                &#59392
+              </a>
+            </li>
+            <!-- / Calendar -->
+            <li>
+              <a href='#'>
+                &#128197
+              </a>
+            </li>
+            <!-- / List -->
+            <li>
+              <a href='#'>
+                &#57349
+              </a>
+            </li>
+            <!-- / Music -->
+            <li>
+              <a href='#'>
+                &#9835
+              </a>
+            </li>
+            <!-- / Dollars -->
+            <li>
+              <a href='#'>
+                &#128318
+              </a>
+            </li>
+            <!-- / Home -->
+            <li>
+              <a href='#'>
+                &#8962
+              </a>
+            </li>
+            <!-- / Globe -->
+            <li>
+              <a href='#'>
+                &#127758
+              </a>
+            </li>
+            <!-- / Jumbled box -->
+            <li>
+              <a href='#'>
+                &#9871
+              </a>
+            </li>
+            <!-- / Sync -->
+            <li>
+              <a class='sync' href='#'>
+                &#128260
+              </a>
+            </li>
+            <!-- / Gears -->
+            <li>
+              <a href='#'>
+                &#9881
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <main>
+          <div class='title-bar'>
+            <div id='page-title-collection'>
+              <!-- / Hamburger -->
+              <div class='icon-button'>
+                <a class='hamburger-button' href='#hamburger'>
+                  &#9776
+                </a>
+              </div>
+              <!-- / Page title -->
+              <h1></h1>
+            </div>
+            <div id='main-button-collection'>
+              <!-- / Globe -->
+              <div class='icon-button'>
+                <a href='#'>
+                  &#127758
+                </a>
+              </div>
+              <!-- / Person -->
+              <div class='icon-button'>
+                <a href='#'>
+                  &#128100
+                </a>
+              </div>
+              <!-- / Floorplan -->
+              <div class='icon-button'>
+                <a href='#'>
+                  &#59175
+                </a>
+              </div>
+              <!-- / Import -->
+              <div class='icon-button'>
+                <a class='import' href='#'>
+                  &#128228
+                </a>
+              </div>
+            </div>
+            <div id='search-gear-collection'>
+              <!-- / Search -->
+              <div class='icon-button'>
+                <a href='#'>
+                  &#128269
+                </a>
+              </div>
+              <!-- / Gear -->
+              <div class='icon-button'>
+                <a href='#'>
+                  &#9881
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class='__none__/__none__' id='content'>
+            <section id='wrapper'>
+              <h1 id='logo'>
+                <img src='/imgs/PLM-Logo.png'>
+              </h1>
+              <nav id='top-nav'>
+                <ul>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Four-Box.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Lighting-Blue.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Folders.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Video.png'>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <nav id='left-nav'>
+                <ul>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Home-Solid.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Left-Right-Arrows.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Cabinet.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Calendar.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/List.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Music-Note.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Dollar.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Hollow-Home.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Globe.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Staggered-Boxes.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Steering-Wheel.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Gear.png'>
+                    </a>
+                  </li>
+                  <li>
+                    <a href='#'>
+                      <img src='/imgs/Search.png'>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <div id='main-body'>
+                <div id='tertiary-nav'>
+                  <ul>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Add-Gallery.png'>
+                      </a>
+                    </li>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Upload.png'>
+                      </a>
+                    </li>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Tags.png'>
+                      </a>
+                    </li>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Print.png'>
+                      </a>
+                    </li>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Trash.png'>
+                      </a>
+                    </li>
+                    <li>
+                      <a href='#'>
+                        <img src='/imgs/Settings.png'>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class='surveillance' id='left-column'>
+                  <div id='surveillance-sidebar'>
+                    <div id='surveillance-collection'>
+                      <div class='surveillance-medium-thumb'>
+                        <img class='surveillance-medium' src='http://core2.jetsonsys.com:10080/data/srl_bar_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-thumb-overlay'>
+                          SRL Bar
+                        </div>
+                      </div>
+                      <div class='surveillance-medium-thumb-title'>
+                        SRL Bar
+                      </div>
+                      <hr>
+                    </div>
+                    <div id='surveillance-thumbs-collection'>
+                      <div class='surveillance-small-thumb'>
+                        <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/si2_front_entrance_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-small-thumb-overlay'>
+                          SI Front Entrance
+                        </div>
+                      </div>
+                      <div class='surveillance-small-thumb'>
+                        <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/boca_dock_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-small-thumb-overlay'>
+                          Boca Dock Ent
+                        </div>
+                      </div>
+                      <div class='surveillance-small-thumb'>
+                        <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/srl_main_entrance_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-small-thumb-overlay'>
+                          SRL Main Ent
+                        </div>
+                      </div>
+                      <div class='surveillance-small-thumb'>
+                        <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/boca_dock_ptz_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-small-thumb-overlay'>
+                          Boca Dock
+                        </div>
+                      </div>
+                      <div class='surveillance-small-thumb'>
+                        <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/srl_bar_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
+                        <div class='surveillance-small-thumb-overlay'>
+                          SRL Bar
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / Search -->
+                </div>
+                <div id='right-column'>
+                  <div id='floor-level-buttons'>
+                    <img src='/imgs/Floor-Level-Buttons.png'>
+                  </div>
+                  <div id='floorplan'>
+                    <img src='/imgs/Boca-Grande-Main-Floorplan.png'>
+                  </div>
+                  <div class='lighting-load' id='courtyard'>
+                    <div class='lighting-label'>
+                      Courtyard
+                    </div>
+                    <img id='courtyard-lightbulb' src='/imgs/Bulb-Gray.png'>
+                  </div>
+                  <div class='lighting-load' id='living-room'>
+                    <div class='lighting-label'>
+                      Living Room
+                    </div>
+                    <img id='living-room-lightbulb' src='/imgs/Bulb-Gray.png'>
+                  </div>
+                  <div class='lighting-load' id='kitchen'>
+                    <div class='lighting-label'>
+                      Kitchen
+                    </div>
+                    <img id='kitchen-lightbulb' src='/imgs/Bulb-Gray.png'>
+                  </div>
+                </div>
+              </div>
+              <footer id='footer'>
+              </footer>
+            </section>
+          </div>
+          <div id='hamburger'>
+          </div>
+        </main>
+      </div>
+      <footer>
+        <div id='account-collection'>
           <ul>
             <li>
-              <a href='#'>
-                <img src='/imgs/Add-Gallery.png'>
+              <a>
+                Account
               </a>
             </li>
             <li>
-              <a href='#'>
-                <img src='/imgs/Upload.png'>
+              <a>
+                Setup
               </a>
             </li>
             <li>
-              <a href='#'>
-                <img src='/imgs/Tags.png'>
+              <a>
+                Settings
               </a>
             </li>
             <li>
-              <a href='#'>
-                <img src='/imgs/Print.png'>
-              </a>
-            </li>
-            <li>
-              <a href='#'>
-                <img src='/imgs/Trash.png'>
-              </a>
-            </li>
-            <li>
-              <a href='#'>
-                <img src='/imgs/Settings.png'>
+              <a>
+                Logout
               </a>
             </li>
           </ul>
         </div>
-        <div class='surveillance' id='left-column'>
-          <div id='surveillance-sidebar'>
-            <div id='surveillance-collection'>
-              <div class='surveillance-medium-thumb'>
-                <img class='surveillance-medium' src='http://core2.jetsonsys.com:10080/data/92_front_yard_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-thumb-overlay'>
-                  Front Yard
-                </div>
-              </div>
-              <div class='surveillance-medium-thumb-title'>
-                Front Yard
-              </div>
-              <hr>
-            </div>
-            <div id='surveillance-thumbs-collection'>
-              <div class='surveillance-small-thumb'>
-                <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/si2_front_entrance_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-small-thumb-overlay'>
-                  SI Front Entrance
-                </div>
-              </div>
-              <div class='surveillance-small-thumb'>
-                <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/boca_dock_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-small-thumb-overlay'>
-                  Boca Dock Ent
-                </div>
-              </div>
-              <div class='surveillance-small-thumb'>
-                <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/srl_main_entrance_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-small-thumb-overlay'>
-                  SRL Main Ent
-                </div>
-              </div>
-              <div class='surveillance-small-thumb'>
-                <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/boca_dock_ptz_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-small-thumb-overlay'>
-                  Boca Dock
-                </div>
-              </div>
-              <div class='surveillance-small-thumb'>
-                <img class='surveillance-small' src='http://core2.jetsonsys.com:10080/data/srl_bar_axis/stream' style='-webkit-user-select: none; cursor: -webkit-zoom-in;'>
-                <div class='surveillance-small-thumb-overlay'>
-                  SRL Bar
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- / Search -->
+        <div id='weather-collection'>
+          <ul>
+            <li class='location'>
+              London 4:16 PM
+            </li>
+            <li>
+              Clear 22&deg;
+            </li>
+            <li>
+              High 38&deg;F
+            </li>
+            <li>
+              Low 21&deg;F
+            </li>
+          </ul>
         </div>
-        <div id='right-column'>
-          <div id='floor-level-buttons'>
-            <img src='/imgs/Floor-Level-Buttons.png'>
-          </div>
-          <div id='floorplan'>
-            <img src='/imgs/Boca-Grande-Main-Floorplan.png'>
-          </div>
-          <div class='lighting-load' id='courtyard'>
-            <div class='lighting-label'>
-              Courtyard
-            </div>
-            <img id='courtyard-lightbulb' src='/imgs/Bulb-Gray.png'>
-          </div>
-          <div class='lighting-load' id='living-room'>
-            <div class='lighting-label'>
-              Living Room
-            </div>
-            <img id='living-room-lightbulb' src='/imgs/Bulb-Gray.png'>
-          </div>
-          <div class='lighting-load' id='kitchen'>
-            <div class='lighting-label'>
-              Kitchen
-            </div>
-            <img id='kitchen-lightbulb' src='/imgs/Bulb-Gray.png'>
-          </div>
-        </div>
-      </div>
-      <footer id='footer'>
       </footer>
     </section>
-    <!-- Javascript goes at the bottom -->
-    <script src="/js/jquery-1.8.2.min.js" type="text/javascript"></script>
-    <script src="/js/global.js" type="text/javascript"></script>
+    <script src="/javascripts/app/application.js" type="text/javascript"></script>
+    <script data-main='js/app/__none__/main.js' src='/js/libs/require/require.js'></script>
   </body>
 </html>

@@ -20,7 +20,7 @@
       - page_title = "Personal Life Manager"
       - page_title = page_title + " | #{page}" if page != ""
       = page_title
-    = stylesheet_link_tag "global"
+    = stylesheet_link_tag "core"
     - if content_for?(:view_specific_styles)
       = yield_content :view_specific_styles
   %body

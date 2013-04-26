@@ -13,4 +13,3 @@
 // So, at the moment assets/js/app/application.js should be an empty file.
 //
 
-;
