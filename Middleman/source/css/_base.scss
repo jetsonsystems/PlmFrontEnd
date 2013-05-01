@@ -152,7 +152,6 @@ hr {
 
 }
 
-
 header {
   height: 60px;
   background: black;
@@ -185,6 +184,43 @@ header {
       background: $right-column-gray-bg;
       border-top: 5px solid $blue;
     }
+  }
+
+  div#notifications-collection {
+    // border: 1px solid red
+    color: $white;
+    width: 300px;
+    display: block;
+    position: absolute;
+    top: 24px;
+    right: 80px;
+    @include clearfix;
+    display: none;
+  }
+
+  div#notification {
+    float: left;
+    text-align: right;
+    // border: 1px dashed green;
+    width: 230px;
+    margin-top: 4px;
+    font-size: 11px;
+
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+  }
+
+  div#notification-progress {
+    float: right;
+    // border: 1px dashed blue
+    // display: inline
+    width: 50px;
+    font-size: 20px;
+
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
   }
 }
 
@@ -242,7 +278,7 @@ nav {
   ul {
     @include display-flex;
     @include flex-direction(column);
-    height: 60px;
+    height: 100%;
 
     li {
       font-family: 'entypo';
