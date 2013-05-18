@@ -1,5 +1,5 @@
 @charset "US-ASCII";
-/* line 2, _includes.scss */
+/* line 2, _mixins.scss */
 .ir {
   display: block;
   border: 0;
@@ -12,18 +12,18 @@
   *line-height: 0;
 }
 
-/* line 3, _includes.scss */
+/* line 3, _mixins.scss */
 .ir br {
   display: none;
 }
 
-/* line 5, _includes.scss */
+/* line 5, _mixins.scss */
 .hidden {
   display: none !important;
   visibility: hidden;
 }
 
-/* line 7, _includes.scss */
+/* line 7, _mixins.scss */
 .visuallyhidden {
   border: 0;
   clip: rect(0 0 0 0);
@@ -35,7 +35,7 @@
   width: 1px;
 }
 
-/* line 9, _includes.scss */
+/* line 9, _mixins.scss */
 .visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
   clip: auto;
   height: auto;
@@ -45,35 +45,35 @@
   width: auto;
 }
 
-/* line 11, _includes.scss */
+/* line 11, _mixins.scss */
 .invisible {
   visibility: hidden;
 }
 
-/* line 13, _includes.scss */
+/* line 13, _mixins.scss */
 .clearfix:before, .clearfix:after {
   content: "";
   display: table;
 }
 
-/* line 14, _includes.scss */
+/* line 14, _mixins.scss */
 .clearfix:after {
   clear: both;
 }
 
-/* line 15, _includes.scss */
+/* line 15, _mixins.scss */
 .clearfix {
   *zoom: 1;
 }
 
 /* ---===|| Curse Blocks Helper Mixins ||===--- */
 @-webkit-keyframes rotate {
-  /* line 307, _includes.scss */
+  /* line 311, _mixins.scss */
   from {
     -webkit-transform: rotate(0deg);
   }
 
-  /* line 308, _includes.scss */
+  /* line 312, _mixins.scss */
   to {
     -webkit-transform: rotate(360deg);
   }
@@ -163,15 +163,17 @@ body:after {
   src: local("☺"), url("/fonts/entypo/entypo-webfont.woff") format("woff"), url("/fonts/entypo/entypo-webfont.ttf") format("opentype"), url("/fonts/entypo/entypo-webfont.eot"), url("/fonts/entypo/entypo-webfont.svg#entypo-webfont'") format("svg");
 }
 
-/* line 4, _base.scss */
+/* line 3, _base.scss */
 header, footer, aside, nav, article, section, main {
   display: block;
 }
 
-/* line 9, _base.scss */
+/* line 8, _base.scss */
 html, body {
   height: 100%;
   margin: 0;
+  min-width: 1024px;
+  overflow-x: hidden;
 }
 
 /* line 15, _base.scss */
@@ -181,23 +183,22 @@ body {
   font-size: 12px;
 }
 
-/* line 22, _base.scss */
+/* line 21, _base.scss */
 a {
   text-decoration: none;
   color: white;
 }
-
-/* line 27, _base.scss */
+/* line 25, _base.scss */
 a:hover {
   color: #6dcff6;
 }
 
-/* line 32, _base.scss */
+/* line 28, _base.scss */
 .selected {
   color: #6dcff6;
 }
 
-/* line 37, _base.scss */
+/* line 32, _base.scss */
 hr {
   border: 0;
   border-top: 1px solid #101010;
@@ -205,7 +206,7 @@ hr {
   background-color: #363636;
 }
 
-/* line 45, _base.scss */
+/* line 39, _base.scss */
 #logo {
   position: fixed;
   z-index: 1000;
@@ -213,11 +214,11 @@ hr {
   right: 10px;
 }
 
-/* line 53, _base.scss */
+/* line 46, _base.scss */
 #container {
   height: 100%;
 }
-/* line 56, _base.scss */
+/* line 49, _base.scss */
 #container .icon-button {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -239,87 +240,289 @@ hr {
   margin-right: 5px;
   background: #2a2a2a;
 }
-/* line 73, _base.scss */
+/* line 66, _base.scss */
 #container .icon-button a {
   display: block;
   font-family: 'entypo';
   font-size: 40px;
   color: #989898;
 }
-/* line 81, _base.scss */
+/* line 72, _base.scss */
+#container .icon-button a:hover {
+  color: #6dcff6;
+}
+/* line 75, _base.scss */
 #container .icon-button:hover, #container .icon-button.selected {
   color: #6dcff6;
 }
-/* line 84, _base.scss */
-#container .icon-button:hover a:hover, #container .icon-button.selected a:hover {
-  color: #6dcff6;
-}
-/* line 90, _base.scss */
-#container .flex-horizontal {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
-}
-/* line 96, _base.scss */
-#container .flex-vertical {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-}
-/* line 102, _base.scss */
+/* line 79, _base.scss */
 #container .title-bar {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
+  background-image: -webkit-linear-gradient(bottom, #393939, #494949);
+  background-image: -moz-linear-gradient(bottom, #393939, #494949);
+  background-image: -ms-linear-gradient(bottom, #393939, #494949);
+  background-image: -o-linear-gradient(bottom, #393939, #494949);
+  background-image: linear-gradient(bottom, #393939, #494949);
+  -webkit-box-shadow: 1px 1px 0 #1f1f1f , inset 0px 1px 0px rgba(255, 255, 255, 0.14);
+  -moz-box-shadow: 1px 1px 0 #1f1f1f , inset 0px 1px 0px rgba(255, 255, 255, 0.14);
+  -ms-box-shadow: 1px 1px 0 #1f1f1f , inset 0px 1px 0px rgba(255, 255, 255, 0.14);
+  -o-box-shadow: 1px 1px 0 #1f1f1f , inset 0px 1px 0px rgba(255, 255, 255, 0.14);
+  box-shadow: 1px 1px 0 #1f1f1f , inset 0px 1px 0px rgba(255, 255, 255, 0.14);
   height: 42px;
   position: fixed;
   top: 60px;
   left: 60px;
   width: 100%;
   background-color: #292929;
-  -moz-box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255, 255, 255, 0.14);
-  -webkit-box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255, 255, 255, 0.14);
-  box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255, 255, 255, 0.14);
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM5MzkzOSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzQ5NDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-  background-image: -moz-linear-gradient(bottom, #393939 0%, #494949 100%);
-  background-image: -o-linear-gradient(bottom, #393939 0%, #494949 100%);
-  background-image: -webkit-linear-gradient(bottom, #393939 0%, #494949 100%);
-  background-image: linear-gradient(bottom, #393939 0%, #494949 100%);
   border-left: none;
 }
-/* line 128, _base.scss */
+/* line 94, _base.scss */
 #container #page-title-collection {
-  display: -webkit-flex;
-  display: flex;
+  display: inline-block;
   width: 380px;
   padding-left: 10px;
-  border-right: 1px solid #101010;
 }
-/* line 135, _base.scss */
+/* line 99, _base.scss */
+#container #page-title-collection #hamburger-button {
+  text-shadow: 1px 2px 2px black;
+  font-size: 60px;
+}
+/* line 102, _base.scss */
+#container #page-title-collection #hamburger-button.active {
+  color: #6dcff6;
+}
+/* line 106, _base.scss */
 #container h1 {
   font-size: 25px;
   font-family: Helvetica;
   margin-top: 8px;
   margin-left: 10px;
 }
-/* line 142, _base.scss */
-#container #main-button-collection {
-  -webkit-flex: 3;
-  flex: 3;
-  border-left: 1px solid #636363;
-  padding-left: 10px;
-}
-/* line 148, _base.scss */
+/* line 113, _base.scss */
 #container #search-gear-collection {
-  display: -webkit-flex;
-  display: flex;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 190px;
 }
 
-/* line 155, _base.scss */
+/* line 123, _base.scss */
+.plm-cb-label {
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 0 0 15px;
+}
+/* line 124, _base.scss */
+.plm-cb-label .plm-cb {
+  display: none;
+}
+/* line 127, _base.scss */
+.plm-cb-label .plm-cb:checked + span {
+  background-position: -18px 0;
+}
+/* line 134, _base.scss */
+.plm-cb-label .cb-text {
+  display: inline-block;
+  font-size: 1.2em;
+}
+/* line 139, _base.scss */
+.plm-cb-label .cb-img {
+  margin: -3px 6px 0 0;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  cursor: pointer;
+  background: url("../imgs/plm-cb-sprite.png") 0 0 no-repeat;
+}
+
+/* line 150, _base.scss */
+.selection-toolbar {
+  float: right;
+}
+
+/* line 152, _base.scss */
+.main-select-all {
+  float: left;
+}
+
+/* line 154, _base.scss */
+.photo-edit-panel {
+  display: block;
+  float: left;
+  width: 50%;
+  padding: 0 20px;
+  height: 100%;
+  background: #555;
+  border-left: 1px solid #111111;
+}
+/* line 164, _base.scss */
+.photo-edit-panel .edit-image {
+  -webkit-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  -ms-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  -o-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
+  display: block;
+  border: 1px solid #111111;
+  width: 90%;
+  height: 60%;
+  overflow: hidden;
+  margin: 22px auto;
+}
+/* line 173, _base.scss */
+.photo-edit-panel .edit-image img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+/* line 179, _base.scss */
+.photo-edit-panel .edit-image div {
+  margin: -3em -4em;
+  position: relative;
+  max-width: none;
+  height: auto;
+}
+/* line 187, _base.scss */
+.photo-edit-panel .edit-header {
+  width: 90%;
+  margin: 0 auto 11px;
+  border-bottom: 1px solid #111111;
+}
+/* line 192, _base.scss */
+.photo-edit-panel .edit-header .edit-title {
+  font-size: 30px;
+  float: left;
+}
+/* line 197, _base.scss */
+.photo-edit-panel .edit-header .edit-actions {
+  float: right;
+  margin-bottom: 11px;
+}
+/* line 203, _base.scss */
+.photo-edit-panel .edit-form {
+  width: 90%;
+  margin: 0 auto;
+}
+/* line 207, _base.scss */
+.photo-edit-panel .edit-form label, .photo-edit-panel .edit-form input {
+  float: left;
+}
+/* line 210, _base.scss */
+.photo-edit-panel .edit-form label {
+  width: 30%;
+  font-size: 13px;
+  color: #d0d0d0;
+}
+/* line 211, _base.scss */
+.photo-edit-panel .edit-form input {
+  width: 70%;
+}
+/* line 200, _mixins.scss */
+.photo-edit-panel .edit-form input:after:before, .photo-edit-panel .edit-form input:after:after {
+  content: "";
+  display: table;
+}
+/* line 201, _mixins.scss */
+.photo-edit-panel .edit-form input:after:after {
+  clear: both;
+}
+/* line 203, _mixins.scss */
+.ie7 .photo-edit-panel .edit-form input:after, .ie8 .photo-edit-panel .edit-form input:after {
+  zoom: 1;
+}
+/* line 212, _base.scss */
+.photo-edit-panel .edit-form textarea {
+  display: inline-block;
+  width: 70%;
+}
+/* line 214, _base.scss */
+.photo-edit-panel .edit-form .row {
+  margin-bottom: 2px;
+}
+/* line 200, _mixins.scss */
+.photo-edit-panel .edit-form .row:before, .photo-edit-panel .edit-form .row:after {
+  content: "";
+  display: table;
+}
+/* line 201, _mixins.scss */
+.photo-edit-panel .edit-form .row:after {
+  clear: both;
+}
+/* line 203, _mixins.scss */
+.ie7 .photo-edit-panel .edit-form .row, .ie8 .photo-edit-panel .edit-form .row {
+  zoom: 1;
+}
+/* line 217, _base.scss */
+.photo-edit-panel .edit-form .row span {
+  display: block;
+  width: 70%;
+  float: left;
+  margin-bottom: 5px;
+}
+/* line 200, _mixins.scss */
+.photo-edit-panel .edit-form .row span:after:before, .photo-edit-panel .edit-form .row span:after:after {
+  content: "";
+  display: table;
+}
+/* line 201, _mixins.scss */
+.photo-edit-panel .edit-form .row span:after:after {
+  clear: both;
+}
+/* line 203, _mixins.scss */
+.ie7 .photo-edit-panel .edit-form .row span:after, .ie8 .photo-edit-panel .edit-form .row span:after {
+  zoom: 1;
+}
+/* line 221, _base.scss */
+.photo-edit-panel .edit-input, .photo-edit-panel .edit-ta {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  -ms-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  -o-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  background: #333;
+  border: none;
+  color: #d0d0d0;
+}
+/* line 228, _base.scss */
+.photo-edit-panel .edit-form-buttons {
+  margin-top: 11px;
+  text-align: right;
+}
+/* line 229, _base.scss */
+.photo-edit-panel .edit-button {
+  background-image: -webkit-linear-gradient(top, #555555, #222222);
+  background-image: -moz-linear-gradient(top, #555555, #222222);
+  background-image: -ms-linear-gradient(top, #555555, #222222);
+  background-image: -o-linear-gradient(top, #555555, #222222);
+  background-image: linear-gradient(top, #555555, #222222);
+  display: inline-block;
+  border: 1px solid #111111;
+  padding: 8px 6px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+/* line 237, _base.scss */
+.photo-edit-panel .edit-button:hover {
+  color: #6dcff6;
+}
+/* line 241, _base.scss */
+.photo-edit-panel .edit-actions a {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 40px;
+  font-family: 'entypo';
+  cursor: pointer;
+}
+
+/* line 253, _base.scss */
 header {
   height: 60px;
   background: black;
@@ -328,35 +531,33 @@ header {
   width: 100%;
   z-index: 10;
 }
-/* line 163, _base.scss */
+/* line 261, _base.scss */
 header ul {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
   height: 60px;
+  overflow: hidden;
 }
-/* line 168, _base.scss */
+/* line 265, _base.scss */
 header ul li {
+  float: left;
   font-family: 'entypo';
   font-size: 50px;
   width: 50px;
   text-align: center;
   border-top: 5px solid black;
 }
-/* line 175, _base.scss */
+/* line 273, _base.scss */
 header ul li a {
   font-family: 'entypo';
   font-size: 50px;
   display: block;
 }
-/* line 182, _base.scss */
+/* line 279, _base.scss */
 header ul li:hover, header ul li.selected {
   color: #6dcff6;
   background: #474747;
   border-top: 5px solid #6dcff6;
 }
-/* line 189, _base.scss */
+/* line 287, _base.scss */
 header div#notifications-collection {
   color: white;
   width: 300px;
@@ -367,7 +568,7 @@ header div#notifications-collection {
   *display: inline-block;
   display: none;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 header div#notifications-collection:after {
   content: " ";
   display: block;
@@ -375,7 +576,7 @@ header div#notifications-collection:after {
   clear: both;
   visibility: hidden;
 }
-/* line 201, _base.scss */
+/* line 299, _base.scss */
 header div#notification {
   float: left;
   text-align: right;
@@ -386,7 +587,7 @@ header div#notification {
   -webkit-animation-duration: 3s;
   -webkit-animation-iteration-count: infinite;
 }
-/* line 214, _base.scss */
+/* line 312, _base.scss */
 header div#notification-progress {
   float: right;
   width: 50px;
@@ -396,7 +597,7 @@ header div#notification-progress {
   -webkit-animation-iteration-count: infinite;
 }
 
-/* line 228, _base.scss */
+/* line 326, _base.scss */
 footer {
   *display: inline-block;
   height: 30px;
@@ -408,7 +609,7 @@ footer {
   width: 100%;
   z-index: 10;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 footer:after {
   content: " ";
   display: block;
@@ -416,58 +617,145 @@ footer:after {
   clear: both;
   visibility: hidden;
 }
-/* line 239, _base.scss */
-footer ul {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
+/* line 337, _base.scss */
+footer .footer-left {
+  float: left;
 }
-/* line 243, _base.scss */
+/* line 338, _base.scss */
+footer .footer-right {
+  float: right;
+}
+/* line 342, _base.scss */
 footer ul li {
+  float: left;
   font-size: 10px;
 }
-/* line 245, _base.scss */
+/* line 344, _base.scss */
 footer ul li:after {
   content: "|";
   margin-left: 5px;
   margin-right: 10px;
 }
-/* line 251, _base.scss */
+/* line 350, _base.scss */
 footer ul li:last-child:after {
   content: "";
 }
-/* line 254, _base.scss */
+/* line 353, _base.scss */
 footer ul li.location {
   margin-right: 60px;
 }
-/* line 255, _base.scss */
+/* line 354, _base.scss */
 footer ul li.location:after {
   content: "";
 }
 
-/* line 259, _base.scss */
+/* line 358, _base.scss */
 #account-collection {
   float: left;
 }
 
-/* line 260, _base.scss */
+/* line 359, _base.scss */
 #weather-collection {
   float: right;
 }
 
-/* line 262, _base.scss */
+/* line 361, _base.scss */
 #row {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
   height: 100%;
   background: black;
-  padding-top: 100px;
+  padding-top: 102px;
 }
 
-/* line 270, _base.scss */
+/* line 369, _base.scss */
+.navIcon {
+  font-family: 'entypo';
+}
+/* line 372, _base.scss */
+.navIcon.home:before {
+  content: "\2302";
+}
+/* line 373, _base.scss */
+.navIcon.arrows:before {
+  content: "\21C6";
+}
+/* line 374, _base.scss */
+.navIcon.files:before {
+  content: "\E800";
+}
+/* line 375, _base.scss */
+.navIcon.calendar:before {
+  content: "\1F4C5";
+}
+/* line 376, _base.scss */
+.navIcon.list:before {
+  content: "\E005";
+}
+/* line 377, _base.scss */
+.navIcon.music:before {
+  content: "\266B";
+}
+/* line 378, _base.scss */
+.navIcon.dollars:before {
+  content: "\1F53E";
+}
+/* line 379, _base.scss */
+.navIcon.globe:before {
+  content: "\1F30E";
+}
+/* line 380, _base.scss */
+.navIcon.jumbled:before {
+  content: "\268F";
+}
+/* line 381, _base.scss */
+.navIcon.sync:before {
+  content: "\1F504";
+}
+/* line 382, _base.scss */
+.navIcon.gears:before {
+  content: "\2699";
+}
+/* line 384, _base.scss */
+.navIcon.four:before {
+  content: "\F601";
+}
+/* line 385, _base.scss */
+.navIcon.lightbulb:before {
+  content: "\1F4A1";
+}
+/* line 386, _base.scss */
+.navIcon.thermostat:before {
+  content: "\1F4FF";
+}
+/* line 387, _base.scss */
+.navIcon.key:before {
+  content: "\1F511";
+}
+/* line 389, _base.scss */
+.navIcon.shield:before {
+  content: "\1F512";
+}
+/* line 390, _base.scss */
+.navIcon.camera:before {
+  content: "\1F4F7";
+}
+/* line 391, _base.scss */
+.navIcon.computer:before {
+  content: "\1F4BB";
+}
+/* line 392, _base.scss */
+.navIcon.plug:before {
+  content: "\26A1";
+}
+/* line 393, _base.scss */
+.navIcon.cloud:before {
+  content: "\2601";
+}
+/* line 394, _base.scss */
+.navIcon.storage:before {
+  content: "\1F4F8";
+}
+
+/* line 397, _base.scss */
 nav {
   width: 60px;
   background: black;
@@ -476,15 +764,11 @@ nav {
   top: 60px;
   z-index: 10;
 }
-/* line 278, _base.scss */
+/* line 405, _base.scss */
 nav ul {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
   height: 100%;
 }
-/* line 283, _base.scss */
+/* line 408, _base.scss */
 nav ul li {
   font-family: 'entypo';
   font-size: 50px;
@@ -495,13 +779,13 @@ nav ul li {
   border-right: 5px solid black;
   cursor: pointer;
 }
-/* line 294, _base.scss */
+/* line 419, _base.scss */
 nav ul a {
   font-family: 'entypo';
   font-size: 50px;
   display: block;
 }
-/* line 300, _base.scss */
+/* line 425, _base.scss */
 nav ul li:hover, nav ul li.selected {
   color: #6dcff6;
   background: #2a2a2a;
@@ -509,132 +793,345 @@ nav ul li:hover, nav ul li.selected {
   border-left: 5px solid #6dcff6;
 }
 
-/* line 310, _base.scss */
+/* line 435, _base.scss */
 main {
-  -webkit-flex: 2;
-  flex: 2;
   background: #474747;
   padding-left: 60px;
+  height: 100%;
 }
-/* line 315, _base.scss */
+/* line 440, _base.scss */
 main #content {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: row;
-  flex-direction: row;
+  position: relative;
   min-height: 200px;
   background: #474747;
   border-left: 1px solid #636363;
+  height: 100%;
+  white-space: nowrap;
 }
-/* line 322, _base.scss */
+/* line 448, _base.scss */
 main #content #left-column {
   width: 380px;
   background: #2a2a2a;
 }
-/* line 326, _base.scss */
+/* line 452, _base.scss */
 main #content #left-column #lighting-load {
   margin-left: 15px;
   padding-top: 20px;
 }
-/* line 332, _base.scss */
+/* line 458, _base.scss */
 main #content #middle-column {
-  -webkit-flex: 2;
-  flex: 2;
+  background: #474747;
 }
-/* line 335, _base.scss */
+/* line 460, _base.scss */
+main #content #middle-column.half {
+  width: 50%;
+  height: 100%;
+  display: block;
+  float: left;
+}
+/* line 462, _base.scss */
+main #content #middle-column.surveillance {
+  width: 300px;
+  height: 100%;
+  display: block;
+  float: left;
+}
+/* line 464, _base.scss */
 main #content #middle-column #floorplan {
   padding-top: 40px;
   margin-left: 40px;
 }
-/* line 339, _base.scss */
+/* line 468, _base.scss */
 main #content #middle-column #floorplan img {
   width: 700px;
 }
-/* line 344, _base.scss */
+/* line 473, _base.scss */
 main #content #middle-column #floorplan .light, main #content #middle-column #floorplan .video {
   width: 100px;
   cursor: pointer;
 }
-/* line 348, _base.scss */
+/* line 477, _base.scss */
 main #content #middle-column #floorplan .light .title, main #content #middle-column #floorplan .video .title {
   font-size: 15px;
   text-align: center;
 }
-/* line 353, _base.scss */
+/* line 482, _base.scss */
 main #content #middle-column #floorplan .light .title:hover, main #content #middle-column #floorplan .video .title:hover {
   color: #6dcff6;
 }
-/* line 357, _base.scss */
+/* line 486, _base.scss */
 main #content #middle-column #floorplan .light .icon, main #content #middle-column #floorplan .video .icon {
   font-family: 'entypo';
   font-size: 40px;
   text-align: center;
 }
-/* line 363, _base.scss */
+/* line 491, _base.scss */
 main #content #middle-column #floorplan .light .icon:hover, main #content #middle-column #floorplan .video .icon:hover {
   color: #6dcff6;
 }
-/* line 373, _base.scss */
+/* line 500, _base.scss */
 main #content #middle-column #floorplan div#kitchen-light, main #content #middle-column #floorplan div#kitchen-video {
   margin-top: -320px;
   margin-left: 130px;
 }
-/* line 379, _base.scss */
+/* line 506, _base.scss */
 main #content #middle-column #floorplan div#dining-light, main #content #middle-column #floorplan div#dining-video {
   margin-top: 55px;
   margin-left: 90px;
 }
-/* line 385, _base.scss */
+/* line 512, _base.scss */
 main #content #middle-column #floorplan div#living-light, main #content #middle-column #floorplan div#living-video {
   margin-top: -40px;
   margin-left: 220px;
 }
-/* line 391, _base.scss */
+/* line 518, _base.scss */
 main #content #middle-column #floorplan div#entertainment-light, main #content #middle-column #floorplan div#entertainment-video {
   margin-top: 0px;
   margin-left: 410px;
 }
-/* line 397, _base.scss */
+/* line 524, _base.scss */
 main #content #middle-column #floorplan div#patio-light, main #content #middle-column #floorplan div#patio-video {
   margin-top: -300px;
   margin-left: 460px;
 }
-/* line 404, _base.scss */
+/* line 531, _base.scss */
 main #content #right-column {
   border: 1px dashed red;
   width: 380px;
 }
 
-/* line 411, _base.scss */
+/* line 538, _base.scss */
 aside {
-  -webkit-flex: 1;
-  flex: 1;
   background: #474747;
 }
 
-/* line 416, _base.scss */
+/* line 542, _base.scss */
 #pageslide {
   display: none;
   position: fixed;
   top: 103px;
   height: 100%;
   z-index: 1;
-  width: 380px;
+  width: 300px;
   background-color: #1d1d1d;
   color: #fff;
 }
 
-/* line 427, _base.scss */
+/* line 553, _base.scss */
 #hamburger {
   display: none;
 }
+/* line 556, _base.scss */
+#hamburger a {
+  cursor: pointer;
+}
 
-/* line 432, _base.scss */
+/* line 559, _base.scss */
+.gallery-header {
+  padding: 22px 0 22px;
+}
+/* line 561, _base.scss */
+.gallery-header:hover {
+  background: #2a2a2a;
+}
+
+/* line 564, _base.scss */
+.import-collection {
+  color: #d0d0d0;
+  margin-bottom: 22px;
+}
+
+/* line 568, _base.scss */
+.import-photos-container {
+  width: 9999px;
+}
+
+/* line 571, _base.scss */
+.import-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+}
+
+/* line 576, _base.scss */
+.import-count {
+  float: left;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+/* line 577, _base.scss */
+.import-date {
+  float: left;
+  margin-left: 10px;
+  font-size: 14px;
+}
+/* line 582, _base.scss */
+.import-date span {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+/* line 587, _base.scss */
+.hamburger-section.first {
+  -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -ms-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -o-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  border-bottom: 1px solid #111111;
+}
+/* line 589, _base.scss */
+.hamburger-section .gallery-section-title {
+  font-size: 20px;
+  float: left;
+  margin: 0 0 0 6px;
+}
+/* line 594, _base.scss */
+.hamburger-section .gallery-section-title .add-gallery {
+  text-shadow: 1px 2px 2px black;
+  display: inline-block;
+  width: 30px;
+  height: 18px;
+  line-height: 20px;
+  margin-left: 10px;
+  font-size: 50px;
+  font-family: 'entypo';
+}
+/* line 604, _base.scss */
+.hamburger-section .gallery-section-title .add-gallery:before {
+  content: "\E003";
+}
+/* line 608, _base.scss */
+.hamburger-section .headericon {
+  font-family: 'entypo';
+  color: white;
+  font-size: 50px;
+  float: left;
+  line-height: 40%;
+  margin-left: 11px;
+}
+/* line 615, _base.scss */
+.hamburger-section .headericon:before {
+  content: "\E760";
+}
+/* line 618, _base.scss */
+.hamburger-section .gallery {
+  margin: 0 0 22px 0;
+  cursor: pointer;
+}
+/* line 200, _mixins.scss */
+.hamburger-section .gallery:before, .hamburger-section .gallery:after {
+  content: "";
+  display: table;
+}
+/* line 201, _mixins.scss */
+.hamburger-section .gallery:after {
+  clear: both;
+}
+/* line 203, _mixins.scss */
+.ie7 .hamburger-section .gallery, .ie8 .hamburger-section .gallery {
+  zoom: 1;
+}
+/* line 623, _base.scss */
+.hamburger-section .gallery .album-icon {
+  display: block;
+  float: left;
+  font-family: 'entypo';
+  font-size: 50px;
+  line-height: 30px;
+}
+/* line 630, _base.scss */
+.hamburger-section .gallery .gallery-pip {
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  font-family: 'entypo';
+  font-size: 50px;
+  line-height: 20px;
+  margin-left: 20px;
+}
+/* line 641, _base.scss */
+.hamburger-section .gallery .gallery-pip.closed:before {
+  content: "\E762";
+}
+/* line 642, _base.scss */
+.hamburger-section .gallery .gallery-pip.open:before {
+  content: "\E760";
+}
+/* line 645, _base.scss */
+.hamburger-section .gallery .gallery-title {
+  margin-left: 80px;
+  font-size: 18px;
+}
+/* line 650, _base.scss */
+.hamburger-section .gallery > span {
+  font-size: 10px;
+  margin-left: 10px;
+  display: block;
+  float: left;
+}
+/* line 656, _base.scss */
+.hamburger-section .gallery ul {
+  -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -ms-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  -o-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
+  border-bottom: 1px solid #111111;
+  margin-top: 22px;
+}
+/* line 659, _base.scss */
+.hamburger-section .album {
+  -webkit-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
+  -moz-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
+  -ms-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
+  -o-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
+  box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
+  border-top: 1px solid #111111;
+  padding: 11px 0 11px 50px;
+  background: #131313;
+}
+/* line 665, _base.scss */
+.hamburger-section .album img {
+  float: left;
+  margin-bottom: 10px;
+}
+/* line 666, _base.scss */
+.hamburger-section .album .album-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-left: 46px;
+}
+/* line 671, _base.scss */
+.hamburger-section .album .album-title:hover {
+  color: #6dcff6;
+}
+/* line 673, _base.scss */
+.hamburger-section .album .album-date {
+  display: block;
+  float: left;
+  clear: right;
+  margin-bottom: 11px;
+  margin-left: 10px;
+  font-size: 12px;
+}
+/* line 674, _base.scss */
+.hamburger-section .album .album-description {
+  float: left;
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+/* line 680, _base.scss */
 .hamburger-header-item {
   *display: inline-block;
-  height: 80px;
+  padding: 22px 0 11px;
+  padding-left: 20px;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 .hamburger-header-item:after {
   content: " ";
   display: block;
@@ -642,38 +1139,36 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 436, _base.scss */
+/* line 685, _base.scss */
+.hamburger-header-item:hover {
+  background: #2a2a2a;
+  color: #6dcff6;
+}
+/* line 690, _base.scss */
 .hamburger-header-item .icon {
   font-family: 'entypo';
   color: white;
   font-size: 50px;
   float: left;
-  margin-left: 20px;
-  margin-top: 10px;
+  line-height: 40%;
 }
-/* line 445, _base.scss */
+/* line 697, _base.scss */
+.hamburger-header-item .icon.header:before {
+  content: "\E760";
+}
+/* line 700, _base.scss */
 .hamburger-header-item h2 {
   font-size: 20px;
   float: left;
-  margin-top: 27px;
-  margin-left: 10px;
+  margin-left: 6px;
 }
 
-/* line 454, _base.scss */
-.hamburger-header-item:hover {
-  background: #2a2a2a;
-  border-bottom: 1px solid black;
-  color: #6dcff6;
-}
-
-/* line 461, _base.scss */
+/* line 708, _base.scss */
 .hamburger-item {
   *display: inline-block;
-  padding-left: 50px;
-  padding-top: 13px;
-  height: 70px;
+  padding: 11px 0 11px 50px;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 .hamburger-item:after {
   content: " ";
   display: block;
@@ -681,54 +1176,85 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 467, _base.scss */
+/* line 712, _base.scss */
+.hamburger-item:hover {
+  background: #2a2a2a;
+  color: #6dcff6;
+}
+/* line 717, _base.scss */
 .hamburger-item .icon {
   font-family: 'entypo';
   font-size: 40px;
   float: left;
+  line-height: 60%;
 }
-/* line 473, _base.scss */
+/* line 723, _base.scss */
+.hamburger-item .icon.photos:before {
+  content: "\1F304";
+}
+/* line 724, _base.scss */
+.hamburger-item .icon.lastimport:before {
+  content: "\1F304";
+}
+/* line 725, _base.scss */
+.hamburger-item .icon.uncategorized:before {
+  content: "\E777";
+}
+/* line 726, _base.scss */
+.hamburger-item .icon.trash:before {
+  content: "\E729";
+}
+/* line 729, _base.scss */
 .hamburger-item .text {
   margin-left: 15px;
   float: left;
 }
-/* line 477, _base.scss */
+/* line 733, _base.scss */
 .hamburger-item .text .title {
   font-size: 18px;
 }
 
-/* line 483, _base.scss */
-.hamburger-item:hover {
-  background: #2a2a2a;
-  border-bottom: 1px solid black;
-  color: #6dcff6;
-}
-
-/* line 489, _base.scss */
+/* line 739, _base.scss */
 .hamburger-item.photos {
   margin-padding: 5px;
   height: 40px;
 }
-/* line 493, _base.scss */
+/* line 743, _base.scss */
 .hamburger-item.photos .icon {
   margin-top: -12px;
 }
 
-/* line 499, _base.scss */
+/* line 748, _base.scss */
+.library-buttons {
+  float: left;
+  margin: -6px 0 0 12px;
+}
+/* line 752, _base.scss */
+.library-buttons a {
+  text-shadow: 1px 2px 2px black;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 40px;
+  font-family: 'entypo';
+}
+
+/* line 767, _base.scss */
 #surveillance-collection {
   padding: 20px;
   padding-bottom: 0;
 }
-/* line 505, _base.scss */
+/* line 773, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium {
   border: 1px solid black;
   width: 340px;
 }
-/* line 510, _base.scss */
+/* line 778, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium:hover {
   border: 1px solid white;
 }
-/* line 514, _base.scss */
+/* line 782, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -741,20 +1267,20 @@ aside {
   z-index: 200;
   position: absolute;
 }
-/* line 526, _base.scss */
+/* line 794, _base.scss */
 #surveillance-collection .surveillance-medium-thumb-title {
   color: white;
   text-align: center;
   padding: 10px;
 }
 
-/* line 534, _base.scss */
+/* line 802, _base.scss */
 #surveillance-thumbs-collection {
   *display: inline-block;
   padding: 20px 20px;
   margin-top: 0;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 #surveillance-thumbs-collection:after {
   content: " ";
   display: block;
@@ -762,23 +1288,23 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 539, _base.scss */
+/* line 807, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb {
   float: left;
   margin-right: 5px;
   margin-bottom: 5px;
 }
-/* line 544, _base.scss */
+/* line 812, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small {
   border: 1px solid black;
   width: 165px;
   height: 125px;
 }
-/* line 551, _base.scss */
+/* line 817, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small:hover {
   border: 1px solid white;
 }
-/* line 556, _base.scss */
+/* line 821, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -792,22 +1318,25 @@ aside {
   position: absolute;
 }
 
-/* line 569, _base.scss */
+/* line 834, _base.scss */
 .photos-header {
-  padding: 20px;
+  padding: 22px 0 0 10px;
+  overflow: hidden;
+  min-height: 75px;
 }
-/* line 572, _base.scss */
+/* line 839, _base.scss */
 .photos-header h2 {
   font-size: 25px;
+  float: left;
 }
 
-/* line 578, _base.scss */
+/* line 843, _base.scss */
 .photos-collection {
   *display: inline-block;
   margin-left: 15px;
   margin-bottom: 40px;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 .photos-collection:after {
   content: " ";
   display: block;
@@ -816,17 +1345,16 @@ aside {
   visibility: hidden;
 }
 
-/* line 585, _base.scss */
+/* line 850, _base.scss */
 .photo {
   padding: 10px;
   float: left;
 }
-/* line 589, _base.scss */
-.photo img.photo-thumbnail {
-  border: 1px solid black;
+/* line 854, _base.scss */
+.photo-edit .photo {
+  cursor: pointer;
 }
-
-/* line 594, _base.scss */
+/* line 856, _base.scss */
 .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -835,12 +1363,16 @@ aside {
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 598, _base.scss */
-.photo:hover img.edit-photo {
+/* line 860, _base.scss */
+.photo:hover .edit-photo {
   display: block;
 }
+/* line 864, _base.scss */
+.photo .photo-thumbnail {
+  border: 1px solid black;
+}
 
-/* line 605, _base.scss */
+/* line 870, _base.scss */
 .photo-caption {
   font-size: 13px;
   font-family: Arial;
@@ -848,28 +1380,28 @@ aside {
   color: #c2c2c2;
   margin-top: 10px;
 }
-/* line 612, _base.scss */
+/* line 877, _base.scss */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 618, _base.scss */
-.photo-caption img.edit-photo {
+/* line 882, _base.scss */
+.photo-caption .edit-photo {
   float: right;
   margin-right: 0;
   display: none;
 }
 
-/* line 2, _photo-manager.scss */
+/* line 2, partial/_photoManager.scss */
 .photos-header {
   padding: 20px;
 }
-/* line 5, _photo-manager.scss */
+/* line 5, partial/_photoManager.scss */
 .photos-header h2 {
   font-size: 25px;
 }
 
-/* line 12, _photo-manager.scss */
+/* line 12, partial/_photoManager.scss */
 .import h4 {
   color: #c2c2c2;
   font-family: Arial;
@@ -879,18 +1411,18 @@ aside {
   margin-left: 20px;
   margin-top: 10px;
 }
-/* line 23, _photo-manager.scss */
+/* line 23, partial/_photoManager.scss */
 .import .imported-timestamp {
   margin-left: 40px;
 }
 
-/* line 28, _photo-manager.scss */
+/* line 28, partial/_photoManager.scss */
 .photos-collection {
   *display: inline-block;
   margin-left: 15px;
   margin-bottom: 40px;
 }
-/* line 208, _includes.scss */
+/* line 208, _mixins.scss */
 .photos-collection:after {
   content: " ";
   display: block;
@@ -899,17 +1431,17 @@ aside {
   visibility: hidden;
 }
 
-/* line 35, _photo-manager.scss */
+/* line 35, partial/_photoManager.scss */
 .photo {
   padding: 10px;
   float: left;
 }
-/* line 39, _photo-manager.scss */
+/* line 39, partial/_photoManager.scss */
 .photo img.photo-thumbnail {
   border: 1px solid black;
 }
 
-/* line 48, _photo-manager.scss */
+/* line 48, partial/_photoManager.scss */
 .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -918,12 +1450,12 @@ aside {
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 51, _photo-manager.scss */
+/* line 51, partial/_photoManager.scss */
 .photo:hover img.edit-photo {
   display: block;
 }
 
-/* line 57, _photo-manager.scss */
+/* line 57, partial/_photoManager.scss */
 .photo-caption {
   font-size: 13px;
   font-family: Arial;
@@ -931,12 +1463,12 @@ aside {
   color: #c2c2c2;
   margin-top: 10px;
 }
-/* line 64, _photo-manager.scss */
+/* line 64, partial/_photoManager.scss */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 70, _photo-manager.scss */
+/* line 70, partial/_photoManager.scss */
 .photo-caption img.edit-photo {
   float: right;
   margin-right: 0;

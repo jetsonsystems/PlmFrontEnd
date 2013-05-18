@@ -221,7 +221,11 @@ $shadow-6: false
   background-repeat: no-repeat;
   background-position: $x $y;
 }
-
+@mixin textShadow($textShadow) {
+  @if ($textShadow) {
+    text-shadow: $textShadow;
+  }
+}
 
 @mixin opacity($opacity) {
   @include progressive(opacity, $opacity);
@@ -231,8 +235,8 @@ $shadow-6: false
   background: $color;
   background: rgba($color, $opacity);
   -pie-background: rgba($color, $opacity);
-  // @include PIE
-  // behavior: url(/assets/PIE.htc)
+// @include PIE
+// behavior: url(/assets/PIE.htc)
 }
 
 
@@ -279,13 +283,13 @@ $shadow-6: false
 @mixin font-face($family, $filename) {
 // $prefix: "/assets/" + $family + "/" + $filename
   $prefix: "/fonts/" + $family + "/" + $filename;
-  // IE hack
+// IE hack
   @font-face {
     font-family: $family;
     src: url($prefix + ".eot?") format("embedded-opentype");
   }
 
-  // Everybody else
+// Everybody else
   @font-face {
     font-family: $family;
     src: local("☺"), url($prefix + ".woff") format("woff"), url($prefix + ".ttf") format("opentype"), url($prefix + ".eot"), url($prefix + ".svg#" + $filename + "'") format("svg");
@@ -315,24 +319,3 @@ $shadow-6: false
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-
-
-// Make an element a flexbox
-@mixin display-flex {
-  display: -webkit-flex;
-  display: flex;
-}
-
-
-// Flex direction: row | row-reverse | column | column-reverse
-@mixin flex-direction($direction) {
-  -webkit-flex-direction: $direction;
-  flex-direction: $direction;
-}
-
-// How much space the box should take
-@mixin flex-ratio($ratio) {
-  -webkit-flex: $ratio;
-  flex: $ratio;
-}
-

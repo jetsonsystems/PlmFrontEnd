@@ -55,25 +55,24 @@
 
 // Right column photo labels: 13px Arial bold
 .photo-caption {
-    font-size: 13px;
-    font-family: Arial;
-    font-weight: bold;
-    color: $gray-text;
-    margin-top: $small-spacing;
+  font-size: 13px;
+  font-family: Arial;
+  font-weight: bold;
+  color: $gray-text;
+  margin-top: $small-spacing;
 
-    img  {
-      margin-bottom: -5px;
-      margin-right: $small-spacing;
-    }
-
-
-    img.edit-photo {
-      float: right;
-      margin-right: 0;
-      display: none;
-    }
+  img  {
+    margin-bottom: -5px;
+    margin-right: $small-spacing;
   }
 
+
+  img.edit-photo {
+    float: right;
+    margin-right: 0;
+    display: none;
+  }
+}
 
 
 

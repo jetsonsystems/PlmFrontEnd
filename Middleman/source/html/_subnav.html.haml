@@ -1,0 +1,36 @@
+%header
+
+  %ul
+    // Four Box
+    - is_selected = view == "dashboard" ? "selected" : "unselected"
+    %li{:class => is_selected}
+      %a{:href => "/", :class => is_selected}
+        \&#62977
+
+    // Light Bulb
+    - is_selected = view == "lighting" ? "selected" : "unselected"
+    %li{:class => is_selected}
+      %a{:href => "/lighting", :class => is_selected}
+        \&#128161
+
+    // Thermostat
+    %li
+      %a{:href => "#"}
+        \&#128255
+
+    // Key for Access
+    %li
+      %a{:href => "#"}
+        \&#128273
+
+    // Camera for photographs
+    - is_selected = view == "photo-manager" ? "selected" : "unselected"
+    %li{:class => is_selected}
+      %a{:href => "/photos", :class => is_selected}
+        \&#128247
+
+    // Eyeball for video surveillance
+    - is_selected = view == "surveillance" ? "selected" : "unselected"
+    %li{:class => is_selected}
+      %a{:href => "/surveillance", :class => is_selected}
+        \&#59146

@@ -8,6 +8,7 @@ define(
     'backbone',
     'plmCommon/plm', 
     'plmCommon/msg-bus', 
+    'app/image-selection-manager',
     'app/models/importer',
     'app/models/image',
     'app/collections/importers',
@@ -16,7 +17,7 @@ define(
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
     var debugPrefix = moduleName + '.AllPhotosView';
@@ -119,11 +120,21 @@ define(
 
       initialize: function() {
         console.log(debugPrefix + '.initialize: initializing...');
+        var that = this;
         this.status = this.STATUS_UNRENDERED;
         this.importers = new ImportersCollection(undefined, 
                                                  {
                                                    filterWithoutStartedAt: true
                                                  });
+        this._imageSelectionManager = new ImageSelectionManager(this.$el);
+        this._imageSelectionManager.on('change', function() {
+          if (that._imageSelectionManager.anySelected()) {
+            $(".selection-toolbar").show();
+          }
+          else {
+            $(".selection-toolbar").hide();
+          }
+        });
         this._respondToEvents();
       },
 
@@ -144,6 +155,7 @@ define(
             },
             done: function() {
               console.log(debugPrefix + '.render: rendered all importers...');
+              that._imageSelectionManager.reset();
               that.trigger(that.id + ":rendered");              
             }});
         };
@@ -206,7 +218,7 @@ define(
                                                                   importImages: importerImages,
                                                                   imageTemplate: importImageTemplate,
                                                                   _: _ });
-              that.$el.find('.imports').append(compiledTemplate);
+              that.$el.find('.photos-collection').append(compiledTemplate);
               if (options && options.success) {
                 options.success(importer);
               }
@@ -266,8 +278,8 @@ define(
           if (importEl.length > 0) {
             console.log(debugPrefix + '._startIncrementallyRenderingImport: import already in DOM, will use it...');
             that.$importRenderingInc = importEl;
-            that.$importRenderingInc.find('.import-size').html('0 Photos');
-            that.$importRenderingInc.find('.photos-collection').html('');
+            that.$importRenderingInc.find('.import-count').html('0 Photos');
+            that.$importRenderingInc.find('.import-photos-collection').html('<div class="clearfix"/>');
           }
           else {
             console.log(debugPrefix + '._startIncrementallyRenderingImport: compiling initial template for import...');
@@ -276,7 +288,7 @@ define(
                                                                 importImages: that.importRenderingIncImages,
                                                                 imageTemplate: importImageTemplate,
                                                                 _: _ });
-            that.$el.find('.imports').prepend(compiledTemplate);
+            that.$el.find('.photos-collection').prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
             console.log(debugPrefix + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
@@ -297,19 +309,19 @@ define(
           //
           // Update the size of the import.
           //
-          this.$importRenderingInc.find('.import-size').text(this.importRenderingIncImages.size() + " Photos");
+          this.$importRenderingInc.find('.import-count').text(this.importRenderingIncImages.size() + " Photos");
           //
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          this.$importRenderingInc.find('.photos-collection').append(compiledTemplate);
+          this.$importRenderingInc.find('.import-photos-collection .clearfix').before(compiledTemplate);
         }
         return that;
       },
 
       _finishIncrementalImportRender: function(importer) {
         if (this.rendering.incremental) {
-          this.$importRenderingInc.find(".imported-timestamp").text(" Imported: " + importer.completed_at);
+          this.$importRenderingInc.find(".import-date").text(" Imported: " + importer.completed_at);
           this.importRenderingInc = undefined;
           this.importRenderingIncImages = undefined;
           this.$importRenderingInc = undefined;
@@ -416,10 +428,10 @@ define(
             //    - else -> find the previous guy and stick it after.
             //
             if (index === 0) {
-              that.$el.find('.imports').prepend(compiledTemplate);
+              that.$el.find('.photos-collection').prepend(compiledTemplate);
             }
             else if ((index + 1) === that.importers.length) {
-              that.$el.find('.imports').append(compiledTemplate);
+              that.$el.find('.photos-collection').append(compiledTemplate);
             }
             else {
               var prevImporter = that.importers.at(index - 1);
@@ -488,6 +500,9 @@ define(
         }
       },
 
+      //
+      // _respondToEvents: Subscribe, and respond to relevant events on the msg-bus.
+      //
       _respondToEvents: function() {
         var that = this;
         MsgBus.subscribe('_notif-api:' + '/importers',

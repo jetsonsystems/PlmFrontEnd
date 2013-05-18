@@ -37,7 +37,7 @@ addEventListener('app-ready', function(e){
     paths: {
       text: 'require/text',
       jquery: 'jquery/jquery.min',
-      jqueryPageSlide: 'jquery/jquery.pageslide.min',
+      jqueryPageSlide: 'jquery/jquery.pageslide',
       underscore: 'underscore/underscore',
       backbone: 'backbone/backbone',
       postal: 'postal/postal',

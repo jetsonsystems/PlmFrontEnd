@@ -1,17 +1,19 @@
 {% var createdAt = importer.has('created_at') ? Date.parse(importer.get('created_at')) : -1; %}
-%div{:id => "import-{{importer.id.replace('$', '')}}", :class => ["photo-manager/home/library/import", "import"], "data-created_at" => "{{createdAt}}"}
-  %h4
-    %span{:class => "import-size"} {{_.size(importImages)}} Photos
-    %span{:class => "imported-timestamp"}
+%div{:id => "import-{{importer.id.replace('$', '')}}", :class => ["photo-manager/home/library/import", "import-collection"], "data-created_at" => "{{createdAt}}"}
+  %div.import-header
+    %div{:class => "import-count"} {{_.size(importImages)}} Photos
+    %div{:class => "import-date"}
+      %span Imported:
       {% var importedDate = importer.has('completed_at') ? importer.get('completed_at') : ''; %}
       {% importedDate = (importedDate === '') && importer.has('updated_at') ? importer.get('updated_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('started_at') ? importer.get('started_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('created_at') ? importer.get('created_at') : importedDate; %}
-      != "Imported: {{importedDate}}"
+      != "{{importedDate}}"
+    = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "importer" }
+    .clearfix
 
-  %hr
-
-  %div{:class => "photos-collection"}
+  %div{:class => "import-photos-collection"}
     != '{% importImages.length && importImages.each(function(image) { %}'
     != '  {{ _.template(imageTemplate, { image : image, _ : _ }) }}'
     != '{% }); %}'
+    .clearfix

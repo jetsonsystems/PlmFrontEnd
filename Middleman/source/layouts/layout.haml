@@ -26,165 +26,53 @@
   %body
     %section#container
 
+      %div#notifications-collection
+        %div#notification
+        %div#notification-progress
+
       %h1#logo
         %img{:src => '/imgs/PLM-Logo.png'}
 
-      %header
+      = partial "html/subnav", :locals => { :view => view }
 
-        %ul
-          // Four Box
-          - is_selected = view == "dashboard" ? "selected" : "unselected"
-          %li{:class => is_selected}
-            %a{:href => "/", :class => is_selected}
-              \&#62977
+      #row
 
-          // Light Bulb
-          - is_selected = view == "lighting" ? "selected" : "unselected"
-          %li{:class => is_selected}
-            %a{:href => "/lighting", :class => is_selected}
-              \&#128161
+        = partial "html/mainnav"
 
-          // Thermostat
-          %li
-            %a{:href => "#"}
-              \&#128255
+        %div.title-bar
 
-          // Key for Access
-          %li
-            %a{:href => "#"}
-              \&#128273
+          %div#page-title-collection
 
-          // Camera for photographs
-          - is_selected = view == "photo-manager" ? "selected" : "unselected"
-          %li{:class => is_selected}
-            %a{:href => "/photos", :class => is_selected}
-              \&#128247
+            // Hamburger
+            %div.icon-button
+              %a{:href => "#hamburger", :id => "hamburger-button", :class => "hamburger-button"}
+                \&#9776
 
-          // Eyeball for video surveillance
-          - is_selected = view == "surveillance" ? "selected" : "unselected"
-          %li{:class => is_selected}
-            %a{:href => "/surveillance", :class => is_selected}
-              \&#59146
+            // Page title
+            %h1
 
-        %div#notifications-collection
-          %div#notification
-          %div#notification-progress
+          %div#search-gear-collection
 
-      %div#row
-
-        %nav
-          %ul
-            // Home icon
-            %li
+            // Search
+            %div.icon-button
               %a{:href => "#"}
-                \&#8962
+                \&#128269
 
-            // Left/Right arrows
-            %li
-              %a{:href => "#"}
-                \&#8646
-
-            // File cabinet
-            %li
-              %a{:href => "#"}
-                \&#59392
-
-            // Calendar
-            %li
-              %a{:href => "#"}
-                \&#128197
-
-            // List
-            %li
-              %a{:href => "#"}
-                \&#57349
-
-            // Music
-            %li
-              %a{:href => "#"}
-                \&#9835
-
-            // Dollars
-            %li
-              %a{:href => "#"}
-                \&#128318
-
-            // Home
-            %li
-              %a{:href => "#"}
-                \&#8962
-
-            // Globe
-            %li
-              %a{:href => "#"}
-                \&#127758
-
-            // Jumbled box
-            %li
-              %a{:href => "#"}
-                \&#9871
-
-            // Sync
-            %li
-              %a{:href => "#", :class => "sync"}
-                \&#128260
-
-            // Gears
-            %li
+            // Gear
+            %div.icon-button
               %a{:href => "#"}
                 \&#9881
 
-        %main
-          %div.title-bar
-
-            %div#page-title-collection
-              // Hamburger
-              %div.icon-button
-                %a{:href => "#hamburger", :class => "hamburger-button"}
-                  \&#9776
-
-              // Page title
-              %h1
-
-            %div#main-button-collection
-              // Globe
-              %div.icon-button
-                %a{:href => "#"}
-                  \&#127758
-
-              // Person
-              %div.icon-button
-                %a{:href => "#"}
-                  \&#128100
-
-              // Floorplan
-              %div.icon-button
-                %a{:href => "#"}
-                  \&#59175
-
-              // Import
-              %div.icon-button
-                %a{:class => "import", :href => "#"}
-                  \&#128228
-
-            %div#search-gear-collection
-
-              // Search
-              %div.icon-button
-                %a{:href => "#"}
-                  \&#128269
-
-              // Gear
-              %div.icon-button
-                %a{:href => "#"}
-                  \&#9881
+        %main#view
 
           %div{ :id => "content", :class => "#{view}/#{action}" }
             = yield
 
-          %div#hamburger
-            - if content_for?(:hamburger_items)
-              = yield_content :hamburger_items
+            %div#hamburger
+              - if content_for?(:hamburger_items)
+                = yield_content :hamburger_items
+
+        #pageslide
 
       %footer
         %div#account-collection

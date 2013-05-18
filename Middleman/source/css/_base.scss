@@ -1,4 +1,3 @@
-
 @include font-face("entypo", "entypo-webfont");
 
 header, footer, aside, nav, article, section, main {
@@ -9,8 +8,9 @@ header, footer, aside, nav, article, section, main {
 html, body {
   height: 100%;
   margin: 0;
+  min-width: 1024px;
+  overflow-x: hidden;
 }
-
 
 body {
   color: $white;
@@ -18,21 +18,16 @@ body {
   font-size: 12px;
 }
 
-
 a {
   text-decoration: none;
   color: $white;
-}
 
-a:hover {
-  color: $blue;
+  &:hover { color: $blue; }
 }
-
 
 .selected {
   color: $blue;
 }
-
 
 hr {
   border: 0;
@@ -41,14 +36,12 @@ hr {
   background-color: #363636;
 }
 
-
 #logo {
   position: fixed;
   z-index: 1000;
   top: 10px;
   right: 10px;
 }
-
 
 #container {
   height: 100%;
@@ -75,33 +68,17 @@ hr {
       font-family: 'entypo';
       font-size: 40px;
       color: #989898;
+
+      &:hover { color: $blue; }
     }
-  }
 
-  .icon-button:hover, .icon-button.selected {
-    color: $blue;
-
-    a:hover {
-      color: $blue;
-    }
-  }
-
-  // Not used yet
-  .flex-horizontal {
-    @include display-flex;
-    @include flex-direction(row);
-  }
-
-  // Not used yet
-  .flex-vertical {
-    @include display-flex;
-    @include flex-direction(column);
+    &:hover, &.selected { color: $blue; }
   }
 
   // Tertiary title bars
   .title-bar {
-    @include display-flex;
-    @include flex-direction(row);
+    @include backgroundGradient(linear-gradient(bottom,#393939,#494949));
+    @include boxShadow(1px 1px 0 #1f1f1f, inset 0px 1px 0px rgba(255, 255, 255, 0.14));
 
     height: 42px;
     position: fixed;
@@ -111,25 +88,19 @@ hr {
 
     // Background Gradient
     background-color: #292929;
-
-    -moz-box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255,255,255,.14);
-    -webkit-box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255,255,255,.14);
-    box-shadow: 1px 1px 0 #1f1f1f, inset 0px 1px 0 rgba(255,255,255,.14);
-
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0iaGF0MCIgZ3JhZGllbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHgxPSI1MCUiIHkxPSIxMDAlIiB4Mj0iNTAlIiB5Mj0iLTEuNDIxMDg1NDcxNTIwMmUtMTQlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzM5MzkzOSIgc3RvcC1vcGFjaXR5PSIxIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzQ5NDk0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgIDwvbGluZWFyR3JhZGllbnQ+Cgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNoYXQwKSIgLz4KPC9zdmc+);
-    background-image: -moz-linear-gradient(bottom, #393939 0%, #494949 100%);
-    background-image: -o-linear-gradient(bottom, #393939 0%, #494949 100%);
-    background-image: -webkit-linear-gradient(bottom, #393939 0%, #494949 100%);
-    background-image: linear-gradient(bottom, #393939 0%, #494949 100%);
     border-left: none;
-
   }
 
   #page-title-collection {
-    @include display-flex;
+    display: inline-block;
     width: 380px;
     padding-left: $small-spacing;
-    border-right: 1px solid $emboss-dark;
+
+    #hamburger-button {
+      @include textShadow(1px 2px 2px #000);
+      font-size: 60px;
+      &.active { color: #6dcff6; }
+    }
   }
 
   h1 {
@@ -139,17 +110,144 @@ hr {
     margin-left: $small-spacing;
   }
 
-  #main-button-collection {
-    @include flex-ratio(3);
-    border-left: 1px solid $emboss-light;
-    padding-left: $small-spacing;
-  }
-
   #search-gear-collection {
-    @include display-flex;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 190px;
   }
 
+}
+
+.plm-cb-label {
+  .plm-cb {
+    display:none;
+
+    &:checked + span { background-position: -18px 0; }
+  }
+
+  cursor: pointer; 
+  display: inline-block; 
+  margin: 0 0 0 15px;
+
+  & .cb-text {
+    display: inline-block;
+    font-size: 1.2em;
+  }
+
+  & .cb-img {
+    margin: -3px 6px 0 0;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    cursor: pointer;
+    background: url('../imgs/plm-cb-sprite.png') 0 0 no-repeat;
+  }
+}
+
+.selection-toolbar { float: right; }
+
+.main-select-all { float: left; }
+
+.photo-edit-panel {
+  //@include boxShadow(inset 3px 0px 1px -2px rgba(200,200,200,0.3));
+  display: block;
+  float: left;
+  width: 50%;
+  padding: 0 20px;
+  height: 100%;
+  background: #555;
+  border-left: 1px solid #111;
+
+  .edit-image {
+    @include boxShadow(0px 2px 5px rgba(0,0,0,0.8));
+    display: block;
+    border: 1px solid #111;
+    width: 90%;
+    height: 60%;
+    overflow: hidden;
+    margin: $leading auto;
+
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+
+    div {
+      margin: -3em -4em;
+      position: relative;
+      max-width: none;
+      height: auto;
+    }
+  }
+
+  .edit-header {
+    width: 90%;
+    margin: 0 auto $leading/2;
+    border-bottom: 1px solid #111;
+
+    .edit-title {
+      font-size: 30px;
+      float:left;
+    }
+
+    .edit-actions {
+      float: right;
+      margin-bottom: $leading/2;
+    }
+  }
+
+  .edit-form {
+    width: 90%;
+    margin: 0 auto;
+
+    label, input {
+      float: left;
+    }
+    label { width: 30%; font-size: 13px; color: #d0d0d0;}
+    input { width: 70%; &:after { @include group; } }
+    textarea { display: inline-block; width: 70%; }
+
+    .row {
+      @include group;
+      margin-bottom: 2px;
+      span { display: block; width: 70%; float: left; margin-bottom: 5px; &:after { @include group; } }
+    }
+  }
+
+  .edit-input, .edit-ta {
+    @include borderRadius(3px);
+    @include boxShadow(1px 1px 3px rgba(0,0,0,0.5));
+    background: #333;
+    border: none;
+    color: #d0d0d0;
+  }
+  .edit-form-buttons { margin-top: $leading/2; text-align: right; }
+  .edit-button {
+    @include backgroundGradient(linear-gradient(top, #555, #222));
+    display: inline-block;
+    border: 1px solid #111;
+    padding: 8px 6px;
+    margin-left: 6px;
+    cursor: pointer;
+
+    &:hover { color: $blue; }
+  }
+
+  .edit-actions {
+    a {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      font-size: 40px;
+      font-family: 'entypo';
+      cursor: pointer;
+    }
+  }
 }
 
 header {
@@ -161,11 +259,11 @@ header {
   z-index: 10;
 
   ul {
-    @include display-flex;
-    @include flex-direction(row);
     height: 60px;
+    overflow: hidden;
 
     li {
+      float: left;
       font-family: 'entypo';
       font-size: 50px;
       width: 50px;
@@ -177,12 +275,12 @@ header {
         font-size: 50px;
         display: block;
       }
-    }
 
-    li:hover, li.selected {
-      color: $blue;
-      background: $right-column-gray-bg;
-      border-top: 5px solid $blue;
+      &:hover, &.selected {
+        color: $blue;
+        background: $right-column-gray-bg;
+        border-top: 5px solid $blue;
+      }
     }
   }
 
@@ -236,11 +334,12 @@ footer {
   width: 100%;
   z-index: 10;
 
-  ul {
-    @include display-flex;
-    @include flex-direction(row);
+  .footer-left { float: left; }
+  .footer-right { float: right; }
 
-    li { font-size: 10px }
+  ul {
+
+    li { float: left; font-size: 10px }
 
     li:after {
       content: "|";
@@ -260,11 +359,39 @@ footer {
 #weather-collection { float: right; }
 
 #row {
-  @include display-flex;
-  @include flex-direction(row);
   height: 100%;
   background: $black;
-  padding-top: 100px;
+  padding-top: 102px;
+}
+
+
+// Main nav
+.navIcon {
+  font-family: 'entypo';
+
+  &.home:before { content: "\2302"; }
+  &.arrows:before { content: "\21C6"; }
+  &.files:before { content: "\E800"; }
+  &.calendar:before { content: "\1F4C5"; }
+  &.list:before { content: "\E005"; }
+  &.music:before { content: "\266B"; }
+  &.dollars:before { content: "\1F53E"; }
+  &.globe:before { content: "\1F30E"; }
+  &.jumbled:before { content: "\268F"; }
+  &.sync:before { content: "\1F504"; }
+  &.gears:before { content: "\2699"; }
+
+  &.four:before { content: "\F601"; }
+  &.lightbulb:before { content: "\1F4A1"; }
+  &.thermostat:before { content: "\1F4FF"; }
+  &.key:before { content: "\1F511"; }
+
+  &.shield:before { content: "\1F512"; }
+  &.camera:before { content: "\1F4F7"; }
+  &.computer:before { content: "\1F4BB"; }
+  &.plug:before { content: "\26A1"; }
+  &.cloud:before { content: "\2601"; }
+  &.storage:before { content: "\1F4F8"; }
 }
 
 nav {
@@ -276,8 +403,6 @@ nav {
   z-index: 10;
 
   ul {
-    @include display-flex;
-    @include flex-direction(column);
     height: 100%;
 
     li {
@@ -308,16 +433,17 @@ nav {
 
 
 main {
-  @include flex-ratio(2);
   background: $right-column-gray-bg;
   padding-left: 60px;
+  height: 100%;
 
   #content {
-    @include display-flex;
-    @include flex-direction(row);
+    position: relative;
     min-height: $min-body-height;
     background: $right-column-gray-bg;
     border-left: 1px solid $emboss-light;
+    height: 100%;
+    white-space: nowrap;
 
     #left-column {
       width: 380px;
@@ -330,7 +456,10 @@ main {
     }
 
     #middle-column {
-      @include flex-ratio(2);
+      background: #474747;
+      &.half { width: 50%; height: 100%; display: block; float: left; }
+
+      &.surveillance { width: 300px; height: 100%; display: block; float: left; }
 
       #floorplan {
         padding-top: 40px;
@@ -358,14 +487,12 @@ main {
             font-family: 'entypo';
             font-size: 40px;
             text-align: center;
-          }
 
-          .icon:hover {
-            color: $blue;
+            &:hover { color: $blue; }
           }
         }
 
-        div.light:hover {
+        .light:hover {
           $color: $blue;
         }
 
@@ -409,7 +536,6 @@ main {
 }
 
 aside {
-  @include flex-ratio(1);
   background: $right-column-gray-bg;
 }
 
@@ -419,55 +545,185 @@ aside {
   top: 103px;
   height: 100%;
   z-index: 1;
-  width: 380px;
+  width: 300px;
   background-color: #1d1d1d;
   color: #fff;
 }
 
 #hamburger {
   display: none;
+
+  a { cursor: pointer; }
 }
+
+.gallery-header {
+  padding: $leading 0 $leading;
+  &:hover { background: #2a2a2a; }
+}
+
+.import-collection {
+  color: #d0d0d0;
+  margin-bottom: $leading;
+}
+.import-photos-container {
+  width: 9999px;
+}
+.import-header {
+  padding-bottom: $leading/2;
+  margin-bottom: $leading/2;
+  border-bottom: 1px solid #111;
+}
+.import-count { float: left; text-transform: uppercase; font-size: 14px; }
+.import-date {
+  float: left;
+  margin-left: 10px;
+
+  font-size: 14px;
+  span { font-weight: bold; text-transform: uppercase; margin-right: 5px; }
+}
+
+.hamburger-section {
+
+  &.first { @include boxShadow(0px 3px 1px -2px rgba(100,100,100,0.3)); border-bottom: 1px solid #111; }
+
+  .gallery-section-title {
+    font-size: 20px;
+    float: left;
+    margin: 0 0 0 6px;
+
+    .add-gallery {
+      @include textShadow(1px 2px 2px #000);
+      display: inline-block;
+      width: 30px;
+      height: 18px;
+      line-height: 20px;
+      margin-left: 10px;
+      font-size: 50px;
+      font-family: 'entypo';
+
+      &:before { content: "\E003"; }
+    }
+  }
+
+  .headericon {
+    font-family: 'entypo';
+    color: $white;
+    font-size: 50px;
+    float: left;
+    line-height: 40%;
+    margin-left: 11px;
+    &:before { content: "\E760"; }
+  }
+
+  .gallery {
+    @include group;
+    margin: 0 0 $leading 0;
+    cursor: pointer;
+
+    .album-icon {
+      display: block;
+      float: left;
+      font-family: 'entypo';
+      font-size: 50px;
+      line-height: 30px;
+    }
+    .gallery-pip {
+      display: block;
+      float: left;
+      width: 20px;
+      height: 20px;
+      font-family: 'entypo';
+      font-size: 50px;
+      line-height: 20px;
+      margin-left: 20px;
+
+
+      &.closed:before { content: "\E762"; }
+      &.open:before { content: "\E760"; }
+    }
+
+    .gallery-title {
+      margin-left: 80px;
+      font-size: 18px;
+    }
+
+    > span {
+      font-size: 10px;
+      margin-left: 10px;
+      display: block;
+      float: left;
+    }
+    ul { @include boxShadow(0px 3px 1px -2px rgba(100,100,100,0.3)); border-bottom: 1px solid #111; margin-top: $leading; }
+  }
+
+  .album {
+    @include boxShadow(0px -3px 1px -2px rgba(100,100,100,0.3));
+    border-top: 1px solid #111;
+    padding: $leading/2 0 $leading/2 50px;
+    background: #131313;
+
+    img { float: left; margin-bottom: 10px; }
+    .album-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-left: 46px;
+
+      &:hover { color: $blue; }
+    }
+    .album-date { display: block; float: left; clear:right; margin-bottom: $leading/2; margin-left: 10px; font-size: 12px;}
+    .album-description { float: left; margin-left: 10px; font-size: 12px; }
+  }
+}
+
 
 
 .hamburger-header-item {
   @include clearfix;
-  height: 80px;
+  padding: $leading 0 $leading/2;
+  padding-left: 20px;
+
+  &:hover {
+    background: #2a2a2a;
+    color: $blue;
+  }
 
   .icon {
     font-family: 'entypo';
     color: $white;
     font-size: 50px;
     float: left;
-    margin-left: $standard-spacing;
-    margin-top: 10px;
+    line-height: 40%;
+
+    &.header:before { content: "\E760"; }
   }
 
   h2 {
     font-size: 20px;
     float: left;
-    margin-top: 27px;
-    margin-left: $small-spacing;
+    margin-left: 6px;
   }
-}
-
-
-.hamburger-header-item:hover {
-  background: #2a2a2a;
-  border-bottom: 1px solid $black;
-  color: $blue;
 }
 
 
 .hamburger-item {
   @include clearfix;
-  padding-left: 50px;
-  padding-top: 13px;
-  height: 70px;
+  padding: $leading/2 0 $leading/2 50px;
+
+  &:hover {
+    background: #2a2a2a;
+    color: $blue;
+  }
 
   .icon {
     font-family: 'entypo';
     font-size: 40px;
     float: left;
+    line-height: 60%;
+
+    &.photos:before { content: "\1F304"; }
+    &.lastimport:before { content: "\1F304"; }
+    &.uncategorized:before { content: "\E777"; }
+    &.trash:before { content: "\E729"; }
   }
 
   .text {
@@ -480,12 +736,6 @@ aside {
   }
 }
 
-.hamburger-item:hover {
-  background: #2a2a2a;
-  border-bottom: 1px solid $black;
-  color: $blue;
-}
-
 .hamburger-item.photos {
   margin-padding: 5px;
   height: 40px;
@@ -494,6 +744,24 @@ aside {
     margin-top: -12px;
   }
 }
+
+.library-buttons {
+  float: left;
+  margin: -6px 0 0 12px;
+
+  a {
+    @include textShadow(1px 2px 2px #000);
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 40px;
+    font-family: 'entypo';
+  }
+  #import-button {  }
+  #sync-button {  }
+}
+
 
 // Surveillance
 #surveillance-collection {
@@ -537,19 +805,16 @@ aside {
   margin-top: 0;
 
   .surveillance-small-thumb {
-  float: left;
-  margin-right: 5px;
-  margin-bottom: 5px;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
 
     .surveillance-small {
       border: 1px solid black;
       width: 165px;
       height: 125px;
-    }
 
-
-    .surveillance-small:hover {
-      border: 1px solid white;
+      &:hover { border: 1px solid white; }
     }
 
 
@@ -567,13 +832,13 @@ aside {
 }
 
 .photos-header {
-  padding: $standard-spacing;
+  padding: $leading 0 0 10px;
+  overflow: hidden;
+  min-height: 75px;
 
-  h2 { font-size: 25px; }
+  h2 { font-size: 25px; float: left; }
+
 }
-
-
-
 
 .photos-collection {
   @include clearfix;
@@ -586,42 +851,37 @@ aside {
   padding: $small-spacing;
   float: left;
 
-  img.photo-thumbnail {
+  .photo-edit & { cursor: pointer; }
+
+  &:hover {
+    @include boxShadow(0px 0px 10px #333333);
+    background: $highlighted-gray-bg;
+
+    .edit-photo {
+      display: block;
+    }
+  }
+  .photo-thumbnail {
     border: 1px solid black;
   }
 }
 
-.photo:hover {
-  @include boxShadow(0px 0px 10px #333333);
-  background: $highlighted-gray-bg;
-
-  img.edit-photo {
-    display: block;
-  }
-}
-
-
 // Right column photo labels: 13px Arial bold
 .photo-caption {
-    font-size: 13px;
-    font-family: Arial;
-    font-weight: bold;
-    color: $gray-text;
-    margin-top: $small-spacing;
+  font-size: 13px;
+  font-family: Arial;
+  font-weight: bold;
+  color: $gray-text;
+  margin-top: $small-spacing;
 
-    img {
-      margin-bottom: -5px;
-      margin-right: $small-spacing;
-    }
+  img {
+    margin-bottom: -5px;
+    margin-right: $small-spacing;
+  }
 
-
-    img.edit-photo {
-      float: right;
-      margin-right: 0;
-      display: none;
-    }
+  .edit-photo {
+    float: right;
+    margin-right: 0;
+    display: none;
+  }
 }
-
-
-
-

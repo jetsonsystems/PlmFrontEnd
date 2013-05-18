@@ -115,7 +115,7 @@ define(
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
-          this.$el.find('.import').replaceWith(compiledTemplate);
+          this.$el.find('.import-collection').replaceWith(compiledTemplate);
         }
       },
 
@@ -135,7 +135,7 @@ define(
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
-          this.$el.find('.import').replaceWith(compiledTemplate);
+          this.$el.find('.import-collection').replaceWith(compiledTemplate);
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
         return this;
@@ -157,12 +157,12 @@ define(
           //
           // Update the size of the import.
           //
-          this.$el.find('.import-size').text(this.lastImport.size() + " Photos");
+          this.$el.find('.import-count').text(this.lastImport.size() + " Photos");
           //
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          this.$el.find('.photos-collection').append(compiledTemplate);
+          this.$el.find('.import-photos-collection .clearfix').before(compiledTemplate);
         }
         else {
           !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
@@ -178,7 +178,7 @@ define(
       _finishIncrementalRender: function(importer) {
         !Plm.debug || console.log('photo-manager/views/home/library/last-import._finishIncrementalRender: invoked...');
         if (this.status === this.STATUS_INCREMENTALLY_RENDERING) {
-          this.$el.find(".imported-timestamp").text(" Imported: " + importer.completed_at);
+          this.$el.find(".import-date").text(" Imported: " + importer.completed_at);
           this.status = this.STATUS_RENDERED;
         }
         return this;

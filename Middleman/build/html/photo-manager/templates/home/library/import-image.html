@@ -2,8 +2,12 @@
   {% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; })); %}
   <img class='photo-thumbnail' src='{{thumbnail.url}}'>
   <div class='photo-caption'>
-    <img src='/imgs/Checkbox.png'>
-    {{ image.get('name').replace(/^$/, '') }}
-    <img class='edit-photo' src='/imgs/Pencil.png'>
+    <label class='plm-cb-label'>
+      <input class='plm-cb' type='checkbox'>
+      <span class='cb-img'></span>
+      <span class='cb-text'>
+        {{ image.get('name').replace(/^$/, '') }}
+      </span>
+    </label>
   </div>
 </div>

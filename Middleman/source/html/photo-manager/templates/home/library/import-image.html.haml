@@ -10,6 +10,10 @@
   %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
 
   %div{:class => "photo-caption"}
-    %img{:src => "/imgs/Checkbox.png"}
-    != "{{ image.get('name').replace(/^\$/, '') }}"
-    %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}
+    %label{ :class => "plm-cb-label" }
+      %input{ :type => "checkbox", :class => "plm-cb" }
+      %span.cb-img
+      %span.cb-text
+        != "{{ image.get('name').replace(/^\$/, '') }}"
+    -# %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}
+

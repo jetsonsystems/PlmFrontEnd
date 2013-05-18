@@ -8,38 +8,40 @@
   = stylesheet_link_tag "photo-manager"
 
 - content_for :hamburger_items do
-  %div.hamburger-item.photos.all-photos
-    %div.icon
-      // Photos
-      \&#127748
+  %div.hamburger-header-item
+    .icon.header
+    %h2 Library
+    .library-buttons
+      %a#import-button &#128228
+      %a#sync-button &#128260
+  %div.hamburger-item
+    .icon.photos
     %div.text
       %a{:href => "/photos#home/library/all-photos", :class => "title"}
         All Photos
 
-  %div.hamburger-item.photos.last-import
-    %div.icon
-      // Photos
-      \&#127748
+  %div.hamburger-item
+    .icon.lastimport
     %div.text
       %a{:href => "/photos#home/library/last-import", :class => "title"}
         Last Import
 
-  %div.hamburger-item.photos
-    %div.icon
-      // Photos
-      \&#59255
+  %div.hamburger-item
+    .icon.lastimport
+    %div.text
+      %a{:href => "/photos#home/library/last-search", :class => "title"}
+        Last Search
+
+  %div.hamburger-item
+    .icon.uncategorized
     %div.text
       %a{:href => "#", :class => "title"}
         Uncategorized
 
-  %div.hamburger-item.photos
-    %div.icon
-      // Photos
-      \&#59177
+  %div.hamburger-item
+    .icon.trash
     %div.text
       %a{:href => "#", :class => "title"}
         Trash
 
--# %div#left-column
-
-%div#middle-column
+#middle-column

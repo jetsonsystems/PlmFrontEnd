@@ -7,34 +7,32 @@
  *
  * Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
- */
-
+*/
 
 ;(function($){
     // Convenience vars for accessing elements
     // var $body = $('body'),
-    var $body = $('#content'),
-        $pageslide = $('#pageslide');
+    var $body = $('#view'),
+        $pageslide = $("#pageslide");
 
     var _sliding = false,   // Mutex to assist closing only once
         _lastCaller;        // Used to keep track of last element to trigger pageslide
 
-    // If the pageslide element doesn't exist, create it
-    if( $pageslide.length == 0 ) {
-        $pageslide = $('<div />').attr( 'id', 'pageslide' )
-            .css( 'display', 'none' )
-            .appendTo( $('#content') );
-        // .appendTo( $('body') );
-    }
-
     /*
      * Private methods
      */
-    function _load( url, useIframe ) {
+    function _load( url, useIframe, htmlToExtractHamburgerTemplateFrom ) {
         // Are we loading an element from the page or a URL?
-        if ( url.indexOf("#") === 0 ) {
+        $pageslide = $("#pageslide").empty();
+        if (url.indexOf("#") === 0 ) {
             // Load a page element
-            $(url).clone(true).appendTo( $pageslide.empty() ).show();
+            //console.log("Modifying contents of pageslide");
+            if(htmlToExtractHamburgerTemplateFrom) {
+                $(htmlToExtractHamburgerTemplateFrom).find(url).clone(true).appendTo( $pageslide.empty() ).show();
+            } else {
+                $(url).clone(true).appendTo( $pageslide.empty() ).show();
+            }
+
         } else {
             // Load a URL. Into an iframe?
             if( useIframe ) {
@@ -64,34 +62,24 @@
             bodyAnimateIn = {},
             slideAnimateIn = {};
 
+        //console.log("_start");
+
         // If the slide is open or opening, just ignore the call
         if( $pageslide.is(':visible') || _sliding ) return;
         _sliding = true;
 
         switch( direction ) {
             case 'left':
-                console.log('Step 0');
+                //console.log('Step 0');
                 $pageslide.css({ left: 'auto', right: '-' + slideWidth + 'px' });
                 bodyAnimateIn['margin-left'] = '-=' + slideWidth;
                 slideAnimateIn['right'] = '+=' + slideWidth;
                 break;
             default:
-                console.log('Step 1');
-                // $pageslide.css({ left: '-' + slideWidth + 'px', right: 'auto' });
+                //console.log('Step 1');
                 $pageslide.css({ left: '-' + slideWidth + 'px', right: 'auto' });
-                // $pageslide.css({ left: '60px', right: 'auto' });
-                console.log(slideWidth);
-                // console.log(bodyAnimateIn);
-                // console.log(slideAnimateIn);
-                // bodyAnimateIn['margin-left'] = '+=' + slideWidth;
-                // slideAnimateIn['left'] = '+=' + slideWidth;
-
-//                bodyAnimateIn['margin-left'] = '+=' + (slideWidth + 60);
                 slideAnimateIn['left'] = '+=' + (slideWidth + 60);
                 bodyAnimateIn['margin-left'] = '+=' + (slideWidth);
-
-                console.log(bodyAnimateIn['margin-left']);
-                console.log(slideAnimateIn['left']);
                 break;
         }
 
@@ -103,32 +91,59 @@
             });
     }
 
+
+
     /*
      * Declaration
      */
     $.fn.pageslide = function(options) {
-        var $elements = this;
+      var $elements = this;
+        if(_sliding) {
+            $pageslide.animate({}, {queue: true, complete: _setup});
+        } else {
+              _setup();
+        }
 
-        // On click
-        $elements.click( function(e) {
-            var $self = $(this),
-                settings = $.extend({ href: $self.attr('href') }, options);
-
-            // Prevent the default behavior and stop propagation
-            e.preventDefault();
-            e.stopPropagation();
-
-            if ( $pageslide.is(':visible') && $self[0] == _lastCaller ) {
-                // If we clicked the same element twice, toggle closed
-                $.pageslide.close();
-            } else {
-                // Open
-                $.pageslide( settings );
-
-                // Record the last element to trigger pageslide
-                _lastCaller = $self[0];
+        function _setup() {
+            // If the pageslide element doesn't exist, create it
+            $pageslide = $("#pageslide");
+            if( $pageslide.length == 0 ) {
+                $pageslide = $('<div />').attr( 'id', 'pageslide' )
+                    .css( 'display', 'none' )
+                    .appendTo( $('#row') );
             }
-        });
+
+            // Don't let clicks to the pageslide close the window
+            $pageslide.click(function(e) {
+                e.stopPropagation();
+            });
+
+            _load( "#hamburger", false );
+
+            // On click
+            $elements.click( function(e) {
+                var $self = $(this),
+                    settings = $.extend({ href: $self.attr('href') }, options);
+
+                // Prevent the default behavior and stop propagation
+                e.preventDefault();
+                e.stopPropagation();
+
+                if ( $pageslide.is(':visible') && $self[0] == _lastCaller ) {
+                    //console.log("closing");
+                    // If we clicked the same element twice, toggle closed
+                    $.pageslide.close();
+                } else {
+                    //console.log("opening");
+                    // Open
+                    $.pageslide( settings );
+
+                    // Record the last element to trigger pageslide
+                    _lastCaller = $self[0];
+                }
+
+            });
+        }
     };
 
     /*
@@ -147,24 +162,30 @@
      */
 
     // Open the pageslide
-    $.pageslide = function( options ) {
+    $.pageslide = function( options, html ) {
         // Extend the settings with those the user has provided
-        var settings = $.extend({}, $.fn.pageslide.defaults, options);
+        var settings = $.extend({}, $.fn.pageslide.defaults, options),
+            button = $('.hamburger-button');
+
+        button.addClass('active');
 
         // Are we trying to open in different direction?
         if( $pageslide.is(':visible') && $pageslide.data( 'direction' ) != settings.direction) {
+            //console.log("start 3");
             $.pageslide.close(function(){
-                _load( settings.href, settings.iframe );
+                _load( settings.href, settings.iframe, html );
                 _start( settings.direction, settings.speed );
             });
         } else {
-            _load( settings.href, settings.iframe );
+            //console.log("start 4");
+            _load( settings.href, settings.iframe, html );
             if( $pageslide.is(':hidden') ) {
                 _start( settings.direction, settings.speed );
             }
         }
 
         $pageslide.data( settings );
+
     }
 
     // Close the pageslide
@@ -173,7 +194,10 @@
             slideWidth = $pageslide.outerWidth( true ),
             speed = $pageslide.data( 'speed' ),
             bodyAnimateIn = {},
-            slideAnimateIn = {}
+            slideAnimateIn = {},
+            button = $('.hamburger-button');
+
+        button.removeClass('active');
 
         // If the slide isn't open, just ignore the call
         if( $pageslide.is(':hidden') || _sliding ) return;
@@ -181,26 +205,18 @@
 
         switch( $pageslide.data( 'direction' ) ) {
             case 'left':
-                console.log('Step 2');
+                //console.log('Step 2');
                 bodyAnimateIn['margin-left'] = '+=' + slideWidth;
                 slideAnimateIn['right'] = '-=' + slideWidth;
                 break;
             default:
-                console.log('Step 3');
-                // bodyAnimateIn['margin-left'] = '-=' + slideWidth;
-                // slideAnimateIn['left'] = '-=' + slideWidth;
-
-//                bodyAnimateIn['margin-left'] = '-=' + (slideWidth + 60);
+                //console.log('Step 3');
                 slideAnimateIn['left'] = '-=' + (slideWidth + 60);
 
                 bodyAnimateIn['margin-left'] = '-=' + (slideWidth);
 
-                console.log(bodyAnimateIn['margin-left']);
-                console.log(slideAnimateIn['left']);
-
                 break;
         }
-
         $pageslide.animate(slideAnimateIn, speed);
         $body.animate(bodyAnimateIn, speed, function() {
             $pageslide.hide();
@@ -211,16 +227,18 @@
 
     /* Events */
 
-    // Don't let clicks to the pageslide close the window
-    $pageslide.click(function(e) {
-        e.stopPropagation();
-    });
-
     // Close the pageslide if the document is clicked or the users presses the ESC key, unless the pageslide is modal
     $(document).bind('click keyup', function(e) {
         // If this is a keyup event, let's see if it's an ESC key
         if( e.type == "keyup" && e.keyCode != 27) return;
+        // Make sure it's visible, and we're not modal
+        if( $pageslide.is( ':visible' ) && !$pageslide.data( 'modal' ) ) {
+            $.pageslide.close();
+        }
+    });
 
+    // Also close the modal when the user clicks on one of the navigation menus
+    $("#mainnav").bind('click', function(e) {
         // Make sure it's visible, and we're not modal
         if( $pageslide.is( ':visible' ) && !$pageslide.data( 'modal' ) ) {
             $.pageslide.close();

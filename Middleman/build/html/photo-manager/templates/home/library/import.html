@@ -1,19 +1,28 @@
 {% var createdAt = importer.has('created_at') ? Date.parse(importer.get('created_at')) : -1; %}
-<div class='photo-manager/home/library/import import' data-created_at='{{createdAt}}' id="import-{{importer.id.replace('$', '')}}">
-  <h4>
-    <span class='import-size'>{{_.size(importImages)}} Photos</span>
-    <span class='imported-timestamp'>
+<div class='photo-manager/home/library/import import-collection' data-created_at='{{createdAt}}' id="import-{{importer.id.replace('$', '')}}">
+  <div class='import-header'>
+    <div class='import-count'>{{_.size(importImages)}} Photos</div>
+    <div class='import-date'>
+      <span>Imported:</span>
       {% var importedDate = importer.has('completed_at') ? importer.get('completed_at') : ''; %}
       {% importedDate = (importedDate === '') && importer.has('updated_at') ? importer.get('updated_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('started_at') ? importer.get('started_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('created_at') ? importer.get('created_at') : importedDate; %}
-      Imported: {{importedDate}}
-    </span>
-  </h4>
-  <hr>
-  <div class='photos-collection'>
+      {{importedDate}}
+    </div>
+    <div>
+      <label class='plm-cb-label'>
+        <input class='plm-cb' data-select-scope='importer' type='checkbox'>
+        <span class='cb-img'></span>
+        <span class='cb-text'>Select All</span>
+      </label>
+    </div>
+    <div class='clearfix'></div>
+  </div>
+  <div class='import-photos-collection'>
     {% importImages.length && importImages.each(function(image) { %}
       {{ _.template(imageTemplate, { image : image, _ : _ }) }}
     {% }); %}
+    <div class='clearfix'></div>
   </div>
 </div>
