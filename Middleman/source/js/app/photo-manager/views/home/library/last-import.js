@@ -8,13 +8,14 @@ define(
     'backbone',
     'plmCommon/plm', 
     'plmCommon/msg-bus',
+    'app/image-selection-manager',
     'app/models/image',
     'app/collections/last-import',
     'text!/html/photo-manager/templates/home/library/last-import.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/last-import';
     var debugPrefix = moduleName + '.LastImportView';
@@ -45,11 +46,25 @@ define(
       dirty: false,
 
       lastImport: undefined,
+
+      events: {
+        'click .selection-toolbar .to-trash': "_toTrashHandler"
+      },
     
       initialize: function() {
         !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
+        var that = this;
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
+        this._imageSelectionManager = new ImageSelectionManager(this.$el);
+        this._imageSelectionManager.on('change', function() {
+          if (that._imageSelectionManager.anySelected()) {
+            $(".selection-toolbar").show();
+          }
+          else {
+            $(".selection-toolbar").hide();
+          }
+        });
         this._respondToEvents();
       },
 
@@ -63,6 +78,7 @@ define(
           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onSuccess: successfully loaded recent uploads...');
           that._doRender();
           that.status = that.STATUS_RENDERED;
+          that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
         };
         var onError = function(lastImport, xhr, options) {
@@ -136,6 +152,7 @@ define(
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
+          this._imageSelectionManager.reset();
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
         return this;
@@ -163,6 +180,7 @@ define(
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
           this.$el.find('.import-photos-collection .clearfix').before(compiledTemplate);
+          this._imageSelectionManager.reset();
         }
         else {
           !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
@@ -184,6 +202,72 @@ define(
         return this;
       },
 
+      //
+      // _toTrashHandler: Move selected images to trash.
+      //
+      _toTrashHandler: function() {
+        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+        !Plm.debug || console.log(dbgPrefix + "invoked...");
+        var that = this;
+        var selected = this._imageSelectionManager.selected();
+
+        !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: ' + selected.length + ' images are selected, last import collection size - ' + this.lastImport.size());
+
+        var numTodo = selected.length;
+        var numSuccess = 0;
+        var numError = 0;
+
+        var updateStatus = function(status) {
+          if (status === 0) {
+            numSuccess = numSuccess + 1;
+          }
+          else {
+            numError = numError + 1;
+          }
+          if ((numSuccess + numError) === numTodo) {
+            if ((numError > 0) || (that.lastImport.size() < 1)) {
+              that._reRender();
+            }
+          }
+        };
+
+        _.each(selected, function(selectedItem) {
+          !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+          var imageModel = that.lastImport.find(function(image) {
+            !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Testing (' + selectedItem + ', ' + image + ')');
+            !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Testing selected item w/ id - ' + selectedItem.id + ' against image w/ id - ' + image.id);
+            return selectedItem.id === image.id;
+          });
+          if (imageModel) {
+            //
+            // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
+            //
+            (function(imageModel, $el, updateStatus) {
+              !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: moving selected image to trash, image id - ' + imageModel.id);
+              imageModel.save({'in_trash': true},
+                              {success: function(model, response, options) {
+                                !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
+                                var $importColEl = $el.parents('.import-collection');
+                                $el.remove();
+                                that.lastImport.remove(imageModel);
+                                $importColEl.find('.import-count').html(that.lastImport.size() + " Photos");
+                                updateStatus(0);
+                              },
+                               error: function(model, xhr, options) {
+                                !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                                updateStatus(1);
+                               }});
+            })(imageModel, selectedItem.$el, updateStatus);
+          }
+          else {
+            updateStatus(1);
+          }
+        });
+      },
+
+      //
+      // _respondToEvents: Subscribe, and respond to relevant events on the msg-bus.
+      //
       _respondToEvents: function() {
         var that = this;
         MsgBus.subscribe('_notif-api:' + '/importers',

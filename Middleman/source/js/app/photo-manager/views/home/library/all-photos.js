@@ -118,8 +118,12 @@ define(
       importRenderingIncImages: undefined,
       $importRenderingInc: undefined,
 
+      events: {
+        'click .selection-toolbar .to-trash': "_toTrashHandler"
+      },
+
       initialize: function() {
-        console.log(debugPrefix + '.initialize: initializing...');
+        !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
         var that = this;
         this.status = this.STATUS_UNRENDERED;
         this.importers = new ImportersCollection(undefined, 
@@ -160,6 +164,7 @@ define(
             }});
         };
         var onError = function() {
+          that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
         };
         this.importers.fetch({success: onSuccess,
@@ -498,6 +503,70 @@ define(
         if (_.size(this.dirtyImporters) > 0) {
           doOne(onSuccess, onError);
         }
+      },
+
+      //
+      // _toTrashHandler: Move selected images to trash.
+      //
+      _toTrashHandler: function() {
+        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+        !Plm.debug || console.log(dbgPrefix + "invoked...");
+        var that = this;
+        var selected = this._imageSelectionManager.selected();
+
+        !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
+
+        var numTodo = selected.length;
+        var numSuccess = 0;
+        var numError = 0;
+
+        var updateStatus = function(status) {
+          if (status === 0) {
+            numSuccess = numSuccess + 1;
+          }
+          else {
+            numError = numError + 1;
+          }
+          if ((numSuccess + numError) === numTodo) {
+            if (numError > 0) {
+              that._reRender();
+            }
+          }
+        };
+
+        _.each(selected, function(selectedItem) {
+          !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+          var imageModel = new ImageModel({
+            id: selectedItem.id,
+            in_trash: false
+          });
+
+          //
+          // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
+          //
+          (function(imageModel, $el, updateStatus) {
+            !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
+            imageModel.save({'in_trash': true},
+                            {success: function(model, response, options) {
+                              !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
+                              var $importColEl = $el.parents('.import-collection');
+                              $el.remove();
+                              var $photoEls = $importColEl.find('.photo');
+                              if ($photoEls.length > 0) {
+                                $importColEl.find('.import-count').html($photoEls.length + " Photos");
+                              }
+                              else {
+                                $importColEl.remove();
+                              }
+                              updateStatus(0);
+                            },
+                             error: function(model, xhr, options) {
+                               !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                               updateStatus(1);
+                             }});
+          })(imageModel, selectedItem.$el, updateStatus);
+        });
+
       },
 
       //

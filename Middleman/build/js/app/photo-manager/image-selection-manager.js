@@ -118,7 +118,7 @@ define(
       };
 
       var _unwatchImporters = function() {
-        scope.find('.plm-cb[dafta-select-scope="importer"]').off("change");
+        scope.find('.plm-cb[data-select-scope="importer"]').off("change");
       };
 
       var _watchImages = function() {
@@ -139,6 +139,30 @@ define(
 
       var _unwatchImages = function() {
         var found = scope.find('.photo .plm-cb').off("change");
+      };
+
+      //
+      // selected: Returns of selected images.
+      //
+      //  Returns: array of objects with the following attributes:
+      //    id: id to use when communicating with the Media Manager API.
+      //    el: jquery element associate with image div.
+      //
+      this.selected = function() {
+        var toReturn = [];
+        var found = scope.find('.photo .plm-cb');
+        found.each(function() {
+          if ($(this).prop('checked')) {
+            var photo = $(this).parents('.photo');
+            if (photo) {
+              toReturn.push({
+                id: photo.attr("data-id"),
+                $el: photo
+              });
+            }
+          }
+        });
+        return toReturn;
       };
 
       this.reset = function() {
