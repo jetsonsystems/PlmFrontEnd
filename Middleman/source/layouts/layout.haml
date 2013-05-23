@@ -26,14 +26,10 @@
   %body
     %section#container
 
-      %div#notifications-collection
-        %div#notification
-        %div#notification-progress
-
       %h1#logo
         %img{:src => '/imgs/PLM-Logo.png'}
 
-      = partial "html/subnav", :locals => { :view => view }
+      = partial "html/header", :locals => { :view => view }
 
       #row
 

@@ -118,7 +118,7 @@ define(
       },
 
       _enableImport: function() {
-        $("#main-button-collection .import").live("click", function(el){
+        $("#hamburger #import-button").click(function(el){
           !Plm.debug || console.log("Trying to import images...")
           window.frame.openDialog({
             type: 'open', // Either open or save
@@ -158,7 +158,7 @@ define(
       },
 
       _enableSync: function() {
-        $('#row nav a.sync').click(function(el) {
+        $('#hamburger #sync-button').click(function(el) {
           !Plm.debug || console.log('photo-manager/views/home: clicked sync!');
           $.ajax({
             url: 'http://localhost:9001/api/media-manager/v0/storage/synchronizers',
