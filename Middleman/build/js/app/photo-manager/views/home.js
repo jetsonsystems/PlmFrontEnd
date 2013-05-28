@@ -14,9 +14,10 @@ define(
     'plmCommon/msg-bus',
     'plmCommon/plm-ui',
     'app/views/home/library/last-import',
-    'app/views/home/library/all-photos'
+    'app/views/home/library/all-photos',
+    'app/views/home/library/trash'
   ],
-  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView) {
+  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView, TrashView) {
 
     var ws = undefined;
 
@@ -61,7 +62,7 @@ define(
         !Plm.debug || console.log(this.id + '.HomeView.initialize: called...');
         options = options || {};
         options.path = options.path ? options.path : 'library/all-photos';
-        !Plm.debug || console.log(this.id + '.HomeView.initialize: path - ' + this.path);
+        !Plm.debug || console.log(this.id + '.HomeView.initialize: path - ' + options.path);
         this._updateView(options.path, { render: false });
         this._enableImport();
         this._enableSync();
@@ -103,6 +104,10 @@ define(
           else if (this.path === 'library/all-photos') {
             this.contentView = new AllPhotosView();
             $("#hamburger .hamburger-item.all-photos").addClass("selected");
+          }
+          else if (this.path === 'library/trash') {
+            this.contentView = new TrashView();
+            $("#hamburger .hamburger-item.trash").addClass("selected");
           }
           else {
             !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);

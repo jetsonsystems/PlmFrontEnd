@@ -130,7 +130,7 @@ define(
                                                  {
                                                    filterWithoutStartedAt: true
                                                  });
-        this._imageSelectionManager = new ImageSelectionManager(this.$el);
+        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
             $(".selection-toolbar").show();

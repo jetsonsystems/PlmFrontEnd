@@ -153,6 +153,39 @@ body:after {
   clear: both;
 }
 
+/* line 1, _buttons.scss */
+.button-group {
+  display: inline-block;
+  margin-left: 20px;
+  list-style: none;
+}
+/* line 6, _buttons.scss */
+.button-group li {
+  float: left;
+  margin: 0 0 0 -4px;
+}
+/* line 10, _buttons.scss */
+.button-group li:first-child {
+  margin: 0px;
+}
+/* line 14, _buttons.scss */
+.button-group li .button {
+  margin: 0 8px 0 0;
+  border: 1px solid black;
+  padding: 4px;
+  cursor: pointer;
+}
+/* line 20, _buttons.scss */
+.button-group li .button.radius {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+/* line 25, _buttons.scss */
+.button-group li .button.disabled {
+  color: gray;
+  cursor: default;
+}
+
 @font-face {
   font-family: "entypo";
   src: url("/fonts/entypo/entypo-webfont.eot?") format("embedded-opentype");
@@ -307,25 +340,30 @@ hr {
 }
 
 /* line 123, _base.scss */
+.select-all {
+  display: inline-block;
+}
+
+/* line 127, _base.scss */
 .plm-cb-label {
   cursor: pointer;
   display: inline-block;
   margin: 0 0 0 15px;
 }
-/* line 124, _base.scss */
+/* line 128, _base.scss */
 .plm-cb-label .plm-cb {
   display: none;
 }
-/* line 127, _base.scss */
+/* line 131, _base.scss */
 .plm-cb-label .plm-cb:checked + span {
   background-position: -18px 0;
 }
-/* line 134, _base.scss */
+/* line 138, _base.scss */
 .plm-cb-label .cb-text {
   display: inline-block;
   font-size: 1.2em;
 }
-/* line 139, _base.scss */
+/* line 143, _base.scss */
 .plm-cb-label .cb-img {
   margin: -3px 6px 0 0;
   display: inline-block;
@@ -336,17 +374,17 @@ hr {
   background: url("../imgs/plm-cb-sprite.png") 0 0 no-repeat;
 }
 
-/* line 150, _base.scss */
+/* line 154, _base.scss */
 .selection-toolbar {
   float: right;
 }
 
-/* line 152, _base.scss */
+/* line 156, _base.scss */
 .main-select-all {
   float: left;
 }
 
-/* line 154, _base.scss */
+/* line 158, _base.scss */
 .photo-edit-panel {
   display: block;
   float: left;
@@ -356,7 +394,7 @@ hr {
   background: #555;
   border-left: 1px solid #111111;
 }
-/* line 164, _base.scss */
+/* line 168, _base.scss */
 .photo-edit-panel .edit-image {
   -webkit-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
   -moz-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.8);
@@ -370,51 +408,51 @@ hr {
   overflow: hidden;
   margin: 22px auto;
 }
-/* line 173, _base.scss */
+/* line 177, _base.scss */
 .photo-edit-panel .edit-image img {
   width: 100%;
   max-width: 100%;
   height: auto;
 }
-/* line 179, _base.scss */
+/* line 183, _base.scss */
 .photo-edit-panel .edit-image div {
   margin: -3em -4em;
   position: relative;
   max-width: none;
   height: auto;
 }
-/* line 187, _base.scss */
+/* line 191, _base.scss */
 .photo-edit-panel .edit-header {
   width: 90%;
   margin: 0 auto 11px;
   border-bottom: 1px solid #111111;
 }
-/* line 192, _base.scss */
+/* line 196, _base.scss */
 .photo-edit-panel .edit-header .edit-title {
   font-size: 30px;
   float: left;
 }
-/* line 197, _base.scss */
+/* line 201, _base.scss */
 .photo-edit-panel .edit-header .edit-actions {
   float: right;
   margin-bottom: 11px;
 }
-/* line 203, _base.scss */
+/* line 207, _base.scss */
 .photo-edit-panel .edit-form {
   width: 90%;
   margin: 0 auto;
 }
-/* line 207, _base.scss */
+/* line 211, _base.scss */
 .photo-edit-panel .edit-form label, .photo-edit-panel .edit-form input {
   float: left;
 }
-/* line 210, _base.scss */
+/* line 214, _base.scss */
 .photo-edit-panel .edit-form label {
   width: 30%;
   font-size: 13px;
   color: #d0d0d0;
 }
-/* line 211, _base.scss */
+/* line 215, _base.scss */
 .photo-edit-panel .edit-form input {
   width: 70%;
 }
@@ -431,12 +469,12 @@ hr {
 .ie7 .photo-edit-panel .edit-form input:after, .ie8 .photo-edit-panel .edit-form input:after {
   zoom: 1;
 }
-/* line 212, _base.scss */
+/* line 216, _base.scss */
 .photo-edit-panel .edit-form textarea {
   display: inline-block;
   width: 70%;
 }
-/* line 214, _base.scss */
+/* line 218, _base.scss */
 .photo-edit-panel .edit-form .row {
   margin-bottom: 2px;
 }
@@ -453,7 +491,7 @@ hr {
 .ie7 .photo-edit-panel .edit-form .row, .ie8 .photo-edit-panel .edit-form .row {
   zoom: 1;
 }
-/* line 217, _base.scss */
+/* line 221, _base.scss */
 .photo-edit-panel .edit-form .row span {
   display: block;
   width: 70%;
@@ -473,7 +511,7 @@ hr {
 .ie7 .photo-edit-panel .edit-form .row span:after, .ie8 .photo-edit-panel .edit-form .row span:after {
   zoom: 1;
 }
-/* line 221, _base.scss */
+/* line 225, _base.scss */
 .photo-edit-panel .edit-input, .photo-edit-panel .edit-ta {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -489,12 +527,12 @@ hr {
   border: none;
   color: #d0d0d0;
 }
-/* line 228, _base.scss */
+/* line 232, _base.scss */
 .photo-edit-panel .edit-form-buttons {
   margin-top: 11px;
   text-align: right;
 }
-/* line 229, _base.scss */
+/* line 233, _base.scss */
 .photo-edit-panel .edit-button {
   background-image: -webkit-linear-gradient(top, #555555, #222222);
   background-image: -moz-linear-gradient(top, #555555, #222222);
@@ -507,11 +545,11 @@ hr {
   margin-left: 6px;
   cursor: pointer;
 }
-/* line 237, _base.scss */
+/* line 241, _base.scss */
 .photo-edit-panel .edit-button:hover {
   color: #6dcff6;
 }
-/* line 241, _base.scss */
+/* line 245, _base.scss */
 .photo-edit-panel .edit-actions a {
   display: inline-block;
   width: 30px;
@@ -522,7 +560,7 @@ hr {
   cursor: pointer;
 }
 
-/* line 253, _base.scss */
+/* line 257, _base.scss */
 header {
   height: 60px;
   background: black;
@@ -531,12 +569,12 @@ header {
   width: 100%;
   z-index: 10;
 }
-/* line 261, _base.scss */
+/* line 265, _base.scss */
 header ul {
   height: 60px;
   overflow: hidden;
 }
-/* line 265, _base.scss */
+/* line 269, _base.scss */
 header ul li {
   float: left;
   font-family: 'entypo';
@@ -545,19 +583,19 @@ header ul li {
   text-align: center;
   border-top: 5px solid black;
 }
-/* line 273, _base.scss */
+/* line 277, _base.scss */
 header ul li a {
   font-family: 'entypo';
   font-size: 50px;
   display: block;
 }
-/* line 279, _base.scss */
+/* line 283, _base.scss */
 header ul li:hover, header ul li.selected {
   color: #6dcff6;
   background: #474747;
   border-top: 5px solid #6dcff6;
 }
-/* line 287, _base.scss */
+/* line 291, _base.scss */
 header div#notifications-collection {
   color: white;
   width: 300px;
@@ -576,7 +614,7 @@ header div#notifications-collection:after {
   clear: both;
   visibility: hidden;
 }
-/* line 299, _base.scss */
+/* line 303, _base.scss */
 header div#notification {
   float: left;
   text-align: right;
@@ -587,7 +625,7 @@ header div#notification {
   -webkit-animation-duration: 3s;
   -webkit-animation-iteration-count: infinite;
 }
-/* line 312, _base.scss */
+/* line 316, _base.scss */
 header div#notification-progress {
   float: right;
   width: 50px;
@@ -597,7 +635,7 @@ header div#notification-progress {
   -webkit-animation-iteration-count: infinite;
 }
 
-/* line 326, _base.scss */
+/* line 330, _base.scss */
 footer {
   *display: inline-block;
   height: 30px;
@@ -617,145 +655,145 @@ footer:after {
   clear: both;
   visibility: hidden;
 }
-/* line 337, _base.scss */
+/* line 341, _base.scss */
 footer .footer-left {
   float: left;
 }
-/* line 338, _base.scss */
+/* line 342, _base.scss */
 footer .footer-right {
   float: right;
 }
-/* line 342, _base.scss */
+/* line 346, _base.scss */
 footer ul li {
   float: left;
   font-size: 10px;
 }
-/* line 344, _base.scss */
+/* line 348, _base.scss */
 footer ul li:after {
   content: "|";
   margin-left: 5px;
   margin-right: 10px;
 }
-/* line 350, _base.scss */
+/* line 354, _base.scss */
 footer ul li:last-child:after {
   content: "";
 }
-/* line 353, _base.scss */
+/* line 357, _base.scss */
 footer ul li.location {
   margin-right: 60px;
 }
-/* line 354, _base.scss */
+/* line 358, _base.scss */
 footer ul li.location:after {
   content: "";
 }
 
-/* line 358, _base.scss */
+/* line 362, _base.scss */
 #account-collection {
   float: left;
 }
 
-/* line 359, _base.scss */
+/* line 363, _base.scss */
 #weather-collection {
   float: right;
 }
 
-/* line 361, _base.scss */
+/* line 365, _base.scss */
 #row {
   height: 100%;
   background: black;
   padding-top: 102px;
 }
 
-/* line 369, _base.scss */
+/* line 373, _base.scss */
 .navIcon {
   font-family: 'entypo';
 }
-/* line 372, _base.scss */
+/* line 376, _base.scss */
 .navIcon.home:before {
   content: "\2302";
 }
-/* line 373, _base.scss */
+/* line 377, _base.scss */
 .navIcon.arrows:before {
   content: "\21C6";
 }
-/* line 374, _base.scss */
+/* line 378, _base.scss */
 .navIcon.files:before {
   content: "\E800";
 }
-/* line 375, _base.scss */
+/* line 379, _base.scss */
 .navIcon.calendar:before {
   content: "\1F4C5";
 }
-/* line 376, _base.scss */
+/* line 380, _base.scss */
 .navIcon.list:before {
   content: "\E005";
 }
-/* line 377, _base.scss */
+/* line 381, _base.scss */
 .navIcon.music:before {
   content: "\266B";
 }
-/* line 378, _base.scss */
+/* line 382, _base.scss */
 .navIcon.dollars:before {
   content: "\1F53E";
 }
-/* line 379, _base.scss */
+/* line 383, _base.scss */
 .navIcon.globe:before {
   content: "\1F30E";
 }
-/* line 380, _base.scss */
+/* line 384, _base.scss */
 .navIcon.jumbled:before {
   content: "\268F";
 }
-/* line 381, _base.scss */
+/* line 385, _base.scss */
 .navIcon.sync:before {
   content: "\1F504";
 }
-/* line 382, _base.scss */
+/* line 386, _base.scss */
 .navIcon.gears:before {
   content: "\2699";
 }
-/* line 384, _base.scss */
+/* line 388, _base.scss */
 .navIcon.four:before {
   content: "\F601";
 }
-/* line 385, _base.scss */
+/* line 389, _base.scss */
 .navIcon.lightbulb:before {
   content: "\1F4A1";
 }
-/* line 386, _base.scss */
+/* line 390, _base.scss */
 .navIcon.thermostat:before {
   content: "\1F4FF";
 }
-/* line 387, _base.scss */
+/* line 391, _base.scss */
 .navIcon.key:before {
   content: "\1F511";
 }
-/* line 389, _base.scss */
+/* line 393, _base.scss */
 .navIcon.shield:before {
   content: "\1F512";
 }
-/* line 390, _base.scss */
+/* line 394, _base.scss */
 .navIcon.camera:before {
   content: "\1F4F7";
 }
-/* line 391, _base.scss */
+/* line 395, _base.scss */
 .navIcon.computer:before {
   content: "\1F4BB";
 }
-/* line 392, _base.scss */
+/* line 396, _base.scss */
 .navIcon.plug:before {
   content: "\26A1";
 }
-/* line 393, _base.scss */
+/* line 397, _base.scss */
 .navIcon.cloud:before {
   content: "\2601";
 }
-/* line 394, _base.scss */
+/* line 398, _base.scss */
 .navIcon.storage:before {
   content: "\1F4F8";
 }
 
-/* line 397, _base.scss */
+/* line 401, _base.scss */
 nav {
   width: 60px;
   background: black;
@@ -764,11 +802,11 @@ nav {
   top: 60px;
   z-index: 10;
 }
-/* line 405, _base.scss */
+/* line 409, _base.scss */
 nav ul {
   height: 100%;
 }
-/* line 408, _base.scss */
+/* line 412, _base.scss */
 nav ul li {
   font-family: 'entypo';
   font-size: 50px;
@@ -779,13 +817,13 @@ nav ul li {
   border-right: 5px solid black;
   cursor: pointer;
 }
-/* line 419, _base.scss */
+/* line 423, _base.scss */
 nav ul a {
   font-family: 'entypo';
   font-size: 50px;
   display: block;
 }
-/* line 425, _base.scss */
+/* line 429, _base.scss */
 nav ul li:hover, nav ul li.selected {
   color: #6dcff6;
   background: #2a2a2a;
@@ -793,13 +831,13 @@ nav ul li:hover, nav ul li.selected {
   border-left: 5px solid #6dcff6;
 }
 
-/* line 435, _base.scss */
+/* line 439, _base.scss */
 main {
   background: #474747;
   padding-left: 60px;
   height: 100%;
 }
-/* line 440, _base.scss */
+/* line 444, _base.scss */
 main #content {
   position: relative;
   min-height: 200px;
@@ -808,104 +846,104 @@ main #content {
   height: 100%;
   white-space: nowrap;
 }
-/* line 448, _base.scss */
+/* line 452, _base.scss */
 main #content #left-column {
   width: 380px;
   background: #2a2a2a;
 }
-/* line 452, _base.scss */
+/* line 456, _base.scss */
 main #content #left-column #lighting-load {
   margin-left: 15px;
   padding-top: 20px;
 }
-/* line 458, _base.scss */
+/* line 462, _base.scss */
 main #content #middle-column {
   background: #474747;
 }
-/* line 460, _base.scss */
+/* line 464, _base.scss */
 main #content #middle-column.half {
   width: 50%;
   height: 100%;
   display: block;
   float: left;
 }
-/* line 462, _base.scss */
+/* line 466, _base.scss */
 main #content #middle-column.surveillance {
   width: 300px;
   height: 100%;
   display: block;
   float: left;
 }
-/* line 464, _base.scss */
+/* line 468, _base.scss */
 main #content #middle-column #floorplan {
   padding-top: 40px;
   margin-left: 40px;
 }
-/* line 468, _base.scss */
+/* line 472, _base.scss */
 main #content #middle-column #floorplan img {
   width: 700px;
 }
-/* line 473, _base.scss */
+/* line 477, _base.scss */
 main #content #middle-column #floorplan .light, main #content #middle-column #floorplan .video {
   width: 100px;
   cursor: pointer;
 }
-/* line 477, _base.scss */
+/* line 481, _base.scss */
 main #content #middle-column #floorplan .light .title, main #content #middle-column #floorplan .video .title {
   font-size: 15px;
   text-align: center;
 }
-/* line 482, _base.scss */
+/* line 486, _base.scss */
 main #content #middle-column #floorplan .light .title:hover, main #content #middle-column #floorplan .video .title:hover {
   color: #6dcff6;
 }
-/* line 486, _base.scss */
+/* line 490, _base.scss */
 main #content #middle-column #floorplan .light .icon, main #content #middle-column #floorplan .video .icon {
   font-family: 'entypo';
   font-size: 40px;
   text-align: center;
 }
-/* line 491, _base.scss */
+/* line 495, _base.scss */
 main #content #middle-column #floorplan .light .icon:hover, main #content #middle-column #floorplan .video .icon:hover {
   color: #6dcff6;
 }
-/* line 500, _base.scss */
+/* line 504, _base.scss */
 main #content #middle-column #floorplan div#kitchen-light, main #content #middle-column #floorplan div#kitchen-video {
   margin-top: -320px;
   margin-left: 130px;
 }
-/* line 506, _base.scss */
+/* line 510, _base.scss */
 main #content #middle-column #floorplan div#dining-light, main #content #middle-column #floorplan div#dining-video {
   margin-top: 55px;
   margin-left: 90px;
 }
-/* line 512, _base.scss */
+/* line 516, _base.scss */
 main #content #middle-column #floorplan div#living-light, main #content #middle-column #floorplan div#living-video {
   margin-top: -40px;
   margin-left: 220px;
 }
-/* line 518, _base.scss */
+/* line 522, _base.scss */
 main #content #middle-column #floorplan div#entertainment-light, main #content #middle-column #floorplan div#entertainment-video {
   margin-top: 0px;
   margin-left: 410px;
 }
-/* line 524, _base.scss */
+/* line 528, _base.scss */
 main #content #middle-column #floorplan div#patio-light, main #content #middle-column #floorplan div#patio-video {
   margin-top: -300px;
   margin-left: 460px;
 }
-/* line 531, _base.scss */
+/* line 535, _base.scss */
 main #content #right-column {
   border: 1px dashed red;
   width: 380px;
 }
 
-/* line 538, _base.scss */
+/* line 542, _base.scss */
 aside {
   background: #474747;
 }
 
-/* line 542, _base.scss */
+/* line 546, _base.scss */
 #pageslide {
   display: none;
   position: fixed;
@@ -917,63 +955,63 @@ aside {
   color: #fff;
 }
 
-/* line 553, _base.scss */
+/* line 557, _base.scss */
 #hamburger {
   display: none;
 }
-/* line 556, _base.scss */
+/* line 560, _base.scss */
 #hamburger a {
   cursor: pointer;
 }
 
-/* line 559, _base.scss */
+/* line 563, _base.scss */
 .gallery-header {
   padding: 22px 0 22px;
 }
-/* line 561, _base.scss */
+/* line 565, _base.scss */
 .gallery-header:hover {
   background: #2a2a2a;
 }
 
-/* line 564, _base.scss */
-.import-collection {
+/* line 568, _base.scss */
+.import-collection, .trash-photos {
   color: #d0d0d0;
   margin-bottom: 22px;
 }
 
-/* line 568, _base.scss */
+/* line 572, _base.scss */
 .import-photos-container {
   width: 9999px;
 }
 
-/* line 571, _base.scss */
-.import-header {
+/* line 576, _base.scss */
+.import-header, .trash-photos-header {
   padding-bottom: 11px;
   margin-bottom: 11px;
   border-bottom: 1px solid #111111;
 }
 
-/* line 576, _base.scss */
-.import-count {
+/* line 582, _base.scss */
+.image-count, .import-count {
   float: left;
   text-transform: uppercase;
   font-size: 14px;
 }
 
-/* line 577, _base.scss */
+/* line 583, _base.scss */
 .import-date {
   float: left;
   margin-left: 10px;
   font-size: 14px;
 }
-/* line 582, _base.scss */
+/* line 588, _base.scss */
 .import-date span {
   font-weight: bold;
   text-transform: uppercase;
   margin-right: 5px;
 }
 
-/* line 587, _base.scss */
+/* line 593, _base.scss */
 .hamburger-section.first {
   -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -982,13 +1020,13 @@ aside {
   box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   border-bottom: 1px solid #111111;
 }
-/* line 589, _base.scss */
+/* line 595, _base.scss */
 .hamburger-section .gallery-section-title {
   font-size: 20px;
   float: left;
   margin: 0 0 0 6px;
 }
-/* line 594, _base.scss */
+/* line 600, _base.scss */
 .hamburger-section .gallery-section-title .add-gallery {
   text-shadow: 1px 2px 2px black;
   display: inline-block;
@@ -999,11 +1037,11 @@ aside {
   font-size: 50px;
   font-family: 'entypo';
 }
-/* line 604, _base.scss */
+/* line 610, _base.scss */
 .hamburger-section .gallery-section-title .add-gallery:before {
   content: "\E003";
 }
-/* line 608, _base.scss */
+/* line 614, _base.scss */
 .hamburger-section .headericon {
   font-family: 'entypo';
   color: white;
@@ -1012,11 +1050,11 @@ aside {
   line-height: 40%;
   margin-left: 11px;
 }
-/* line 615, _base.scss */
+/* line 621, _base.scss */
 .hamburger-section .headericon:before {
   content: "\E760";
 }
-/* line 618, _base.scss */
+/* line 624, _base.scss */
 .hamburger-section .gallery {
   margin: 0 0 22px 0;
   cursor: pointer;
@@ -1034,7 +1072,7 @@ aside {
 .ie7 .hamburger-section .gallery, .ie8 .hamburger-section .gallery {
   zoom: 1;
 }
-/* line 623, _base.scss */
+/* line 629, _base.scss */
 .hamburger-section .gallery .album-icon {
   display: block;
   float: left;
@@ -1042,7 +1080,7 @@ aside {
   font-size: 50px;
   line-height: 30px;
 }
-/* line 630, _base.scss */
+/* line 636, _base.scss */
 .hamburger-section .gallery .gallery-pip {
   display: block;
   float: left;
@@ -1053,27 +1091,27 @@ aside {
   line-height: 20px;
   margin-left: 20px;
 }
-/* line 641, _base.scss */
+/* line 647, _base.scss */
 .hamburger-section .gallery .gallery-pip.closed:before {
   content: "\E762";
 }
-/* line 642, _base.scss */
+/* line 648, _base.scss */
 .hamburger-section .gallery .gallery-pip.open:before {
   content: "\E760";
 }
-/* line 645, _base.scss */
+/* line 651, _base.scss */
 .hamburger-section .gallery .gallery-title {
   margin-left: 80px;
   font-size: 18px;
 }
-/* line 650, _base.scss */
+/* line 656, _base.scss */
 .hamburger-section .gallery > span {
   font-size: 10px;
   margin-left: 10px;
   display: block;
   float: left;
 }
-/* line 656, _base.scss */
+/* line 662, _base.scss */
 .hamburger-section .gallery ul {
   -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -1083,7 +1121,7 @@ aside {
   border-bottom: 1px solid #111111;
   margin-top: 22px;
 }
-/* line 659, _base.scss */
+/* line 665, _base.scss */
 .hamburger-section .album {
   -webkit-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -1094,22 +1132,22 @@ aside {
   padding: 11px 0 11px 50px;
   background: #131313;
 }
-/* line 665, _base.scss */
+/* line 671, _base.scss */
 .hamburger-section .album img {
   float: left;
   margin-bottom: 10px;
 }
-/* line 666, _base.scss */
+/* line 672, _base.scss */
 .hamburger-section .album .album-title {
   font-weight: bold;
   font-size: 14px;
   margin-left: 46px;
 }
-/* line 671, _base.scss */
+/* line 677, _base.scss */
 .hamburger-section .album .album-title:hover {
   color: #6dcff6;
 }
-/* line 673, _base.scss */
+/* line 679, _base.scss */
 .hamburger-section .album .album-date {
   display: block;
   float: left;
@@ -1118,14 +1156,14 @@ aside {
   margin-left: 10px;
   font-size: 12px;
 }
-/* line 674, _base.scss */
+/* line 680, _base.scss */
 .hamburger-section .album .album-description {
   float: left;
   margin-left: 10px;
   font-size: 12px;
 }
 
-/* line 680, _base.scss */
+/* line 686, _base.scss */
 .hamburger-header-item {
   *display: inline-block;
   padding: 22px 0 11px;
@@ -1139,12 +1177,12 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 685, _base.scss */
+/* line 691, _base.scss */
 .hamburger-header-item:hover {
   background: #2a2a2a;
   color: #6dcff6;
 }
-/* line 690, _base.scss */
+/* line 696, _base.scss */
 .hamburger-header-item .icon {
   font-family: 'entypo';
   color: white;
@@ -1152,18 +1190,18 @@ aside {
   float: left;
   line-height: 40%;
 }
-/* line 697, _base.scss */
+/* line 703, _base.scss */
 .hamburger-header-item .icon.header:before {
   content: "\E760";
 }
-/* line 700, _base.scss */
+/* line 706, _base.scss */
 .hamburger-header-item h2 {
   font-size: 20px;
   float: left;
   margin-left: 6px;
 }
 
-/* line 708, _base.scss */
+/* line 714, _base.scss */
 .hamburger-item {
   *display: inline-block;
   padding: 11px 0 11px 50px;
@@ -1176,60 +1214,60 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 712, _base.scss */
+/* line 718, _base.scss */
 .hamburger-item:hover {
   background: #2a2a2a;
   color: #6dcff6;
 }
-/* line 717, _base.scss */
+/* line 723, _base.scss */
 .hamburger-item .icon {
   font-family: 'entypo';
   font-size: 40px;
   float: left;
   line-height: 60%;
 }
-/* line 723, _base.scss */
+/* line 729, _base.scss */
 .hamburger-item .icon.photos:before {
   content: "\1F304";
 }
-/* line 724, _base.scss */
+/* line 730, _base.scss */
 .hamburger-item .icon.lastimport:before {
   content: "\1F304";
 }
-/* line 725, _base.scss */
+/* line 731, _base.scss */
 .hamburger-item .icon.uncategorized:before {
   content: "\E777";
 }
-/* line 726, _base.scss */
+/* line 732, _base.scss */
 .hamburger-item .icon.trash:before {
   content: "\E729";
 }
-/* line 729, _base.scss */
+/* line 735, _base.scss */
 .hamburger-item .text {
   margin-left: 15px;
   float: left;
 }
-/* line 733, _base.scss */
+/* line 739, _base.scss */
 .hamburger-item .text .title {
   font-size: 18px;
 }
 
-/* line 739, _base.scss */
+/* line 745, _base.scss */
 .hamburger-item.photos {
   margin-padding: 5px;
   height: 40px;
 }
-/* line 743, _base.scss */
+/* line 749, _base.scss */
 .hamburger-item.photos .icon {
   margin-top: -12px;
 }
 
-/* line 748, _base.scss */
+/* line 754, _base.scss */
 .library-buttons {
   float: left;
   margin: -6px 0 0 12px;
 }
-/* line 752, _base.scss */
+/* line 758, _base.scss */
 .library-buttons a {
   text-shadow: 1px 2px 2px black;
   display: inline-block;
@@ -1240,21 +1278,21 @@ aside {
   font-family: 'entypo';
 }
 
-/* line 767, _base.scss */
+/* line 773, _base.scss */
 #surveillance-collection {
   padding: 20px;
   padding-bottom: 0;
 }
-/* line 773, _base.scss */
+/* line 779, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium {
   border: 1px solid black;
   width: 340px;
 }
-/* line 778, _base.scss */
+/* line 784, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium:hover {
   border: 1px solid white;
 }
-/* line 782, _base.scss */
+/* line 788, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -1267,14 +1305,14 @@ aside {
   z-index: 200;
   position: absolute;
 }
-/* line 794, _base.scss */
+/* line 800, _base.scss */
 #surveillance-collection .surveillance-medium-thumb-title {
   color: white;
   text-align: center;
   padding: 10px;
 }
 
-/* line 802, _base.scss */
+/* line 808, _base.scss */
 #surveillance-thumbs-collection {
   *display: inline-block;
   padding: 20px 20px;
@@ -1288,23 +1326,23 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 807, _base.scss */
+/* line 813, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb {
   float: left;
   margin-right: 5px;
   margin-bottom: 5px;
 }
-/* line 812, _base.scss */
+/* line 818, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small {
   border: 1px solid black;
   width: 165px;
   height: 125px;
 }
-/* line 817, _base.scss */
+/* line 823, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small:hover {
   border: 1px solid white;
 }
-/* line 821, _base.scss */
+/* line 827, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -1318,19 +1356,19 @@ aside {
   position: absolute;
 }
 
-/* line 834, _base.scss */
+/* line 840, _base.scss */
 .photos-header {
   padding: 22px 0 0 10px;
   overflow: hidden;
   min-height: 75px;
 }
-/* line 839, _base.scss */
+/* line 845, _base.scss */
 .photos-header h2 {
   font-size: 25px;
   float: left;
 }
 
-/* line 843, _base.scss */
+/* line 849, _base.scss */
 .photos-collection {
   *display: inline-block;
   margin-left: 15px;
@@ -1345,16 +1383,16 @@ aside {
   visibility: hidden;
 }
 
-/* line 850, _base.scss */
+/* line 856, _base.scss */
 .photo {
   padding: 10px;
   float: left;
 }
-/* line 854, _base.scss */
+/* line 860, _base.scss */
 .photo-edit .photo {
   cursor: pointer;
 }
-/* line 856, _base.scss */
+/* line 862, _base.scss */
 .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -1363,16 +1401,16 @@ aside {
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 860, _base.scss */
+/* line 866, _base.scss */
 .photo:hover .edit-photo {
   display: block;
 }
-/* line 864, _base.scss */
+/* line 870, _base.scss */
 .photo .photo-thumbnail {
   border: 1px solid black;
 }
 
-/* line 870, _base.scss */
+/* line 876, _base.scss */
 .photo-caption {
   font-size: 13px;
   font-family: Arial;
@@ -1380,12 +1418,12 @@ aside {
   color: #c2c2c2;
   margin-top: 10px;
 }
-/* line 877, _base.scss */
+/* line 883, _base.scss */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 882, _base.scss */
+/* line 888, _base.scss */
 .photo-caption .edit-photo {
   float: right;
   margin-right: 0;
@@ -1441,7 +1479,7 @@ aside {
   border: 1px solid black;
 }
 
-/* line 48, partial/_photoManager.scss */
+/* line 44, partial/_photoManager.scss */
 .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -1450,12 +1488,12 @@ aside {
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 51, partial/_photoManager.scss */
+/* line 47, partial/_photoManager.scss */
 .photo:hover img.edit-photo {
   display: block;
 }
 
-/* line 57, partial/_photoManager.scss */
+/* line 53, partial/_photoManager.scss */
 .photo-caption {
   font-size: 13px;
   font-family: Arial;
@@ -1463,12 +1501,12 @@ aside {
   color: #c2c2c2;
   margin-top: 10px;
 }
-/* line 64, partial/_photoManager.scss */
+/* line 60, partial/_photoManager.scss */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 70, partial/_photoManager.scss */
+/* line 66, partial/_photoManager.scss */
 .photo-caption img.edit-photo {
   float: right;
   margin-right: 0;

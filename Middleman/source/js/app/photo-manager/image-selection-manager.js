@@ -12,9 +12,10 @@ define(
   [
     'jquery',
     'underscore',
-    'backbone'
+    'backbone',
+    'plmCommon/plm'
   ],
-  function($, _, Backbone) {
+  function($, _, Backbone, Plm) {
     var moduleName = 'photo-manager/image-selection-handler';
     var debugPrefix = moduleName;
 
@@ -23,7 +24,7 @@ define(
     //  Args:
     //    scope: jQuery wrapped scope.
     //
-    var ImageSelectionManager = function(scope) {
+    var ImageSelectionManager = function(scope, innerScopesSelector, innerSelectScope) {
       debugPrefix = debugPrefix + ".ImageSelectionManager";
 
       var that = this;
@@ -58,9 +59,9 @@ define(
         _anySelected = false;
         _allSelected = _doIt(scope, scope.find('.plm-cb[data-select-scope="global"]'));
 
-        var importerScopes = scope.find('.import-collection');
+        var importerScopes = scope.find(innerScopesSelector);
         importerScopes.each(function() {
-          allSelected = _doIt($(this), $(this).find('.plm-cb[data-select-scope="importer"]'));
+          allSelected = _doIt($(this), $(this).find('.plm-cb[data-select-scope="' + innerSelectScope + '"]'));
         });
         return _allSelected;
       };
@@ -69,19 +70,19 @@ define(
       // Watching of elements in scope.
       //
       var _watchGlobal = function() {
-        var dbPrefix = debugPrefix + "._watchGlobal: ";
+        var dbgPrefix = debugPrefix + "._watchGlobal: ";
 
         var found = scope.find('.plm-cb[data-select-scope="global"]');
-        console.log(dbPrefix + "Watching select all on " + found.length + " elements.");
+        !Plm.debug || console.log(dbgPrefix + "Watching select all on " + found.length + " elements.");
         found.on("change", function(ev) {
-          console.log(dbPrefix + "Select all change event detected.");
+          !Plm.debug || console.log(dbgPrefix + "Select all change event detected.");
           if ($(ev.delegateTarget).prop('checked')) {
-            console.log(dbPrefix + "Select all - checked.");
+            !Plm.debug || console.log(dbgPrefix + "Select all - checked.");
             scope.find('.plm-cb').prop('checked', true);
             _updateAllSelected();
           }
           else {
-            console.log(dbPrefix + "Select all - unchecked.");
+            !Plm.debug || console.log(dbgPrefix + "Select all - unchecked.");
             scope.find('.plm-cb').prop('checked', false);
             _updateAllSelected();
           }
@@ -93,22 +94,24 @@ define(
         scope.find('.plm-cb[dafta-select-scope="global"]').off("change");
       };
 
-      var _watchImporters = function() {
-        var dbPrefix = debugPrefix + "._watchImporters: ";
+      var _watchInnerScopes = function() {
+        var dbgPrefix = debugPrefix + "._watchInnerScopes: ";
 
-        var found = scope.find('.plm-cb[data-select-scope="importer"]');
-        console.log(dbPrefix + "Watching select all on " + found.length + " elements.");
+        !Plm.debug || console.log(dbgPrefix + "Invoking with inner select scope - " + innerSelectScope + ", inner scopes selector - " + innerScopesSelector + ".");
+
+        var found = scope.find('.plm-cb[data-select-scope="' + innerSelectScope + '"]');
+        !Plm.debug || console.log(dbgPrefix + "Watching select all on inner scope " + found.length + " elements.");
         found.on("change", function(ev) {
-          console.log(dbPrefix + "Importer select all change event detected.");
-          var importer = $(ev.delegateTarget).parents('.import-collection');
-          console.log(dbPrefix + "Importer select all foubnd - " + importer.length);
+          !Plm.debug || console.log(dbgPrefix + "Importer select all change event detected.");
+          var importer = $(ev.delegateTarget).parents(innerScopesSelector);
+          !Plm.debug || console.log(dbgPrefix + "Importer select all foubnd - " + importer.length);
           if ($(ev.delegateTarget).prop('checked')) {
-            console.log(dbPrefix + "Importer select all - checked.");
+            !Plm.debug || console.log(dbgPrefix + "Importer select all - checked.");
             importer.find('.plm-cb').prop('checked', true);
             _updateAllSelected();
           }
           else {
-            console.log(dbPrefix + "Importer select all - unchecked.");
+            !Plm.debug || console.log(dbgPrefix + "Importer select all - unchecked.");
             importer.find('.plm-cb').prop('checked', false);
             _updateAllSelected();
           }
@@ -117,19 +120,19 @@ define(
       };
 
       var _unwatchImporters = function() {
-        scope.find('.plm-cb[data-select-scope="importer"]').off("change");
+        scope.find('.plm-cb[data-select-scope="' + innerSelectScope + '"]').off("change");
       };
 
       var _watchImages = function() {
         var found = scope.find('.photo .plm-cb').on("change", function(ev) {
           if ($(ev.delegateTarget).prop('checked')) {
-            var dbPrefix = debugPrefix + "._watchImages: ";
+            var dbgPrefix = debugPrefix + "._watchImages: ";
 
-            console.log(dbPrefix + "Image - checked.");
+            !Plm.debug || console.log(dbgPrefix + "Image - checked.");
             _updateAllSelected();
           }
           else {
-            console.log(dbPrefix + "Image - unchecked.");
+            !Plm.debug || console.log(dbgPrefix + "Image - unchecked.");
             _updateAllSelected();
           }
           that.trigger('change');
@@ -164,17 +167,46 @@ define(
         return toReturn;
       };
 
+      //
+      // images: Returns images.
+      //  Args:
+      //    options:
+      //      selected: true | false, default === true
+      //      unselected: true | false, default === false
+      //
+      //  Returns: array of objects with the following attributes:
+      //    id: id to use when communicating with the Media Manager API.
+      //    el: jquery element associate with image div.
+      //
+      this.images = function(options) {
+        var options = options || { selected: true, unselected: false };
+        var toReturn = [];
+        var found = scope.find('.photo .plm-cb');
+        found.each(function() {
+          if ((options.selected && $(this).prop('checked')) || (options.unselected && !$(this).prop('checked'))) {
+            var photo = $(this).parents('.photo');
+            if (photo) {
+              toReturn.push({
+                id: photo.attr("data-id"),
+                $el: photo
+              });
+            }
+          }
+        });
+        return toReturn;
+      };
+
       this.reset = function() {
         _unwatchGlobal();
         _watchGlobal();
         _unwatchImporters();
-        _watchImporters();
+        _watchInnerScopes();
         _unwatchImages();
         _watchImages();
       };
 
       _watchGlobal();
-      _watchImporters();
+      _watchInnerScopes();
       _watchImages();
     };
 

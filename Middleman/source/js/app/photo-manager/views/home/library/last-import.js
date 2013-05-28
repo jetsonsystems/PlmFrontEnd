@@ -23,7 +23,7 @@ define(
     //
     // LastImportView: The photo-manager/home/library/last-import view.
     //
-    //  Events: All events begin with the id, ie: photo-manager/home:<event>.
+    //  Events: All events begin with the id, ie: photo-manager/home/library/last-import:<event>.
     //
     //    <id>:rendered - the view was rendered.
     //
@@ -56,7 +56,7 @@ define(
         var that = this;
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
-        this._imageSelectionManager = new ImageSelectionManager(this.$el);
+        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
             $(".selection-toolbar").show();
