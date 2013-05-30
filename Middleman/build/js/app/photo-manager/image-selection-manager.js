@@ -120,7 +120,7 @@ define(
         });
       };
 
-      var _unwatchImporters = function() {
+      var _unwatchInnerScopes = function() {
         scope.find('.plm-cb[data-select-scope="' + innerSelectScope + '"]').off("change");
       };
 
@@ -198,9 +198,12 @@ define(
       };
 
       this.reset = function() {
+        _allSelected = false;
+        _anySelected = false;
+        _updateAllSelected();
         _unwatchGlobal();
         _watchGlobal();
-        _unwatchImporters();
+        _unwatchInnerScopes();
         _watchInnerScopes();
         _unwatchImages();
         _watchImages();

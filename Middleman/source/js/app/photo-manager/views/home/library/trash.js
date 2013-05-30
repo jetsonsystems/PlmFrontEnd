@@ -178,6 +178,11 @@ define(
                                       $el.remove();
                                       that.images.remove(imageModel);
                                       $colEl.find('.image-count').html(that.images.size() + " Photos");
+                                      that._imageSelectionManager.reset();
+                                      if (!that._imageSelectionManager.anySelected()) {
+                                        $("#trash-recover-selected").addClass('disabled');
+                                        $("#trash-delete-selected").addClass('disabled');
+                                      }
                                       updateStatus(0);
                                     },
                                      error: function(model, xhr, options) {
@@ -194,6 +199,11 @@ define(
                         $el.remove();
                         that.images.remove(imageModel);
                         $colEl.find('.image-count').html(that.images.size() + "  Photos");
+                        that._imageSelectionManager.reset();
+                        if (!that._imageSelectionManager.anySelected()) {
+                          $("#trash-recover-selected").addClass('disabled');
+                          $("#trash-delete-selected").addClass('disabled');
+                        }
                         updateStatus(0);
                       },
                       error: function(model, xhr, options) {
