@@ -1,3 +1,4 @@
+
 /*
  * jQuery pageSlide
  * Version 2.0
@@ -7,7 +8,7 @@
  *
  * Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
-*/
+ */
 
 
 ;(function($){
@@ -22,17 +23,12 @@
     /*
      * Private methods
      */
-    function _load( url, useIframe, htmlToExtractHamburgerTemplateFrom ) {
+    function _load( url, useIframe ) {
         // Are we loading an element from the page or a URL?
         $pageslide = $("#pageslide").empty();
         if (url.indexOf("#") === 0 ) {
             // Load a page element
-            //console.log("Modifying contents of pageslide");
-            if(htmlToExtractHamburgerTemplateFrom) {
-                $(htmlToExtractHamburgerTemplateFrom).find(url).clone(true).appendTo( $pageslide.empty() ).show();
-            } else {
-                $(url).clone(true).appendTo( $pageslide.empty() ).show();
-            }
+            $(url).clone(true).appendTo( $pageslide.empty() ).show();
 
         } else {
             // Load a URL. Into an iframe?
@@ -89,6 +85,15 @@
         $pageslide.show()
             .animate(slideAnimateIn, speed, function() {
                 _sliding = false;
+                console.log("initializing jScrollPane FROM PLUGIN.JS");
+                console.log($("#row").children("#pageslide"));
+                console.log("Is the scope's pageslide element the same as the content pageslide?: " + ($pageslide === $("#row").children("#pageslide")));
+                window.pageSlideScrollPaneInterval = setInterval(function() {
+                    if($pageslide.jScrollPane) {
+                        $pageslide.jScrollPane();
+                        clearInterval(window.pageSlideScrollPaneInterval);
+                    }
+                }, 500);
             });
     }
 
@@ -98,11 +103,11 @@
      * Declaration
      */
     $.fn.pageslide = function(options) {
-      var $elements = this;
+        var $elements = this;
         if(_sliding) {
             $pageslide.animate({}, {queue: true, complete: _setup});
         } else {
-              _setup();
+            _setup();
         }
 
         function _setup() {
@@ -133,6 +138,7 @@
                 if ( $pageslide.is(':visible') && $self[0] == _lastCaller ) {
                     //console.log("closing");
                     // If we clicked the same element twice, toggle closed
+                    console.log("ELEMENT SAYS CLOSE");
                     $.pageslide.close();
                 } else {
                     //console.log("opening");
@@ -163,7 +169,7 @@
      */
 
     // Open the pageslide
-    $.pageslide = function( options, html ) {
+    $.pageslide = function( options ) {
         // Extend the settings with those the user has provided
         var settings = $.extend({}, $.fn.pageslide.defaults, options),
             button = $('.hamburger-button');
@@ -174,12 +180,12 @@
         if( $pageslide.is(':visible') && $pageslide.data( 'direction' ) != settings.direction) {
             //console.log("start 3");
             $.pageslide.close(function(){
-                _load( settings.href, settings.iframe, html );
+                _load( settings.href, settings.iframe );
                 _start( settings.direction, settings.speed );
             });
         } else {
             //console.log("start 4");
-            _load( settings.href, settings.iframe, html );
+            _load( settings.href, settings.iframe );
             if( $pageslide.is(':hidden') ) {
                 _start( settings.direction, settings.speed );
             }
@@ -199,6 +205,8 @@
             button = $('.hamburger-button');
 
         button.removeClass('active');
+
+        console.log("PAGESLIDE CLOSING");
 
         // If the slide isn't open, just ignore the call
         if( $pageslide.is(':hidden') || _sliding ) return;
@@ -222,6 +230,19 @@
         $body.animate(bodyAnimateIn, speed, function() {
             $pageslide.hide();
             _sliding = false;
+            console.log("destroying jsp");
+            if(typeof $pageslide.data('jsp') !== "undefined") {
+                $pageslide.data('jsp').destroy();
+            }
+
+
+            // Hack to make sure the hamburger is hidden
+            console.log($pageslide.css('display'));
+            console.log("hiding pageslide");
+
+            $("#pageslide").hide();
+            console.log($pageslide.css('display'));
+
             if( typeof callback != 'undefined' ) callback();
         });
     }
@@ -230,18 +251,26 @@
 
     // Close the pageslide if the document is clicked or the users presses the ESC key, unless the pageslide is modal
     $(document).bind('click keyup', function(e) {
+        var $pageslide = $("#pageslide"),
+            target = $(e.target),
+            isTargetHamburger = target.closest("#pageslide").length > 0;
+
         // If this is a keyup event, let's see if it's an ESC key
         if( e.type == "keyup" && e.keyCode != 27) return;
         // Make sure it's visible, and we're not modal
-        if( $pageslide.is( ':visible' ) && !$pageslide.data( 'modal' ) ) {
+        if( $pageslide.is( ':visible' ) && !$pageslide.data( 'modal' ) && !isTargetHamburger) {
+            console.log("DOCUMENT EVENT SAYS CLOSE");
             $.pageslide.close();
         }
     });
 
     // Also close the modal when the user clicks on one of the navigation menus
     $("#mainnav").bind('click', function(e) {
+        var $pageslide = $("#pageslide");
+
         // Make sure it's visible, and we're not modal
         if( $pageslide.is( ':visible' ) && !$pageslide.data( 'modal' ) ) {
+            console.log("MAINNAV EVENT SAYS CLOSE");
             $.pageslide.close();
         }
     });

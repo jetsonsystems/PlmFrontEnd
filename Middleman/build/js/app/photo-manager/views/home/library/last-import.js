@@ -87,6 +87,12 @@ define(
         };
         this.lastImport.fetch({success: onSuccess,
                                error: onError});
+
+          // After import has been rendered, assign click events to them
+          $('.import-collection').find('.import-pip').off('click').on('click', function() {
+              $(this).toggleClass('open');
+              $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+          });
         return this;
       },
 
@@ -132,6 +138,19 @@ define(
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
+
+            console.log("attemting to assign click events");
+            console.log($('.import-collection'));
+
+            setTimeout(function() {
+                // After import has been rendered, assign click events to them
+                $('.import-collection').find('.import-pip').on('click', function() {
+                    $(this).toggleClass('open');
+                    $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+                });
+            },50);
+
+
         }
       },
 
@@ -202,68 +221,263 @@ define(
         return this;
       },
 
-      //
-      // _toTrashHandler: Move selected images to trash.
-      //
-      _toTrashHandler: function() {
-        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
-        !Plm.debug || console.log(dbgPrefix + "invoked...");
-        var that = this;
-        var selected = this._imageSelectionManager.selected();
+        //
+        // _toTrashHandler: Move selected images to trash.
+        //
+        _toTrashHandler: function() {
+            var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+            !Plm.debug || console.log(dbgPrefix + "invoked...");
+            var that = this;
+            var selected = this._imageSelectionManager.selected();
 
-        !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: ' + selected.length + ' images are selected, last import collection size - ' + this.lastImport.size());
+            !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
 
-        var numTodo = selected.length;
-        var numSuccess = 0;
-        var numError = 0;
+            var numTodo = selected.length;
+            var numSuccess = 0;
+            var numError = 0;
 
-        var updateStatus = function(status) {
-          if (status === 0) {
-            numSuccess = numSuccess + 1;
-          }
-          else {
-            numError = numError + 1;
-          }
-          if ((numSuccess + numError) === numTodo) {
-            if ((numError > 0) || (that.lastImport.size() < 1)) {
-              that._reRender();
-            }
-          }
-        };
+            var updateStatus = function(status) {
+                if (status === 0) {
+                    numSuccess = numSuccess + 1;
+                }
+                else {
+                    numError = numError + 1;
+                }
+                if ((numSuccess + numError) === numTodo) {
+                    if (numError > 0) {
+                        that._reRender();
+                    }
+                }
+            };
 
-        _.each(selected, function(selectedItem) {
-          !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Attempting to locate model for selected item w/ id - ' + selectedItem.id);
-          var imageModel = that.lastImport.find(function(image) {
-            !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Testing (' + selectedItem + ', ' + image + ')');
-            !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: Testing selected item w/ id - ' + selectedItem.id + ' against image w/ id - ' + image.id);
-            return selectedItem.id === image.id;
-          });
-          if (imageModel) {
-            //
-            // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
-            //
-            (function(imageModel, $el, updateStatus) {
-              !Plm.debug || console.log('photo-manager/views/home/library/last-import._toTrashHandler: moving selected image to trash, image id - ' + imageModel.id);
-              imageModel.save({'in_trash': true},
-                              {success: function(model, response, options) {
+            var openTrashDialog = function() {
+                $(".plm-dialog.pm-trash").find(".confirm").on('click', function() {
+                    trashDialogConfirm();
+                });
+                $(".plm-dialog.pm-trash").find(".cancel").on('click', function() {
+                    closeTrashDialog();
+                });
+                $(".trashDialogBackdrop").on('click', function() {
+                    closeTrashDialog();
+                });
+                $(".plm-dialog.pm-trash").show();
+                $(".trashDialogBackdrop").show();
+
+            };
+
+            var closeTrashDialog = function() {
+                $(".plm-dialog.pm-trash").find(".confirm").off('click');
+                $(".plm-dialog.pm-trash").find(".cancel").off('click');
+                $(".trashDialogBackdrop").off('click');
+                $(".plm-dialog.pm-trash").hide();
+                $(".trashDialogBackdrop").hide();
+            };
+
+            var trashDialogConfirm = function() {
+                _.each(selected, function(selectedItem) {
+                    !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+                    var imageModel = new ImageModel({
+                        id: selectedItem.id,
+                        in_trash: false
+                    });
+
+                    //
+                    // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
+                    //
+                    (function(imageModel, $el, updateStatus) {
+                        !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
+                        imageModel.save({'in_trash': true},
+                            {success: function(model, response, options) {
                                 !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
                                 var $importColEl = $el.parents('.import-collection');
                                 $el.remove();
-                                that.lastImport.remove(imageModel);
-                                $importColEl.find('.import-count').html(that.lastImport.size() + " Photos");
+                                var $photoEls = $importColEl.find('.photo');
+                                if ($photoEls.length > 0) {
+                                    $importColEl.find('.import-count').html($photoEls.length + " Photos");
+                                }
+                                else {
+                                    $importColEl.remove();
+                                }
                                 updateStatus(0);
-                              },
-                               error: function(model, xhr, options) {
-                                !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
-                                updateStatus(1);
-                               }});
-            })(imageModel, selectedItem.$el, updateStatus);
-          }
-          else {
-            updateStatus(1);
-          }
-        });
-      },
+                            },
+                                error: function(model, xhr, options) {
+                                    !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                                    updateStatus(1);
+                                }});
+                    })(imageModel, selectedItem.$el, updateStatus);
+                });
+
+                // Close the dialog after the images have been trashed
+                closeTrashDialog();
+            };
+
+            openTrashDialog();
+
+        },
+
+        //
+        // _tagDialogHandler: Manage the tag dialog when the user clicks the Tagging icon
+        //
+        _tagDialogHandler: function() {
+
+            var selected = this._imageSelectionManager.selected(),
+                imageIds = "";
+
+            _.each(selected, function(selectedItem) {
+                imageIds += selectedItem.id+",";
+            });
+            imageIds = imageIds.substring(0, imageIds.length - 1);
+
+            var openTagDialog = function() {
+
+                // Fetch the tags for the currently selected images
+                $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
+                    if(data.tags.length > 0) {
+                        var ul = $(document.createElement('ul'));
+                        _.each(data.tags, function(tag) {
+                            var tagItem = $(document.createElement('li')).html(tag);
+                            var deleteTagButton = $(document.createElement('span')).html('x');
+                            ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
+                                var tagToDelete = tag,
+                                    tagDeleteData = JSON.stringify({
+                                        remove : {
+                                            images : [imageIds],
+                                            tags: [tagToDelete]
+                                        }
+                                    });
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: '/api/media-manager/v0/tagger',
+                                    data: tagDeleteData,
+                                    contentType: 'application/json',
+                                    success: function(data) {
+                                        tagItem.remove();
+                                    }
+                                });
+                            })));
+                        });
+                        $("#tagDialog").find('ul').remove();
+                        $("#tagDialog").find('p').remove();
+                        $("#tagDialog").find(".tagCloud").append(ul);
+                    } else {
+                        $("#tagDialog").find(".tagCloud").append("<p>This image does not have any tags associated with it. To add a tag, use the text box above.</p>");
+                    }
+
+                });
+
+                $("#tagDialog").find('.confirm').on('click', function() {
+
+                });
+                $("#tagDialog").find('.cancel').on('click', function() {
+                    closeTagDialog();
+                });
+                $(".tagDialogBackdrop").on('click', function() {
+                    closeTagDialog();
+                });
+                $("#tagDialog").show();
+                $(".tagDialogBackdrop").show();
+            };
+
+            var closeTagDialog = function() {
+                $("#tagDialog").find('.confirm').off('click');
+                $("#tagDialog").find('.cancel').off('click');
+                $(".tagDialogBackdrop").off('click');
+                $("#tagDialog").hide();
+                $(".tagDialogBackdrop").hide();
+                $("#tagDialog").find('.tagInput').off('focus').off('blur').off('keydown');
+            };
+
+            var addTagToSelectedImages = function() {
+
+            };
+
+            // Tag input functionality
+            (function(elem) {
+                var placehold = "Add New Tag";
+
+                elem.on('focus', function(e) {
+                    if(elem.val().trim() === placehold) {
+                        elem.val('').removeClass('placeholding');
+                    }
+                });
+
+                elem.on('blur', function(e) {
+                    if(elem.val().trim().length === 0) {
+                        elem.val(placehold).addClass('placeholding');
+                    }
+                });
+
+                elem.on('keydown', function(e) {
+                    var key = e.which,
+                        value = elem.val();
+
+                    // If the user hits the Enter or Tab key while
+                    // inside the tag input, add the text as a tag
+                    if (key === 9 || key === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var taggerData = JSON.stringify({
+                            add : {
+                                images : [imageIds],
+                                tags: [value]
+                            }
+                        });
+
+                        // Add tags to selected images
+                        $.ajax({
+                            type: "POST",
+                            url: '/api/media-manager/v0/tagger',
+                            data: taggerData,
+                            contentType: 'application/json',
+                            success: function(data) {
+
+                                // After the tag has been added, fetch the new tag list
+                                $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
+
+                                    elem.val('').removeClass('placeholding');
+                                    var ul = $(document.createElement('ul'));
+                                    _.each(data.tags, function(tag) {
+                                        var tagItem = $(document.createElement('li')).html(tag);
+                                        var deleteTagButton = $(document.createElement('span')).html('x');
+                                        ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
+                                            var tagToDelete = tag,
+                                                tagDeleteData = JSON.stringify({
+                                                    remove : {
+                                                        images : [imageIds],
+                                                        tags: [tagToDelete]
+                                                    }
+                                                });
+
+                                            $.ajax({
+                                                type: "POST",
+                                                url: '/api/media-manager/v0/tagger',
+                                                data: tagDeleteData,
+                                                contentType: 'application/json',
+                                                success: function(data) {
+                                                    tagItem.remove();
+                                                }
+                                            });
+                                        })));
+                                    });
+                                    $("#tagDialog").find('ul').remove();
+                                    $("#tagDialog").find('p').remove();
+                                    $("#tagDialog").find(".tagCloud").append(ul);
+                                });
+                            }
+                        });
+
+                        //TagsAPI.addTag(value);
+                    }
+                });
+
+                elem.val(placehold).addClass('placeholding');
+
+            })($("#tagDialog").find('.tagInput'));
+
+            openTagDialog();
+        },
 
       //
       // _respondToEvents: Subscribe, and respond to relevant events on the msg-bus.

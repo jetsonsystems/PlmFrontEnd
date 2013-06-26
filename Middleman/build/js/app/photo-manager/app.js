@@ -1,11 +1,12 @@
 // Filename: app.js
 //
-// photo-manager app modulie.
+// photo-manager app module.
 //
 
 define(
   [
     'jqueryPageSlide',
+    'jScrollPane',
     'jquery', 
     'underscore', 
     'backbone', 
@@ -13,7 +14,7 @@ define(
     'plmCommon/msg-bus', 
     'app/router'
   ],
-  function(PageSlide, $, _, Backbone, Plm, MsgBus, Router) {
+  function(PageSlide, jScrollPane, $, _, Backbone, Plm, MsgBus, Router) {
     !Plm.debug || console.log('/js/app/photo-manager/app: Loading, typeof MsgBus - ' + typeof(MsgBus) + ', typeof Router - ' + typeof(Router));
 
     var initialize = function() {

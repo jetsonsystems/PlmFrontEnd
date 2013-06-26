@@ -15,9 +15,11 @@ define(
     'plmCommon/plm-ui',
     'app/views/home/library/last-import',
     'app/views/home/library/all-photos',
-    'app/views/home/library/trash'
+    'app/views/home/library/trash',
+    'app/views/home/library/uncategorized',
+    'app/views/home/library/last-search'
   ],
-  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView, TrashView) {
+  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView, TrashView, UncategorizedView, LastSearchView) {
 
     var ws = undefined;
 
@@ -58,6 +60,13 @@ define(
 
       path: undefined,
 
+      // Reference to last search made by user (Note: currently does not persist between application closes)
+      lastSearch: undefined,
+
+        events: {
+            'click #search-gear-collection .search': "_toggleSearchInput"
+        },
+
       initialize: function(options) {
         !Plm.debug || console.log(this.id + '.HomeView.initialize: called...');
         options = options || {};
@@ -67,6 +76,10 @@ define(
         this._enableImport();
         this._enableSync();
         this._respondToEvents();
+
+        $("#search-gear-collection").children(".search").off('click').on('click', this._toggleSearchInput);
+        this._initializeSearchInput();
+
       },
 
       render: function() {
@@ -108,6 +121,15 @@ define(
           else if (this.path === 'library/trash') {
             this.contentView = new TrashView();
             $("#hamburger .hamburger-item.trash").addClass("selected");
+          }
+          else if (this.path === 'library/uncategorized') {
+              this.contentView = new UncategorizedView();
+              $("#hamburger .hamburger-item.uncategorized").addClass("selected");
+          }
+          else if (this.path === 'library/last-search') {
+              this.contentView = new LastSearchView();
+              console.log("LOADING LASTSEARCHVIEW");
+              $("#hamburger .hamburger-item.last-search").addClass("selected");
           }
           else {
             !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);
@@ -179,6 +201,35 @@ define(
             }
           });
         });
+      },
+
+      _toggleSearchInput: function() {
+        var gearContainer = $("#search-gear-collection");
+          gearContainer.children(".search-input").toggle();
+          gearContainer.children(".search").toggleClass('selected');
+      },
+
+      _initializeSearchInput: function() {
+          var that = this;
+          $("#search-gear-collection").children(".search-input").off('keydown').on('keydown',  function(e) {
+              var key = e.which;
+
+              if(key === 13) {
+                  !Plm.debug || console.log('_searchInputKeydown: calling _handleSearch("'+$(e.currentTarget).val()+'")');
+                  that._handleSearch($(e.currentTarget).val());
+              }
+          });
+      },
+
+      _handleSearch: function(searchTerm) {
+        // Assign the search term to local storage
+          localStorage["lastsearch"] = searchTerm;
+
+          // Forward user to the search page, which will automatically pick
+          // up the stored term
+          //this._updateView("library/last-search");
+
+          window.location = "/photos#home/library/last-search";
       },
 
       //

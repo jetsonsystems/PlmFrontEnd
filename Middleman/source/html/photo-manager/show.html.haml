@@ -8,7 +8,7 @@
   = stylesheet_link_tag "photo-manager"
 
 - content_for :hamburger_items do
-  %div.hamburger-header-item
+  %div.hamburger-header-item.lead
     .icon.header
     %h2 Library
     .library-buttons
@@ -27,7 +27,7 @@
         Last Import
 
   %div.hamburger-item
-    .icon.lastimport
+    .icon.lastimport.last-search
     %div.text
       %a{:href => "/photos#home/library/last-search", :class => "title"}
         Last Search
@@ -35,7 +35,7 @@
   %div.hamburger-item
     .icon.uncategorized
     %div.text
-      %a{:href => "#", :class => "title"}
+      %a{:href => "/photos#home/library/uncategorized", :class => "title"}
         Uncategorized
 
   %div.hamburger-item
@@ -45,3 +45,48 @@
         Trash
 
 #middle-column
+
+/**** Temporary - Needs refactoring *******/
+
+// Tag Dialog
+%div#tagDialog.PMTagDialog{:style => "display:none;"}
+  %h1.tagTitle
+    %div.plm-icon.selected.tag
+    Add New Tag
+  %div.tagBody
+    %input.tagInput
+    %div.tagCloud
+      %ul
+        %li
+    %div.tagButtons
+      %div.plm-button.cancel
+        %div.plm-icon.x
+        Cancel
+      %div.plm-button.confirm
+        %div.plm-icon.plus
+        Add
+%div.tagDialogBackdrop{:style => "display:none;"}
+
+%div.plm-dialog.pm-trash{:style => "display:none;"}
+  %h1
+    %div.plm-icon.selected.trash
+    Confirm Trash
+  %div.dialog-content
+    %div.dialog-body
+      %p Are you sure you want to send the selected photo(s) to the trash?
+    %div.dialog-buttons
+      %div.plm-button.confirm Yes
+      %div.plm-button.cancel Cancel
+%div.trashDialogBackdrop{:style => "display:none;"}
+
+%div.plm-dialog.pm-empty{:style => "display:none;"}
+  %h1
+    %div.plm-icon.selected.trash
+    Empty Trash
+  %div.dialog-content
+    %div.dialog-body
+      %p Are you sure you want to empty the trash? These photos cannot be recovered.
+    %div.dialog-buttons
+      %div.plm-button.confirm Yes
+      %div.plm-button.cancel Cancel
+%div.emptyDialogBackdrop{:style => "display:none;"}

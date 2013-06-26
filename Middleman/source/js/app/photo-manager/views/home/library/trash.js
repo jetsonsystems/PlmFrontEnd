@@ -262,20 +262,51 @@ define(
       },
 
       _emptyHandler: function() {
+
         var that = this;
         var dbgPrefix = this._debugPrefix + '._emptySelectedHandler: ';
         !Plm.debug || console.log(dbgPrefix + 'Invoked...');
 
-        if (that._processImages('delete',
-                                {
-                                  selected: true,
-                                  unselected: true
-                                }) === 0) {
-          !Plm.debug || console.log(dbgPrefix + 'Successfully emptied trash!');
-        }
-        else {
-          !Plm.debug || console.log(dbgPrefix + 'Error emptying trash!');
-        }
+          var openEmptyDialog = function() {
+              $(".plm-dialog.pm-empty").find(".confirm").on('click', function() {
+                  emptyDialogConfirm();
+              });
+              $(".plm-dialog.pm-empty").find(".cancel").on('click', function() {
+                  closeEmptyDialog();
+              });
+              $(".emptyDialogBackdrop").on('click', function() {
+                  closeEmptyDialog();
+              });
+              $(".plm-dialog.pm-empty").show();
+              $(".emptyDialogBackdrop").show();
+
+          };
+
+          var closeEmptyDialog = function() {
+              $(".plm-dialog.pm-empty").find(".confirm").off('click');
+              $(".plm-dialog.pm-empty").find(".cancel").off('click');
+              $(".emptyDialogBackdrop").off('click');
+              $(".plm-dialog.pm-empty").hide();
+              $(".emptyDialogBackdrop").hide();
+          };
+
+          var emptyDialogConfirm = function() {
+              if (that._processImages('delete',
+                  {
+                      selected: true,
+                      unselected: true
+                  }) === 0) {
+                  !Plm.debug || console.log(dbgPrefix + 'Successfully emptied trash!');
+
+
+              } else {
+                  !Plm.debug || console.log(dbgPrefix + 'Error emptying trash!');
+              }
+              closeEmptyDialog();
+          };
+
+          openEmptyDialog();
+
       }
 
     });

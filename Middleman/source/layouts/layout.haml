@@ -40,24 +40,20 @@
           %div#page-title-collection
 
             // Hamburger
-            %div.icon-button
-              %a{:href => "#hamburger", :id => "hamburger-button", :class => "hamburger-button"}
-                \&#9776
+            %a.hamburger-button.plm-icon.icon-button.hamburger{:href => "#hamburger", :id => "hamburger-button"}
 
             // Page title
             %h1
 
           %div#search-gear-collection
 
+            %input.search-input{:style => "display:none;"}
+
             // Search
-            %div.icon-button
-              %a{:href => "#"}
-                \&#128269
+            %a.plm-icon.icon-button.search
 
             // Gear
-            %div.icon-button
-              %a{:href => "#"}
-                \&#9881
+            %a.plm-icon.icon-button.gear
 
         %main#view
 

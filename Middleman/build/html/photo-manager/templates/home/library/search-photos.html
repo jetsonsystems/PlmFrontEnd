@@ -1,0 +1,12 @@
+<div class='search-photos'>
+  <div class='search-photos-header'>
+    <div class='image-count'>{{_.size(images)}} Photos</div>
+    <div class='clearfix'></div>
+  </div>
+  <div class='search-photos-collection'>
+    {% images.length && images.each(function(image) { %}
+      {{ _.template(imageTemplate, { image : image, _ : _ }) }}
+    {% }); %}
+    <div class='clearfix'></div>
+  </div>
+</div>

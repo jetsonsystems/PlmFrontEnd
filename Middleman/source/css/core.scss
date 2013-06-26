@@ -1,20 +1,26 @@
 // Project setup file
 
+
 // 1. Setup Components
 
 @import "vars";
 @import "mixins";
 
+
 // 2. Reset file
 
 @import "reset";
 
+
 // 3. Base styles
 
 @import "grid";
-@import "buttons";
 @import "base";
+
+@import "plugins";
+
 
 // 4. App-specific styles
 
-@import "partial/photoManager";
+@import "apps/property-manager/index";
+@import "apps/photo-manager/index";

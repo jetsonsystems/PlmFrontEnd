@@ -1,34 +1,20 @@
 %ul
   // Four Box
-  - is_selected = view == "dashboard" ? "selected" : "unselected"
+  - is_selected = view == "photo-manager" ? "selected" : "unselected"
   %li{:class => is_selected}
-    %a{:href => "/", :class => is_selected}
-      \&#62977
+    %a.plm-icon.dashboard{:href => "/photos", :class => is_selected}
 
   // Light Bulb
   - is_selected = view == "lighting" ? "selected" : "unselected"
   %li{:class => is_selected}
-    %a{:href => "/lighting", :class => is_selected}
-      \&#128161
-
-  // Thermostat
-  %li
-    %a{:href => "#"}
-      \&#128255
-
-  // Key for Access
-  %li
-    %a{:href => "#"}
-      \&#128273
+    %a.plm-icon.ds.disabled{:href => "/lighting", :class => is_selected}
 
   // Camera for photographs
-  - is_selected = view == "photo-manager" ? "selected" : "unselected"
+  - is_selected = view == "lighting" ? "selected" : "unselected"
   %li{:class => is_selected}
-    %a{:href => "/photos", :class => is_selected}
-      \&#128247
+    %a.plm-icon.computer.disabled{:href => "/", :class => is_selected}
 
   // Eyeball for video surveillance
   - is_selected = view == "surveillance" ? "selected" : "unselected"
   %li{:class => is_selected}
-    %a{:href => "/surveillance", :class => is_selected}
-      \&#59146
+    %a.plm-icon.camera.disabled{:href => "/surveillance", :class => is_selected}

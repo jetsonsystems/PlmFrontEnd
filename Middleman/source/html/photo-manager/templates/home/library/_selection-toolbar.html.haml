@@ -1,16 +1,6 @@
 %div{:class => "selection-toolbar", :style => "display:none"}
-  .icon-button
-    %a{:title => "Share"}
-      \&#128361
-  .icon-button
-    %a{:title => "Edit"}
-      \&#9998;
-  .icon-button
-    %a{:title => "Tag"}
-      \&#59148
-  .icon-button
-    %a{:title => "Print"}
-      \&#59158
-  .icon-button
-    %a{:class => "to-trash", :title => "Send to Trash"}
-      \&#59177
+  %a.plm-icon.icon-button.share{:title => "Share"}
+  %a.plm-icon.icon-button.edit{:title => "Edit"}
+  %a.plm-icon.icon-button.tag{:title => "Tag", :class => "tag-dialog"}
+  %a.plm-icon.icon-button.print{:title => "Print"}
+  %a.plm-icon.icon-button.trash{:class => "to-trash", :title => "Send to Trash"}

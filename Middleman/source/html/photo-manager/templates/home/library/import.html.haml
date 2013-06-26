@@ -1,6 +1,7 @@
 {% var createdAt = importer.has('created_at') ? Date.parse(importer.get('created_at')) : -1; %}
 %div{:id => "import-{{importer.id.replace('$', '')}}", :class => ["photo-manager/home/library/import", "import-collection"], "data-created_at" => "{{createdAt}}"}
   %div.import-header
+    %div.import-pip
     %div{:class => "import-count"} {{_.size(importImages)}} Photos
     %div{:class => "import-date"}
       %span Imported:
