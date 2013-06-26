@@ -2,7 +2,7 @@
   {% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; })); %}
   <img class='photo-thumbnail' src='{{thumbnail.url}}'>
   <div class='photo-caption'>
-    <label class='plm-cb-label' title="{{ image.get('name').replace(/^$/, '') }}">
+    <label class='plm-cb-label'>
       <input class='plm-cb' data-select-scope='image' type='checkbox'>
       <span class='cb-img'></span>
       <span class='cb-text'>

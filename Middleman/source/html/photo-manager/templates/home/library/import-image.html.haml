@@ -10,7 +10,7 @@
   %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
 
   %div{:class => "photo-caption"}
-    %label{ :class => "plm-cb-label" }
+    %label{ :class => "plm-cb-label", :title =>  "{{ image.get('name').replace(/^\$/, '') }}" }
       %input{ :type => "checkbox", :class => "plm-cb", "data-select-scope" => "image" }
       %span.cb-img
       %span.cb-text
