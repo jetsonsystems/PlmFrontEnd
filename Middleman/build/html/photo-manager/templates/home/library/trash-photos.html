@@ -1,0 +1,36 @@
+<div class='trash-photos'>
+  <div class='trash-photos-header'>
+    <div class='image-count'>{{_.size(images)}} Photos</div>
+    <div class='select-all'>
+      <label class='plm-cb-label'>
+        <input class='plm-cb' data-select-scope='trash' type='checkbox'>
+        <span class='cb-img'></span>
+        <span class='cb-text'>Select All</span>
+      </label>
+    </div>
+    <ul class='button-group' id='trash-actions'>
+      <li>
+        <a class='button plm-button radius disabled' id='trash-recover-selected'>
+          Recover Selected
+        </a>
+      </li>
+      <li>
+        <a class='button plm-button radius disabled' id='trash-delete-selected'>
+          Delete Selected
+        </a>
+      </li>
+      <li>
+        <a class='button plm-button radius' id='trash-empty'>
+          Empty Trash
+        </a>
+      </li>
+    </ul>
+    <div class='clearfix'></div>
+  </div>
+  <div class='trash-photos-collection'>
+    {% images.length && images.each(function(image) { %}
+      {{ _.template(imageTemplate, { image : image, _ : _ }) }}
+    {% }); %}
+    <div class='clearfix'></div>
+  </div>
+</div>

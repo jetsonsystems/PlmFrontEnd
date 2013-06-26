@@ -1,0 +1,111 @@
+!!!
+- page = ""
+- if content_for?(:page_name)
+  - page = yield_content :page_name
+  - page.chomp!
+
+- view = "__none__"
+- if content_for?(:view_name)
+  - view = yield_content :view_name
+  - view.chomp!
+
+- action = "__none__"
+- if content_for?(:action_name)
+  - action = yield_content :action_name
+  - action.chomp!
+
+%html
+  %head
+    %title
+      - page_title = "Personal Life Manager"
+      - page_title = page_title + " | #{page}" if page != ""
+      = page_title
+    = stylesheet_link_tag "core"
+    - if content_for?(:view_specific_styles)
+      = yield_content :view_specific_styles
+  %body
+    %section#container
+
+      %h1#logo
+        %img{:src => '/imgs/PLM-Logo.png'}
+
+      = partial "html/header", :locals => { :view => view }
+
+      #row
+
+        = partial "html/mainnav"
+
+        %div.title-bar
+
+          %div#page-title-collection
+
+            // Hamburger
+            %a.hamburger-button.plm-icon.icon-button.hamburger{:href => "#hamburger", :id => "hamburger-button"}
+
+            // Page title
+            %h1
+
+          %div#search-gear-collection
+
+            %input.search-input{:style => "display:none;"}
+
+            // Search
+            %a.plm-icon.icon-button.search
+
+            // Gear
+            %a.plm-icon.icon-button.gear
+
+        %main#view
+
+          %div{ :id => "content", :class => "#{view}/#{action}" }
+            = yield
+
+            %div#hamburger
+              - if content_for?(:hamburger_items)
+                = yield_content :hamburger_items
+
+        #pageslide
+
+      %footer
+        %div#account-collection
+          %ul
+            %li
+              %a
+                Account
+            %li
+              %a
+                Setup
+            %li
+              %a
+                Settings
+            %li
+              %a
+                Logout
+
+        %div#weather-collection
+          %ul
+            %li.location
+              London 4:16 PM
+            %li
+              Clear 22&deg;
+            %li
+              High 38&deg;F
+            %li
+              Low 21&deg;F
+
+    -#
+    -# Load applications.js in case there's something global that we need.
+    -#
+    = javascript_include_tag "app/application"
+    -#
+    -# For now we will assume everything conforms to requirejs loading,
+    -# see: requirejs.org/docs/api.html#jsfiles
+    -#
+    - if view != ""
+      -# Note, the use of the parenthesized version as :data-main isn't a valid symbol in a hash.
+      %script{ "data-main" => "js/app/#{view}/main.js", :src => "/js/libs/require/require.js"}
+    -#
+    -# Alternatively, we could yield using content_for for view specific JS, ie:
+    -#
+    -# = yield :view_specific_js
+    -#

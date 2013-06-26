@@ -1,0 +1,20 @@
+%ul
+  // Four Box
+  - is_selected = view == "photo-manager" ? "selected" : "unselected"
+  %li{:class => is_selected}
+    %a.plm-icon.dashboard{:href => "/photos", :class => is_selected}
+
+  // Light Bulb
+  - is_selected = view == "lighting" ? "selected" : "unselected"
+  %li{:class => is_selected}
+    %a.plm-icon.ds.disabled{:href => "/lighting", :class => is_selected}
+
+  // Camera for photographs
+  - is_selected = view == "lighting" ? "selected" : "unselected"
+  %li{:class => is_selected}
+    %a.plm-icon.computer.disabled{:href => "/", :class => is_selected}
+
+  // Eyeball for video surveillance
+  - is_selected = view == "surveillance" ? "selected" : "unselected"
+  %li{:class => is_selected}
+    %a.plm-icon.camera.disabled{:href => "/surveillance", :class => is_selected}

@@ -1,0 +1,10 @@
+%div.search-photos
+  %div.search-photos-header
+    %div{:class => "image-count"} {{_.size(images)}} Photos
+    .clearfix
+
+  %div{:class => "search-photos-collection"}
+    != '{% images.length && images.each(function(image) { %}'
+    != '  {{ _.template(imageTemplate, { image : image, _ : _ }) }}'
+    != '{% }); %}'
+    .clearfix

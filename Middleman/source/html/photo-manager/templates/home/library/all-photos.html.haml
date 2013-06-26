@@ -1,0 +1,7 @@
+.photos-header
+  %h2
+    All Photos
+  = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "global" }
+  = partial "html/photo-manager/templates/home/library/selection-toolbar"
+
+.photos-collection

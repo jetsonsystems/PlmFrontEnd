@@ -1,0 +1,12 @@
+%div.trash-photos
+  %div.trash-photos-header
+    %div{:class => "image-count"} {{_.size(images)}} Photos
+    = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "trash" }
+    = partial "html/photo-manager/templates/home/library/trash-actions"
+    .clearfix
+
+  %div{:class => "trash-photos-collection"}
+    != '{% images.length && images.each(function(image) { %}'
+    != '  {{ _.template(imageTemplate, { image : image, _ : _ }) }}'
+    != '{% }); %}'
+    .clearfix

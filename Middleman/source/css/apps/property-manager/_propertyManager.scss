@@ -1,0 +1,37 @@
+.property-manager {
+
+  h2 {
+    padding-top: $leading;
+    margin: 0 0 $leading 10px;
+    font-size: 1.75em;
+    text-shadow: 2px 2px 3px #111;
+  }
+
+  .message {
+    color: #aaa;
+    text-shadow: 1px 1px 2px #111;
+    margin-left: 10px;
+  }
+}
+
+.property {
+  margin-bottom: $leading;
+  cursor: pointer;
+
+  //&:hover {
+  //  .plm-icon { background-position: -30px -870px; }
+  //}
+  .plm-icon {
+    float: left;
+    margin-left: 38px;
+  }
+
+  h3 {
+    font-size: 1.3em;
+    margin: 0 0 0 80px;
+  }
+
+  p {
+    margin: 0 0 0 80px;
+  }
+}

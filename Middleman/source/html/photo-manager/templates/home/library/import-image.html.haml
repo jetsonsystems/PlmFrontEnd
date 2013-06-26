@@ -1,0 +1,18 @@
+-#
+-# photo-manager/templates/home/libary/import-image:
+-#
+-#  Args:
+-#    image - The image to render.
+-#
+%div{:class => "photo", "data-id" => "{{image.get('id')}}"}
+  != '{% var thumbnail = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'thumbnail.jpg\'; })); %}'
+
+  %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
+
+  %div{:class => "photo-caption"}
+    %label{ :class => "plm-cb-label", :title =>  "{{ image.get('name').replace(/^\$/, '') }}" }
+      %input{ :type => "checkbox", :class => "plm-cb", "data-select-scope" => "image" }
+      %span.cb-img
+      %span.cb-text
+        != "{{ image.get('name').replace(/^\$/, '') }}"
+    -# %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}

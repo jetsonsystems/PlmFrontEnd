@@ -1,0 +1,48 @@
+- content_for :page_name do
+  = "Lighting"
+- content_for :view_name do
+  = "lighting"
+- content_for :action_name do
+  = "show"
+
+%div#left-column
+  %div#lighting-load
+    %img{:src => '/imgs/demo/lighting/Lighting-Loads.png'}
+
+%div#middle-column
+
+  %div#floorplan
+    %img{:src => '/imgs/demo/lighting/Floorplan.png'}
+
+    %div.light#kitchen-light
+      %div.title
+        Kitchen
+      %div.icon
+        \&#128161
+
+    %div.light#dining-light
+      %div.title
+        Dining Room
+      %div.icon
+        \&#128161
+
+    %div.light#living-light
+      %div.title
+        Living Room
+      %div.icon
+        \&#128161
+
+    %div.light#entertainment-light
+      %div.title
+        Entertainment Room
+      %div.icon
+        \&#128161
+
+    %div.light#patio-light
+      %div.title
+        Patio
+      %div.icon
+        \&#128161
+
+-# %div#right-column
+  Hello
