@@ -166,7 +166,12 @@ define(
                             // After imports have been rendered, assign click events to them
                             $('.import-collection').find('.import-pip').on('click', function() {
                                 $(this).toggleClass('open');
-                                $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+                                var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+                                if(collection.hasClass('open')) {
+                                    collection.width($("#row").width());
+                                } else {
+                                    collection.css('width', '100%');
+                                }
                             });
                         }});
                 };

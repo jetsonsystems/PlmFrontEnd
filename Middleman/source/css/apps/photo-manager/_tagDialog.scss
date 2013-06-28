@@ -2,8 +2,8 @@
   @include boxShadow(0px 0px 3px #111);
 
   border: 1px solid #111;
-  position: absolute;
-  top: 10%;
+  position: fixed;
+  top: 30%;
   left: 30%;
   width: 500px;
   background: #222;
