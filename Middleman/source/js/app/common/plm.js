@@ -29,11 +29,11 @@ define(
 
     var PLM = {};
 
-    PLM.VERSION = '0.1';
+    PLM.VERSION = '0.0.8';
 
-    PLM.debug = true;
+    PLM.debug = false;
 
-    PLM.verbose = true;
+    PLM.verbose = false;
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.

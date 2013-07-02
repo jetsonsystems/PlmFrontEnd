@@ -88,16 +88,16 @@ define(
         this.lastImport.fetch({success: onSuccess,
                                error: onError});
 
-          // After imports have been rendered, assign click events to them
-          $('.import-collection').find('.import-pip').on('click', function() {
-              $(this).toggleClass('open');
-              var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
-              if(collection.hasClass('open')) {
-                  collection.width($("#row").width());
-              } else {
-                  collection.css('width', '100%');
-              }
-          });
+        // After import has been rendered, assign click events to them
+        $('.import-collection').find('.import-pip').off('click').on('click', function() {
+          $(this).toggleClass('open');
+          var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+          if(collection.hasClass('open')) {
+            collection.width($("#row").width());
+          } else {
+            collection.css('width', '100%');
+          }
+        });
         return this;
       },
 
@@ -203,7 +203,8 @@ define(
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          this.$el.find('.import-photos-collection .clearfix').before(compiledTemplate);
+          !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: Appending compiled template - ' + compiledTemplate);
+          this.$el.find('.import-photos-collection').append(compiledTemplate);
           this._imageSelectionManager.reset();
         }
         else {

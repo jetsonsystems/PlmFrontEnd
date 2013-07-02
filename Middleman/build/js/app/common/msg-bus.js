@@ -81,6 +81,8 @@ define(
 
     var _listenToApiEvents = function() {
 
+      console.log('/js/app/common/msg-bus._listenToApiEvents: listening to API events...');
+
       function isConnectionEstablished(parsedMsg) {
         return (parsedMsg.resource === '/notifications' && parsedMsg.event === 'connection.established');
       };
@@ -150,6 +152,9 @@ define(
           else {
             console.log('app/msg-bus._listToApiEvents: channel does NOT exist - ' + channel);
           }
+        }
+        else {
+          console.log('/js/app/common/msg-bus._listenToApiEvents.onmessage: message NOT understood - ' + msg.data);
         }
 
       };

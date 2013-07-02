@@ -339,7 +339,7 @@ define(
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          this.$importRenderingInc.find('.import-photos-collection .clearfix').before(compiledTemplate);
+          this.$importRenderingInc.find('.import-photos-collection').append(compiledTemplate);
         }
         return that;
       },

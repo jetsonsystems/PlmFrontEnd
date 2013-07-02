@@ -80,6 +80,6 @@ addEventListener('app-ready', function(e){
 //  will ONLY process things once.
 //
 if (window.hasOwnProperty('appReady') && window.hasOwnProperty('processedAppReady') && (processedAppReady === false)) {
-  dispatchEvent(new Event('app-ready'));
+  // dispatchEvent(new Event('app-ready'));
 }
 ;

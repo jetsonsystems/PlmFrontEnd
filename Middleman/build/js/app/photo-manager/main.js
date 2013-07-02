@@ -12,6 +12,11 @@ addEventListener('app-ready', function(e){
 
   console.log('Got app-ready event!');
 
+  if (!window.hasOwnProperty('appReady') || !window.appReady) {
+    console.log('app/photo-manager/main: App ready event is false!');
+    return;
+  }
+
   if (processedAppReady) {
     console.log('app/photo-manager/main: App ready already processed...');
     return;
@@ -82,7 +87,8 @@ addEventListener('app-ready', function(e){
 //  requireJS loads this. Hence, ensure triggering it ourself. The handler
 //  will ONLY process things once.
 //
-if (window.hasOwnProperty('appReady') && window.hasOwnProperty('processedAppReady') && (processedAppReady === false)) {
+if (window.hasOwnProperty('appReady') && window.hasOwnProperty('processedAppReady') && (window.appReady === true) && (processedAppReady === false)) {
+  console.log('app/photo-manager/main: Self dispatching app-ready');
   dispatchEvent(new Event('app-ready'));
 }
 ;
