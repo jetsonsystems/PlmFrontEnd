@@ -73,7 +73,12 @@ define(
     'postal'
   ],
   function(postal) {
-    console.log('/js/app/common/msg-bus: Loading, typeof postal - ' + typeof(postal));
+    var moduleName = '/app/common/msg-bus';
+    var debugPrefix = moduleName;
+
+    console.log(debugPrefix + ': Loading, typeof postal - ' + typeof(postal));
+
+    var uuid = require('node-uuid');
 
     var msgBus = undefined;
 
@@ -81,7 +86,8 @@ define(
 
     var _listenToApiEvents = function() {
 
-      console.log('/js/app/common/msg-bus._listenToApiEvents: listening to API events...');
+      var dp = debugPrefix + '._listToApiEvents: ';
+      console.log(dp + 'listening to API events...');
 
       function isConnectionEstablished(parsedMsg) {
         return (parsedMsg.resource === '/notifications' && parsedMsg.event === 'connection.established');
@@ -185,6 +191,11 @@ define(
     };
 
     //
+    //  Map of subscription IDs to subscriptions.
+    //
+    var subscriptions = {};
+
+    //
     // subscribe: delgate to postal.
     //
     //  Args:
@@ -192,16 +203,35 @@ define(
     //    topic: postal topic
     //    callback: f(data)
     //
+    //  Returns: subId of subscription.
+    //
     var subscribe = function(channel, topic, callback) {
       function callbackWrapper(data, envelope) {
         callback(data);
       };
-      postal.subscribe({
+
+      var subId = uuid.v4();
+
+      var sub = postal.subscribe({
         channel: channel,
         topic: topic,
         callback: callbackWrapper});
-      return this;
+
+      subscriptions[subId] = sub;
+
+      return subId;
     };
+
+    //
+    // unsubscribe: Unsubscribe given a subscription ID.
+    //
+    function unsubscribe(subId) {
+      if (_.has(subscriptions, subId)) {
+        var subscription = subscriptions[subId];
+        subscription.unsubscribe();
+        delete subscriptions[subId];
+      }
+    }
 
     //
     // publish: TBD - currently we've just implemented forwarding of API events to those whom have subscribed.
@@ -213,6 +243,7 @@ define(
     return {
       initialize: initialize,
       subscribe: subscribe,
+      unsubscribe: unsubscribe,
       publish: publish
     };
 

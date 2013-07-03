@@ -184,6 +184,12 @@ define(
                 return this;
             },
 
+          teardown: function() {
+            var that = this;
+
+            !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+          },
+
             //
             // _reRender: a combination of initialize + render to fetch
             //  the true last import and re-render the view.

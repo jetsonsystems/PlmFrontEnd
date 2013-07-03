@@ -118,6 +118,8 @@ define(
       importRenderingIncImages: undefined,
       $importRenderingInc: undefined,
 
+      subscriptions: {},
+
       events: {
         'click .selection-toolbar .to-trash': "_toTrashHandler",
         'click .selection-toolbar .tag-dialog': "_tagDialogHandler"
@@ -182,6 +184,17 @@ define(
         this.importers.fetch({success: onSuccess,
                               error: onError});
         return this;
+      },
+
+      teardown: function() {
+        var that = this;
+
+        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+
+        _.each(_.keys(that.subscriptions), function(key) {
+          MsgBus.unsubscribe(key);
+          delete that.subscriptions[key];
+        });
       },
 
       //
@@ -788,104 +801,141 @@ define(
       //
       _respondToEvents: function() {
         var that = this;
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.started',
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: import started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
-                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
-                           if (that.rendering.incremental) {
-                             that.dirty = true;
-                             that._updateDirtyImporters(msg.data.id,
-                                                        that.IMPORTER_STATUS_CREATED,
-                                                        msg.data.created_at);
-                           }
-                           else {
-                             that._startIncrementallyRenderingImport(msg.data);
-                           }
-                         });
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.image.saved',
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
-                           if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
-                             that._addToIncrementalImportRender(msg.data.doc);
-                           }
-                           else {
-                             that.dirty = true;
-                             that._updateDirtyImporters(msg.data.id,
-                                                        that.IMPORTER_STATUS_UPDATED);
-                           }
-                         });
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.completed',
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: import completed, rendering incremental - ' + that.rendering.incremental);
-                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
-                           if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
-                             that._finishIncrementalImportRender(msg.data);
-                           }
-                           else {
-                             that.dirty = true;
-                             that._updateDirtyImporters(msg.data.id,
-                                                        that.IMPORTER_STATUS_UPDATED,
-                                                        msg.data.created_at);
-                             that._renderDirtyImport(msg.data.id);
-                           }
-                         });
 
-        MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
-                         'doc.*.*',
-                         //
-                         // doc.*.* callback: Any importer / image document changes
-                         //   from a different instance of the APP. Just flag the
-                         //   view as being dirty.
-                         //
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
-                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + JSON.stringify(msg.data));
-                           var parsedEvent = msg.event.split('.');
-                           if (parsedEvent[1] === 'importer') {
-                             that.dirty = true;
-                             if (parsedEvent[2] === 'created') {
-                               that._updateDirtyImporters(msg.data.doc.id,
-                                                          that.IMPORTER_STATUS_CREATED,
-                                                          msg.data.doc.created_at);
-                             }
-                             else if (parsedEvent[2] === 'deleted') {
-                               that._updateDirtyImporters(msg.data.doc.id,
-                                                          that.IMPORTER_STATUS_DELETED);
-                             }
-                             else {
-                               that._updateDirtyImporters(msg.data.doc.id,
-                                                          that.IMPORTER_STATUS_UPDATED,
-                                                          msg.data.doc.created_at);
-                             }
-                           }
-                           else if (parsedEvent[1] === 'image') {
-                             //
-                             // Any change to an image implies the corresponding importer has changed.
-                             //
-                             !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: have image event...');
-                             that.dirty = true;
-                             if (_.has(msg.data.doc, 'importer_id')) {
-                               //
-                               // Only if we have an importer ID, do we update our dirty ones.
-                               //
-                               that._updateDirtyImporters(msg.data.doc.importer_id,
-                                                          that.IMPORTER_STATUS_UPDATED);
-                             }
-                           }
-                         });
+        var subId;
+        var channel;
+        var topic;
 
-        MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
-                         'sync.completed',
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
-                           if (that.dirty) {
-                             !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
-                             that._renderDirtyImports();
-                           }
-                         });
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.started';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 'import.started',
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
+                                   if (that.rendering.incremental) {
+                                     that.dirty = true;
+                                     that._updateDirtyImporters(msg.data.id,
+                                                                that.IMPORTER_STATUS_CREATED,
+                                                                msg.data.created_at);
+                                   }
+                                   else {
+                                     that._startIncrementallyRenderingImport(msg.data);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.image.saved';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 'import.image.saved',
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
+                                   if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
+                                     that._addToIncrementalImportRender(msg.data.doc);
+                                   }
+                                   else {
+                                     that.dirty = true;
+                                     that._updateDirtyImporters(msg.data.id,
+                                                                that.IMPORTER_STATUS_UPDATED);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.completed';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 'import.completed',
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import completed, rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
+                                   if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
+                                     that._finishIncrementalImportRender(msg.data);
+                                   }
+                                   else {
+                                     that.dirty = true;
+                                     that._updateDirtyImporters(msg.data.id,
+                                                                that.IMPORTER_STATUS_UPDATED,
+                                                                msg.data.created_at);
+                                     that._renderDirtyImport(msg.data.id);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/storage/changes-feed';
+        topic = 'doc.*.*';
+        subId = MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
+                                 'doc.*.*',
+                                 //
+                                 // doc.*.* callback: Any importer / image document changes
+                                 //   from a different instance of the APP. Just flag the
+                                 //   view as being dirty.
+                                 //
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + JSON.stringify(msg.data));
+                                   var parsedEvent = msg.event.split('.');
+                                   if (parsedEvent[1] === 'importer') {
+                                     that.dirty = true;
+                                     if (parsedEvent[2] === 'created') {
+                                       that._updateDirtyImporters(msg.data.doc.id,
+                                                                  that.IMPORTER_STATUS_CREATED,
+                                                                  msg.data.doc.created_at);
+                                     }
+                                     else if (parsedEvent[2] === 'deleted') {
+                                       that._updateDirtyImporters(msg.data.doc.id,
+                                                                  that.IMPORTER_STATUS_DELETED);
+                                     }
+                                     else {
+                                       that._updateDirtyImporters(msg.data.doc.id,
+                                                                  that.IMPORTER_STATUS_UPDATED,
+                                                                  msg.data.doc.created_at);
+                                     }
+                                   }
+                                   else if (parsedEvent[1] === 'image') {
+                                     //
+                                     // Any change to an image implies the corresponding importer has changed.
+                                     //
+                                     !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: have image event...');
+                                     that.dirty = true;
+                                     if (_.has(msg.data.doc, 'importer_id')) {
+                                       //
+                                       // Only if we have an importer ID, do we update our dirty ones.
+                                       //
+                                       that._updateDirtyImporters(msg.data.doc.importer_id,
+                                                                  that.IMPORTER_STATUS_UPDATED);
+                                     }
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/storage/synchronizers';
+        topic = 'sync.completed';
+        subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
+                                 'sync.completed',
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                                   if (that.dirty) {
+                                     !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                                     that._renderDirtyImports();
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
 
       }
 

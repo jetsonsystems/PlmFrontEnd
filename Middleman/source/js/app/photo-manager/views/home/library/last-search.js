@@ -74,6 +74,12 @@ define(
                 return this;
             },
 
+          teardown: function() {
+            var that = this;
+            
+            !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+          },
+
             _reRender: function() {
                 var that = this;
                 !Plm.debug || console.log(that._debugPrefix + '._reRender: re-rendering...');

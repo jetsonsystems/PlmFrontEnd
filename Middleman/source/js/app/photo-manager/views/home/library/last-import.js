@@ -17,7 +17,7 @@ define(
   ],
   function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
-    var moduleName = 'photo-manager/views/home/library/last-import';
+    var moduleName = '/app/photo-manager/views/home/library/last-import';
     var debugPrefix = moduleName + '.LastImportView';
 
     //
@@ -46,6 +46,8 @@ define(
       dirty: false,
 
       lastImport: undefined,
+
+      subscriptions: {},
 
       events: {
         'click .selection-toolbar .to-trash': "_toTrashHandler"
@@ -99,6 +101,21 @@ define(
           }
         });
         return this;
+      },
+
+      //
+      // teardown: Cleanup after ourselves. Should be called prior to invoking <view>.remove().
+      //  Will unsubscribe any registered subscriptions with the msg bus.
+      //
+      teardown: function() {
+        var that = this;
+
+        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+
+        _.each(_.keys(that.subscriptions), function(key) {
+          MsgBus.unsubscribe(key);
+          delete that.subscriptions[key];
+        });
       },
 
       //
@@ -490,75 +507,98 @@ define(
       //
       _respondToEvents: function() {
         var that = this;
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.started',
-                         //
-                         // import.started callback:
-                         //  Handle 2 cases:
-                         //    1. the view's status is NOT STATUS_INCREMENTALLY_RENDERING (no import is going on)
-                         //    2. the view's status is STATUS_INCREMENTALLY_RENDERING (import is in progress)
-                         //  In 2, the view will now become 'dirty'.
-                         //
-                         function(msg) {
-                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import started...');
-                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
-                           if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
-                             !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: incremental render in progress; marking view as dirty...');
-                             that.dirty = true;
-                           }
-                           else {
-                             !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: About to start incremental render...');
-                             that._startIncrementalRender(msg.data);
-                           }
-                         });
 
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.image.saved',
-                         //
-                         // import.image.saved callback:
-                         //  Handle 2 cases:
-                         //    1. Its an image associated with the current 'incremental render' which is in progress.
-                         //    2. Its an image from some other import (weird), set the view as dirty.
-                         //
-                         function(msg) {
-                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import image saved...');
-                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
-                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
-                             that._addToIncrementalRender(msg.data.doc);
-                           }
-                           else {
-                             that.dirty = true;
-                           }
-                         });
+        var subId;
+        var channel;
+        var topic;
 
-        MsgBus.subscribe('_notif-api:' + '/importers',
-                         'import.completed',
-                         //
-                         // import.completed callback:
-                         //  Again, 2 cases:
-                         //    1. Its the end of the current 'incremental render', which is inprogress:
-                         //      - finish rendering it.
-                         //      - if the view is dirty, re-render it to ensure we are show the most recent.
-                         //    2. Its the end of some other import.
-                         //      a. we have a current 'incremental render' going on:
-                         //        - mark the view as dirty.
-                         //      b. we don't have an 'incremental render' going on:
-                         //        - update the view with a new 'last import' to ensure its up to date.
-                         //
-                         function(msg) {
-                           !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed...');
-                           !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
-                           if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
-                             that._finishIncrementalRender(msg.data);
-                             !that.dirty || that._reRender();
-                           }
-                           else if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
-                             that.dirty = true;
-                           }
-                           else {
-                             that._reRender();
-                           }
-                         });
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.started';
+        subId = MsgBus.subscribe(channel,
+                                 topic,
+                                 //
+                                 // import.started callback:
+                                 //  Handle 2 cases:
+                                 //    1. the view's status is NOT STATUS_INCREMENTALLY_RENDERING (no import is going on)
+                                 //    2. the view's status is STATUS_INCREMENTALLY_RENDERING (import is in progress)
+                                 //  In 2, the view will now become 'dirty'.
+                                 //
+                                 function(msg) {
+                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import started...');
+                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
+                                     !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: incremental render in progress; marking view as dirty...');
+                                     that.dirty = true;
+                                   }
+                                   else {
+                                     !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: About to start incremental render...');
+                                     that._startIncrementalRender(msg.data);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.image.saved';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 'import.image.saved',
+                                 //
+                                 // import.image.saved callback:
+                                 //  Handle 2 cases:
+                                 //    1. Its an image associated with the current 'incremental render' which is in progress.
+                                 //    2. Its an image from some other import (weird), set the view as dirty.
+                                 //
+                                 function(msg) {
+                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import image saved...');
+                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
+                                     that._addToIncrementalRender(msg.data.doc);
+                                   }
+                                   else {
+                                     that.dirty = true;
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.completed';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 'import.completed',
+                                 //
+                                 // import.completed callback:
+                                 //  Again, 2 cases:
+                                 //    1. Its the end of the current 'incremental render', which is inprogress:
+                                 //      - finish rendering it.
+                                 //      - if the view is dirty, re-render it to ensure we are show the most recent.
+                                 //    2. Its the end of some other import.
+                                 //      a. we have a current 'incremental render' going on:
+                                 //        - mark the view as dirty.
+                                 //      b. we don't have an 'incremental render' going on:
+                                 //        - update the view with a new 'last import' to ensure its up to date.
+                                 //
+                                 function(msg) {
+                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import completed...');
+                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
+                                     that._finishIncrementalRender(msg.data);
+                                     !that.dirty || that._reRender();
+                                   }
+                                   else if (that.status === that.STATUS_INCREMENTALLY_RENDERING) {
+                                     that.dirty = true;
+                                   }
+                                   else {
+                                     that._reRender();
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
 
         //
         // Subscribe to changes feed events, where the topics can be any of:
@@ -571,35 +611,47 @@ define(
         //  that of another instance of the APP. So, the documents arrived via
         //  a sync.
         //
-        MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
-                         'doc.*.*',
-                         //
-                         // doc.*.* callback: Any importer / image document changes
-                         //   from a different instance of the APP. Just flag the
-                         //   view as being dirty.
-                         //
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
-                           !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
-                           that.dirty = true;
-                         });
+        channel = '_notif-api:' + '/storage/changes-feed';
+        topic = 'doc.*.*';
+        subId = MsgBus.subscribe('_notif-api:' + '/storage/changes-feed',
+                                 'doc.*.*',
+                                 //
+                                 // doc.*.* callback: Any importer / image document changes
+                                 //   from a different instance of the APP. Just flag the
+                                 //   view as being dirty.
+                                 //
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
+                                   that.dirty = true;
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
 
         //
         // Subscribe to sync.completed:
         //
         //  If the view is dirty, re-render it.
         //
-        MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
-                         'sync.completed',
-                         function(msg) {
-                           !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
-                           if (that.dirty) {
-                             !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
-                             if (that.status !== that.STATUS_INCREMENTALLY_RENDERING) {
-                               that._reRender();
-                             }
-                           }
-                         });
+        channel = '_notif-api:' + '/storage/synchronizers';
+        topic = 'sync.completed';
+        subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
+                                 'sync.completed',
+                                 function(msg) {
+                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                                   if (that.dirty) {
+                                     !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                                     if (that.status !== that.STATUS_INCREMENTALLY_RENDERING) {
+                                       that._reRender();
+                                     }
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
 
       }
 
