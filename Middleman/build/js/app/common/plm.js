@@ -32,9 +32,9 @@ define(
 
     PLM.VERSION = '0.0.9';
 
-    PLM.debug = false;
+    PLM.debug = true;
 
-    PLM.verbose = false;
+    PLM.verbose = true;
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.

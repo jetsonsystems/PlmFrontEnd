@@ -70,9 +70,14 @@ define(
       // Reference to last search made by user (Note: currently does not persist between application closes)
       lastSearch: undefined,
 
-        events: {
-            'click #search-gear-collection .search': "_toggleSearchInput"
-        },
+      //
+      // importInProgress: Is there an import in progress? We only allow one import to be going on.
+      //
+      importInProgress: false,
+
+      events: {
+        'click #search-gear-collection .search': "_toggleSearchInput"
+      },
 
       initialize: function(options) {
         !Plm.debug || console.log(this.id + '.HomeView.initialize: called...');
@@ -87,6 +92,13 @@ define(
         $("#search-gear-collection").children(".search").off('click').on('click', this._toggleSearchInput);
         this._initializeSearchInput();
 
+      },
+
+      //
+      // Navigate to somewhere within the photo-manager home view.
+      //
+      navigateTo: function(path) {
+        this._updateView(path, {render: true});
       },
 
       render: function() {
@@ -170,54 +182,94 @@ define(
           else {
             !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);
           }
+          if (options.render) {
+            this.render();
+          }
         }
         else {
           !Plm.debug || console.log("_updateView: nothing to do for path - " + path);
-        }
-        if (options.render) {
-          this.render();
         }
         return this;
       },
 
       _enableImport: function() {
-        $("#hamburger #import-button").click(function(el){
-          !Plm.debug || console.log("Trying to import images...")
-          window.frame.openDialog({
-            type: 'open', // Either open or save
-            title: 'Open...', // Dialog title, default is window title
-            multiSelect: false, // Allows multiple file selection
-            dirSelect:true, // Directory selector
-            initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
-          }, function( err , files ) {
+        var that = this;
 
-            var dir = String(files[0]);
-
-            !Plm.debug || console.log(">> dir: " + dir);
-
-            var payload = {
-              "import_dir" : dir
-            };
-
-            $.ajax({
-              url: 'http://localhost:9001/api/media-manager/v0/importers',
-              type: 'POST',
-              contentType: 'application/json',
-              data: JSON.stringify(payload),
-              processData: false,
-              success: function(data, textStatus, jqXHR) {
-                !Plm.debug || console.log(">> AJAX success");
-              },
-              error: function(jqXHR) {
-                !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
-              }
-            });
-
+        var openImportInProgressDialog = function() {
+          $(".plm-dialog.pm-trash").find(".ok").on('click', function() {
+            closeImportInProgressDialog();
           });
-          // End of Open Save Dialog
+          $(".importInProgressDialogBackdrop").on('click', function() {
+            closeImportInProgressDialog();
+          });
+          $(".plm-dialog.pm-import-in-progress").show();
+          $(".importInProgressDialogBackdrop").show();
+        };
 
+        var closeImportInProgressDialog = function() {
+          $(".plm-dialog.pm-import-in-progress").find(".ok").off('click');
+          $(".importInProgressDialogBackdrop").off('click');
+          $(".plm-dialog.pm-import-in-progress").hide();
+          $(".importInProgressDialogBackdrop").hide();
+        };
+
+        if (that.importInProgress) {
+          !Plm.debug || console.log(debugPrefix + "._enableImport: Import in progress, cannot re-enable!");
+          return;
+        }
+
+        $("#hamburger #import-button").removeClass('disabled');
+
+        $("#hamburger #import-button").click(function(el){
+          if (that.importInProgress) {
+            !Plm.debug || console.log(debugPrefix + "._enableImport.click: Import in progress, aborting...");
+            _openImportInProgressDialog();
+          }
+          else {
+            that.importInProgress = true;
+            that._disableImport();
+            !Plm.debug || console.log("Trying to import images...")
+            window.frame.openDialog({
+              type: 'open', // Either open or save
+              title: 'Open...', // Dialog title, default is window title
+              multiSelect: false, // Allows multiple file selection
+              dirSelect:true, // Directory selector
+              initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
+            }, function( err , files ) {
+              var dir = String(files[0]);
+
+              !Plm.debug || console.log(">> dir: " + dir);
+
+              var payload = {
+                "import_dir" : dir
+              };
+
+              $.ajax({
+                url: 'http://localhost:9001/api/media-manager/v0/importers',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                processData: false,
+                success: function(data, textStatus, jqXHR) {
+                  !Plm.debug || console.log(">> AJAX success");
+                },
+                error: function(jqXHR) {
+                  !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
+                  that.importInProgress = false;
+                  that._enableImport();
+                }
+              });
+
+            });
+            // End of Open Save Dialog
+          }
         });
         // End of button push
+      },
+
+      _disableImport: function() {
+        $("#hamburger #import-button").off('click');
+        $("#hamburger #import-button").addClass('disabled');
       },
 
       _enableSync: function() {
@@ -277,7 +329,7 @@ define(
         // Use this variable to keep track of the number of images imported
         var current_imported_images_count = 0;
         var total_images_to_import_count = 0;
-        var import_in_progress = false;
+        var importStarted = false;
         var sync_in_progress = false;
 
         var subId;
@@ -291,11 +343,11 @@ define(
                                  function(msg) {
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import started, msg.data - ' + msg.data);
 
-                                   if (import_in_progress) {
+                                   if (importStarted) {
                                      Plm.showFlash('An import is already in progress, please wait til the current import finishes!');
                                    }
                                    else {
-                                     import_in_progress = true;
+                                     importStarted = true;
                                      // $('#content-top-nav a.import').addClass('active');
                                      total_images_to_import_count = msg.data.num_to_import;
                                      PlmUI.notif.start("Now importing images",
@@ -319,7 +371,7 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.image.saved',
                                  function(msg) {
-                                   if (import_in_progress) {
+                                   if (importStarted) {
                                      current_imported_images_count++;
                                      !Plm.debug || console.log(">> Current number of images imported: " + current_imported_images_count);
                                      
@@ -340,7 +392,7 @@ define(
                                  function(msg) {
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import completed!');
 
-                                   if (import_in_progress) {
+                                   if (importStarted) {
                                      // $('#content-top-nav a.import').removeClass('active');
                                      PlmUI.notif.end("Finished importing images",
                                                      {
@@ -349,7 +401,11 @@ define(
                                      
                                      current_imported_images_count = 0;
                                      total_images_to_import_count = 0;
-                                     import_in_progress = false;
+                                     importStarted = false;
+                                   }
+                                   if (that.importInProgress) {
+                                     that.importInProgress = false;
+                                     that._enableImport();
                                    }
                                  });
         that.subscriptions[subId] = {

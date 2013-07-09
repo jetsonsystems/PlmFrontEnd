@@ -24,6 +24,11 @@ a {
   color: $white;
 
   &:hover { color: $blue; }
+
+  &.disabled {
+    color: gray;
+    cursor: default !important;
+  }
 }
 
 .selected {
