@@ -24,6 +24,12 @@ addEventListener('app-ready', function(e){
 
   processedAppReady = true;
 
+  // Hide the App Loading animation, which is shown by default
+  var loadingAnim = document.querySelectorAll('.appLoadAnimationBackdrop');
+  for(var i = 0; i < loadingAnim.length; i++) {
+      loadingAnim[i].style.display = "none";
+  }
+
   console.log('App is now ready...');
 
   // requirejs = require('requirejs');

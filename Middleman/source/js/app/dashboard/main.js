@@ -6,14 +6,14 @@
 
 // var requirejs = undefined;
 
-console.log('app/photo-manager/main: Adding app-ready event listener...');
+console.log('app/main: Adding app-ready event listener...');
 
 addEventListener('app-ready', function(e){
 
     console.log('Got app-ready event!');
 
     if (processedAppReady) {
-        console.log('app/photo-manager/main: App ready already processed...');
+        console.log('app/main: App ready already processed...');
         return;
     }
 

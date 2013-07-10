@@ -1213,3 +1213,22 @@ aside {
     display: inline-block;
   }
 }
+
+.appLoadAnimationBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 100;
+
+  .appLoadAnimation {
+    width: 220px;
+    height: 19px;
+    background: url('../imgs/app-loading.gif') 0 0 no-repeat;
+    position: absolute;
+    top: 35%;
+    left: 43%;
+  }
+}

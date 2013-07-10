@@ -1953,6 +1953,26 @@ aside {
   display: inline-block;
 }
 
+/* line 1217, _base.scss */
+.appLoadAnimationBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+}
+/* line 1226, _base.scss */
+.appLoadAnimationBackdrop .appLoadAnimation {
+  width: 220px;
+  height: 19px;
+  background: url("../imgs/app-loading.gif") 0 0 no-repeat;
+  position: absolute;
+  top: 35%;
+  left: 43%;
+}
+
 /*
  * qTip2 - Pretty powerful tooltips -
  * http://qtip2.com
