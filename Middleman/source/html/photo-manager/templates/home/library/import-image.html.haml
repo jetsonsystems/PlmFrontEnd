@@ -6,8 +6,10 @@
 -#
 %div{:class => "photo", "data-id" => "{{image.get('id')}}"}
   != '{% var thumbnail = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'thumbnail.jpg\'; })); %}'
+  != '{% var fullSmall = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'full-small.jpg\'; })); %}'
 
-  %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
+  %a{:class => "photo-link", :href => "{{fullSmall.url}}"}
+    %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
 
   %div{:class => "photo-caption"}
     %label{ :class => "plm-cb-label", :title =>  "{{ image.get('name').replace(/^\$/, '') }}" }

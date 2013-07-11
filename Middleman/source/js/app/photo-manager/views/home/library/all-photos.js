@@ -9,6 +9,7 @@ define(
     'plmCommon/plm', 
     'plmCommon/msg-bus', 
     'app/image-selection-manager',
+    'app/lightbox',
     'app/models/importer',
     'app/models/image',
     'app/collections/importers',
@@ -17,7 +18,7 @@ define(
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
     var debugPrefix = moduleName + '.AllPhotosView';
@@ -142,6 +143,7 @@ define(
             $(".selection-toolbar").hide();
           }
         });
+        this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.import-collection');
         this._respondToEvents();
       },
 
@@ -195,6 +197,9 @@ define(
           MsgBus.unsubscribe(key);
           delete that.subscriptions[key];
         });
+
+        that._lightbox.teardown();
+        that._lightbox = undefined;
       },
 
       //

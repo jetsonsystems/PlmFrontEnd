@@ -8,13 +8,14 @@ define(
     'jquery', 
     'jqueryPageSlide',
     'jScrollPane',
+    'jqueryColorbox',
     'underscore', 
     'backbone', 
     'plmCommon/plm',
     'plmCommon/msg-bus', 
     'app/router'
   ],
-  function($, PageSlide, jScrollPane, _, Backbone, Plm, MsgBus, Router) {
+  function($, PageSlide, jScrollPane, jColorbox, _, Backbone, Plm, MsgBus, Router) {
     !Plm.debug || console.log('/js/app/photo-manager/app: Loading, typeof MsgBus - ' + typeof(MsgBus) + ', typeof Router - ' + typeof(Router));
 
     var initialize = function() {
