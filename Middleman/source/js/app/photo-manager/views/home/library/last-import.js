@@ -10,13 +10,14 @@ define(
     'plmCommon/msg-bus',
     'app/image-selection-manager',
     'app/lightbox',
+    'app/tag-dialog',
     'app/models/image',
     'app/collections/last-import',
     'text!/html/photo-manager/templates/home/library/last-import.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = '/app/photo-manager/views/home/library/last-import';
     var debugPrefix = moduleName + '.LastImportView';
@@ -51,12 +52,16 @@ define(
       subscriptions: {},
 
       events: {
+        'click .selection-toolbar .tag': "_tagDialogHandler",
         'click .selection-toolbar .to-trash': "_toTrashHandler"
       },
     
       initialize: function() {
         !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
         var that = this;
+
+        _.extend(this, TagDialog.handlers);
+
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
@@ -148,7 +153,7 @@ define(
         }
         else {
           if (this.lastImport.length === 0) {
-            Plm.showFlash('You\' most recent import has no images!');
+            Plm.showFlash('You\'re most recent import has no images!');
           }
           else {
             !Plm.debug || console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + this.lastImport.importer.get('completed_at'));
@@ -249,263 +254,295 @@ define(
         return this;
       },
 
-        //
-        // _toTrashHandler: Move selected images to trash.
-        //
-        _toTrashHandler: function() {
-            var dbgPrefix = debugPrefix + "._toTrashHandler: ";
-            !Plm.debug || console.log(dbgPrefix + "invoked...");
-            var that = this;
-            var selected = this._imageSelectionManager.selected();
+      //
+      // _toTrashHandler: Move selected images to trash.
+      //
+      _toTrashHandler: function() {
+        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+        !Plm.debug || console.log(dbgPrefix + "invoked...");
+        var that = this;
+        var selected = this._imageSelectionManager.selected();
+        
+        !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
+        
+        var numTodo = selected.length;
+        var numSuccess = 0;
+        var numError = 0;
 
-            !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
+        var updateStatus = function(status) {
+          if (status === 0) {
+            numSuccess = numSuccess + 1;
+          }
+          else {
+            numError = numError + 1;
+          }
+          if ((numSuccess + numError) === numTodo) {
+            if (numError > 0) {
+              that._reRender();
+            }
+          }
+        };
 
-            var numTodo = selected.length;
-            var numSuccess = 0;
-            var numError = 0;
+        var openTrashDialog = function() {
+          $(".plm-dialog.pm-trash").find(".confirm").on('click', function() {
+            trashDialogConfirm();
+          });
+          $(".plm-dialog.pm-trash").find(".cancel").on('click', function() {
+            closeTrashDialog();
+          });
+          $(".trashDialogBackdrop").on('click', function() {
+            closeTrashDialog();
+          });
+          $(".plm-dialog.pm-trash").show();
+          $(".trashDialogBackdrop").show();
+          
+        };
 
-            var updateStatus = function(status) {
-                if (status === 0) {
-                    numSuccess = numSuccess + 1;
-                }
-                else {
-                    numError = numError + 1;
-                }
-                if ((numSuccess + numError) === numTodo) {
-                    if (numError > 0) {
-                        that._reRender();
-                    }
-                }
-            };
+        var closeTrashDialog = function() {
+          $(".plm-dialog.pm-trash").find(".confirm").off('click');
+          $(".plm-dialog.pm-trash").find(".cancel").off('click');
+          $(".trashDialogBackdrop").off('click');
+          $(".plm-dialog.pm-trash").hide();
+          $(".trashDialogBackdrop").hide();
+        };
+        
+        var trashDialogConfirm = function() {
+          _.each(selected, function(selectedItem) {
+            !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+            var imageModel = new ImageModel({
+              id: selectedItem.id,
+              in_trash: false
+            });
 
-            var openTrashDialog = function() {
-                $(".plm-dialog.pm-trash").find(".confirm").on('click', function() {
-                    trashDialogConfirm();
-                });
-                $(".plm-dialog.pm-trash").find(".cancel").on('click', function() {
-                    closeTrashDialog();
-                });
-                $(".trashDialogBackdrop").on('click', function() {
-                    closeTrashDialog();
-                });
-                $(".plm-dialog.pm-trash").show();
-                $(".trashDialogBackdrop").show();
-
-            };
-
-            var closeTrashDialog = function() {
-                $(".plm-dialog.pm-trash").find(".confirm").off('click');
-                $(".plm-dialog.pm-trash").find(".cancel").off('click');
-                $(".trashDialogBackdrop").off('click');
-                $(".plm-dialog.pm-trash").hide();
-                $(".trashDialogBackdrop").hide();
-            };
-
-            var trashDialogConfirm = function() {
-                _.each(selected, function(selectedItem) {
-                    !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
-                    var imageModel = new ImageModel({
-                        id: selectedItem.id,
-                        in_trash: false
-                    });
-
-                    //
-                    // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
-                    //
-                    (function(imageModel, $el, updateStatus) {
-                        !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
-                        imageModel.save({'in_trash': true},
-                            {success: function(model, response, options) {
+            //
+            // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
+            //
+            (function(imageModel, $el, updateStatus) {
+              !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
+              imageModel.save({'in_trash': true},
+                              {success: function(model, response, options) {
                                 !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
                                 var $importColEl = $el.parents('.import-collection');
                                 $el.remove();
                                 var $photoEls = $importColEl.find('.photo');
                                 if ($photoEls.length > 0) {
-                                    $importColEl.find('.import-count').html($photoEls.length + " Photos");
+                                  $importColEl.find('.import-count').html($photoEls.length + " Photos");
                                 }
                                 else {
-                                    $importColEl.remove();
+                                  $importColEl.remove();
                                 }
                                 updateStatus(0);
-                            },
-                                error: function(model, xhr, options) {
-                                    !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
-                                    updateStatus(1);
-                                }});
-                    })(imageModel, selectedItem.$el, updateStatus);
-                });
+                              },
+                               error: function(model, xhr, options) {
+                                 !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                                 updateStatus(1);
+                               }});
+            })(imageModel, selectedItem.$el, updateStatus);
+          });
+          
+          // Close the dialog after the images have been trashed
+          closeTrashDialog();
+        };
 
-                // Close the dialog after the images have been trashed
-                closeTrashDialog();
-            };
+        openTrashDialog();
 
-            openTrashDialog();
+      },
 
-        },
+      //
+      // _tagDialogHandler: Manage the tag dialog when the user clicks the Tagging icon
+      //
+      _tagDialogHandler_NO_LONGER_USED: function() {
 
-        //
-        // _tagDialogHandler: Manage the tag dialog when the user clicks the Tagging icon
-        //
-        _tagDialogHandler: function() {
+        var selected = this._imageSelectionManager.selected();
+        var imageIds = [];
+        var imageIdsStr = "";
 
-            var selected = this._imageSelectionManager.selected(),
-                imageIds = "";
+        _.each(selected, function(selectedItem) {
+          imageIds.push(selectedItem.id);
+          imageIdsStr += selectedItem.id+",";
+        });
+        imageIdsStr = imageIdsStr.substring(0, imageIdsStr.length - 1);
 
-            _.each(selected, function(selectedItem) {
-                imageIds += selectedItem.id+",";
+        var openTagDialog = function() {
+
+          // Fetch the tags for the currently selected images
+          $.get('/api/media-manager/v0/tags?images='+imageIdsStr, function(data) {
+            if(data.tags.length > 0) {
+              var ul = $(document.createElement('ul'));
+              _.each(data.tags, function(tag) {
+                var tagItem = $(document.createElement('li')).html(tag);
+                var deleteTagButton = $(document.createElement('span')).html('x');
+                ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
+                  var tagToDelete = tag,
+                  tagDeleteData = JSON.stringify({
+                    remove : {
+                      images : imageIds,
+                      tags: [tagToDelete]
+                    }
+                  });
+                  
+                  $.ajax({
+                    type: "POST",
+                    url: '/api/media-manager/v0/tagger',
+                    data: tagDeleteData,
+                    contentType: 'application/json',
+                    success: function(data) {
+                      tagItem.remove();
+                    }
+                  });
+                })));
+              });
+              $("#tagDialog").find('ul').remove();
+              $("#tagDialog").find('p').remove();
+              $("#tagDialog").find(".tagCloud").append(ul);
+            } else {
+              $("#tagDialog").find(".tagCloud").html("<p>This image does not have any tags associated with it. To add a tag, use the text box above.</p>");
+            }
+            
+          });
+
+          $("#tagDialog").find('.confirm').on('click', function() {
+            var tagToAdd = $('#tagDialog').find('.tagInput').val();
+            var addTagData = JSON.stringify({
+              add : {
+                images : imageIds,
+                tags: [tagToAdd]
+              }
             });
-            imageIds = imageIds.substring(0, imageIds.length - 1);
+            $.ajax({
+              type: "POST",
+              url: '/api/media-manager/v0/tagger',
+              data: addTagData,
+              contentType: 'application/json',
+              success: function(data) {
+                closeTagDialog();
+                var msg = '';
+                if (imageIds.length > 0) {
+                  msg = 'Images have been tagged with "' + tagToAdd + '".';
+                }
+                else {
+                  msg = 'Image has been tagged with "' + tagToAdd + '".';
+                }
+                Plm.showFlash(msg);
+              },
+              error: function() {
+                closeTagDialog();
+                var msg = '';
+                if (imageIds.length > 0) {
+                  msg = 'An error occurred while attempting to tag images with "' + tagToAdd + '".';
+                }
+                else {
+                  msg = 'An error occurred while attempting to tag an image with "' + tagToAdd + '".';
+                }
+                Plm.showFlash(msg);
+              }
+            });
+          });
+          $("#tagDialog").find('.cancel').on('click', function() {
+            closeTagDialog();
+          });
+          $(".tagDialogBackdrop").on('click', function() {
+            closeTagDialog();
+          });
+          $("#tagDialog").show();
+          $(".tagDialogBackdrop").show();
+        };
 
-            var openTagDialog = function() {
+        var closeTagDialog = function() {
+          $("#tagDialog").find('.confirm').off('click');
+          $("#tagDialog").find('.cancel').off('click');
+          $(".tagDialogBackdrop").off('click');
+          $("#tagDialog").hide();
+          $(".tagDialogBackdrop").hide();
+          $("#tagDialog").find('.tagInput').off('focus').off('blur').off('keydown');
+        };
 
-                // Fetch the tags for the currently selected images
-                $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
-                    if(data.tags.length > 0) {
-                        var ul = $(document.createElement('ul'));
-                        _.each(data.tags, function(tag) {
-                            var tagItem = $(document.createElement('li')).html(tag);
-                            var deleteTagButton = $(document.createElement('span')).html('x');
-                            ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
-                                var tagToDelete = tag,
-                                    tagDeleteData = JSON.stringify({
-                                        remove : {
-                                            images : [imageIds],
-                                            tags: [tagToDelete]
-                                        }
-                                    });
+        // Tag input functionality
+        (function(elem) {
+          var placehold = "Add New Tag";
+          
+          elem.on('focus', function(e) {
+            if(elem.val().trim() === placehold) {
+              elem.val('').removeClass('placeholding');
+            }
+          });
 
-                                $.ajax({
-                                    type: "POST",
-                                    url: '/api/media-manager/v0/tagger',
-                                    data: tagDeleteData,
-                                    contentType: 'application/json',
-                                    success: function(data) {
-                                        tagItem.remove();
-                                    }
-                                });
-                            })));
+          elem.on('blur', function(e) {
+            if(elem.val().trim().length === 0) {
+              elem.val(placehold).addClass('placeholding');
+            }
+          });
+          
+          elem.on('keydown', function(e) {
+            var key = e.which,
+            value = elem.val();
+            
+            // If the user hits the Enter or Tab key while
+            // inside the tag input, add the text as a tag
+            if (key === 9 || key === 13) {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              var taggerData = JSON.stringify({
+                add : {
+                  images : imageIds,
+                  tags: [value]
+                }
+              });
+              
+              // Add tags to selected images
+              $.ajax({
+                type: "POST",
+                url: '/api/media-manager/v0/tagger',
+                data: taggerData,
+                contentType: 'application/json',
+                success: function(data) {
+                  
+                  // After the tag has been added, fetch the new tag list
+                  $.get('/api/media-manager/v0/tags?images='+imageIdsStr, function(data) {
+                    
+                    elem.val('').removeClass('placeholding');
+                    var ul = $(document.createElement('ul'));
+                    _.each(data.tags, function(tag) {
+                      var tagItem = $(document.createElement('li')).html(tag);
+                      var deleteTagButton = $(document.createElement('span')).html('x');
+                      ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
+                        var tagToDelete = tag,
+                        tagDeleteData = JSON.stringify({
+                          remove : {
+                            images : imageIds,
+                            tags: [tagToDelete]
+                          }
                         });
-                        $("#tagDialog").find('ul').remove();
-                        $("#tagDialog").find('p').remove();
-                        $("#tagDialog").find(".tagCloud").append(ul);
-                    } else {
-                        $("#tagDialog").find(".tagCloud").append("<p>This image does not have any tags associated with it. To add a tag, use the text box above.</p>");
-                    }
-
-                });
-
-                $("#tagDialog").find('.confirm').on('click', function() {
-
-                });
-                $("#tagDialog").find('.cancel').on('click', function() {
-                    closeTagDialog();
-                });
-                $(".tagDialogBackdrop").on('click', function() {
-                    closeTagDialog();
-                });
-                $("#tagDialog").show();
-                $(".tagDialogBackdrop").show();
-            };
-
-            var closeTagDialog = function() {
-                $("#tagDialog").find('.confirm').off('click');
-                $("#tagDialog").find('.cancel').off('click');
-                $(".tagDialogBackdrop").off('click');
-                $("#tagDialog").hide();
-                $(".tagDialogBackdrop").hide();
-                $("#tagDialog").find('.tagInput').off('focus').off('blur').off('keydown');
-            };
-
-            var addTagToSelectedImages = function() {
-
-            };
-
-            // Tag input functionality
-            (function(elem) {
-                var placehold = "Add New Tag";
-
-                elem.on('focus', function(e) {
-                    if(elem.val().trim() === placehold) {
-                        elem.val('').removeClass('placeholding');
-                    }
-                });
-
-                elem.on('blur', function(e) {
-                    if(elem.val().trim().length === 0) {
-                        elem.val(placehold).addClass('placeholding');
-                    }
-                });
-
-                elem.on('keydown', function(e) {
-                    var key = e.which,
-                        value = elem.val();
-
-                    // If the user hits the Enter or Tab key while
-                    // inside the tag input, add the text as a tag
-                    if (key === 9 || key === 13) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        var taggerData = JSON.stringify({
-                            add : {
-                                images : [imageIds],
-                                tags: [value]
-                            }
-                        });
-
-                        // Add tags to selected images
+                        
                         $.ajax({
-                            type: "POST",
-                            url: '/api/media-manager/v0/tagger',
-                            data: taggerData,
-                            contentType: 'application/json',
-                            success: function(data) {
-
-                                // After the tag has been added, fetch the new tag list
-                                $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
-
-                                    elem.val('').removeClass('placeholding');
-                                    var ul = $(document.createElement('ul'));
-                                    _.each(data.tags, function(tag) {
-                                        var tagItem = $(document.createElement('li')).html(tag);
-                                        var deleteTagButton = $(document.createElement('span')).html('x');
-                                        ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
-                                            var tagToDelete = tag,
-                                                tagDeleteData = JSON.stringify({
-                                                    remove : {
-                                                        images : [imageIds],
-                                                        tags: [tagToDelete]
-                                                    }
-                                                });
-
-                                            $.ajax({
-                                                type: "POST",
-                                                url: '/api/media-manager/v0/tagger',
-                                                data: tagDeleteData,
-                                                contentType: 'application/json',
-                                                success: function(data) {
-                                                    tagItem.remove();
-                                                }
-                                            });
-                                        })));
-                                    });
-                                    $("#tagDialog").find('ul').remove();
-                                    $("#tagDialog").find('p').remove();
-                                    $("#tagDialog").find(".tagCloud").append(ul);
-                                });
-                            }
+                          type: "POST",
+                          url: '/api/media-manager/v0/tagger',
+                          data: tagDeleteData,
+                          contentType: 'application/json',
+                          success: function(data) {
+                            tagItem.remove();
+                          }
                         });
+                      })));
+                    });
+                    $("#tagDialog").find('ul').remove();
+                    $("#tagDialog").find('p').remove();
+                    $("#tagDialog").find(".tagCloud").append(ul);
+                  });
+                }
+              });
 
-                        //TagsAPI.addTag(value);
-                    }
-                });
+              //TagsAPI.addTag(value);
+            }
+          });
 
-                elem.val(placehold).addClass('placeholding');
+          elem.val(placehold).addClass('placeholding');
+          
+        })($("#tagDialog").find('.tagInput'));
 
-            })($("#tagDialog").find('.tagInput'));
-
-            openTagDialog();
-        },
+        openTagDialog();
+      },
 
       //
       // _respondToEvents: Subscribe, and respond to relevant events on the msg-bus.

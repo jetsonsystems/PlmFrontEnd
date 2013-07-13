@@ -72,6 +72,45 @@ h1 {
     // Background Gradient
     background-color: #292929;
     border-left: none;
+
+    #flash-notice {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin-left: 300px;
+      margin-right: 300px;
+      line-height: 42px;
+      text-align: center;
+
+      &:before {
+        content: '';
+        display: inline-block;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        height: 42px;
+        vertical-align: middle;
+      }
+
+      #flash-notice-content {
+        display: inline-block;
+        margin: 0;
+        min-width: 200px;
+        border: 1px solid #99cc99;
+        padding: 10px;
+        vertical-align: middle;
+        background: #e2f9e3;
+        color: black;
+        font-weight: normal;
+        text-align: center;
+        font-size: 1em;
+        line-height: 1em;
+        overflow: hidden;
+      }
+    }
   }
 
   #page-title-collection {

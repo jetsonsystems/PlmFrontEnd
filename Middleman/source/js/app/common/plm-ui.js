@@ -19,17 +19,12 @@ define(
     var flashInprogress = false;
 
     showFlash = function(flashContent) {
-      if ($('div.flash-notice').length === 0) {
-        $('section.container').before('<div class="flash-notice"/>');
-        $('div.flash-notice').html('<div class="flash-notice-inner twelve columns"/>');
-        $('div.flash-notice-inner').html('<div class="flash-row row"/>');
-        $('div.flash-row').html('<div class="flash-content four columns centered"/>');
-      }
-      $('div.flash-content').html(flashContent);
+      $('#flash-notice-content').html(flashContent);
       if (flashInprogress === false) {
         flashInprogress = true;
-        $('div.flash-notice').slideDown('slow');
-        $('div.flash-notice').delay(5000).slideUp('slow', function() {
+        $('#flash-notice').show();
+        $('#flash-notice').slideDown('slow');
+        $('#flash-notice').delay(5000).slideUp('slow', function() {
           flashInprogress = false;
         });
       }

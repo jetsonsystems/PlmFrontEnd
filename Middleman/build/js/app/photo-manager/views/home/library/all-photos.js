@@ -10,6 +10,7 @@ define(
     'plmCommon/msg-bus', 
     'app/image-selection-manager',
     'app/lightbox',
+    'app/tag-dialog',
     'app/models/importer',
     'app/models/image',
     'app/collections/importers',
@@ -18,7 +19,7 @@ define(
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
     var debugPrefix = moduleName + '.AllPhotosView';
@@ -122,13 +123,16 @@ define(
       subscriptions: {},
 
       events: {
-        'click .selection-toolbar .to-trash': "_toTrashHandler",
-        'click .selection-toolbar .tag-dialog': "_tagDialogHandler"
+        'click .selection-toolbar .tag': "_tagDialogHandler",
+        'click .selection-toolbar .to-trash': "_toTrashHandler"
       },
 
       initialize: function() {
         !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
         var that = this;
+
+        _.extend(this, TagDialog.handlers);
+
         this.status = this.STATUS_UNRENDERED;
         this.importers = new ImportersCollection(undefined, 
                                                  {
@@ -640,7 +644,7 @@ define(
       //
       // _tagDialogHandler: Manage the tag dialog when the user clicks the Tagging icon
       //
-      _tagDialogHandler: function() {
+      _tagDialogHandler_NO_LONGER_USED: function() {
 
           var selected = this._imageSelectionManager.selected(),
               imageIds = "";
