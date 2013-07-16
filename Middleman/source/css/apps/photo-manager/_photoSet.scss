@@ -1,0 +1,69 @@
+/*
+ * _photoSet.scss: Styling of photo sets. Could be used for an import, last search, uncategorized, trash etc.
+ *  Mostly mixins.
+ */
+
+/*
+ * Photo set collection: Container for photo-set-header, and photo-set-photos-collection.
+ */
+@mixin photo-set-collection {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+
+/*
+ * Photo Set header.
+ */
+@mixin photo-set-header {
+  padding-bottom: $leading/2;
+  margin-bottom: $leading/2;
+  border-bottom: 1px solid #111;
+}
+
+/*
+ * Photo Set header - twirl down within the header.
+ */
+@mixin photo-set-pip {
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  cursor: pointer;
+  background: url('/imgs/import-pip-sprite.png') -19px 0 no-repeat;
+  float: left;
+  margin-right: 5px;
+
+  &.open {
+    background-position: 0 0;
+  }
+}
+
+/*
+ * Photo Set header - size of the photo set.
+ */
+@mixin photo-set-size {
+  float: left; text-transform: uppercase; font-size: 14px; 
+}
+
+/*
+ * Photo Set header - date associated with the photo set.
+ */
+@mixin photo-set-date {
+  float: left;
+  margin-left: 10px;
+
+  font-size: 14px;
+  span { font-weight: bold; text-transform: uppercase; margin-right: 5px; }
+}
+
+/*
+ * Collection of phots with the photo set.
+ */
+@mixin photo-set-photos-collection {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+
+  &.open {
+    white-space: normal;
+  }
+}

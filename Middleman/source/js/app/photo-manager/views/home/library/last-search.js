@@ -97,6 +97,8 @@ define(
         };
         this.images.fetch({success: onSuccess,
                            error: onError});
+
+
         return this;
       },
 
@@ -126,6 +128,16 @@ define(
                                               imageTemplate: searchPhotoTemplate
                                             });
           this.$el.find('.search-photos').replaceWith(compiledTemplate);
+          // After view has been rendered, assign click events to show all images
+          this.$el.find('.search-photos').find('.search-photos-pip').on('click', function() {
+            $(this).toggleClass('open');
+            var collection = $(this).parent().siblings('.search-photos-collection').toggleClass('open');
+            if(collection.hasClass('open')) {
+              collection.width($("#row").width());
+            } else {
+              collection.css('width', '100%');
+            }
+          });
         }
       },
 

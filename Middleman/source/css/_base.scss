@@ -173,30 +173,6 @@ h1 {
   }
 }
 
-.import-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url('/imgs/import-pip-sprite.png') -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-
-  &.open {
-    background-position: 0 0;
-  }
-}
-
-.import-photos-collection {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-
-  &.open {
-    white-space: normal;
-  }
-}
-
 .search-input {
   @include borderRadius(3px);
   @include boxShadow(0px 1px 3px #444);
@@ -851,26 +827,9 @@ aside {
   &:hover { background: #2a2a2a; }
 }
 
-.import-collection {
-  color: #d0d0d0;
-  overflow: hidden;
-}
 .import-photos-container {
   overflow: hidden;
   width: 100%;
-}
-.import-header {
-  padding-bottom: $leading/2;
-  margin-bottom: $leading/2;
-  border-bottom: 1px solid #111;
-}
-.import-count { float: left; text-transform: uppercase; font-size: 14px; }
-.import-date {
-  float: left;
-  margin-left: 10px;
-
-  font-size: 14px;
-  span { font-weight: bold; text-transform: uppercase; margin-right: 5px; }
 }
 
 .hamburger-section {

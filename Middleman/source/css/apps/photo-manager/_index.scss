@@ -1,5 +1,48 @@
 @import "tagDialog";
 
+/*
+ * Get stypes for photo sets. Mixins to be used to style an import, last search, uncategorized, trash etc views.
+ */
+@import "photoSet";
+
+/*
+ * Apply photo set mixins to photos in an import, ie: last-import and all-photos views.
+ */
+.import-collection {
+  @include photo-set-collection;
+
+  .import-header {
+    @include photo-set-header;
+
+    .import-pip { @include photo-set-pip; }
+    .import-count { @include photo-set-size; }
+    .import-date { @include photo-set-date; }
+  }
+
+  .import-photos-collection { @include photo-set-photos-collection; }
+}
+
+/*
+ * Apply photo set mixins to photos as a result of a search.
+ */
+.search-photos {
+  @include photo-set-collection;
+
+  .search-photos-header {
+    @include photo-set-header;
+
+    .search-photos-pip {
+      @include photo-set-pip;
+    }
+    .search-photos-size {
+      @include photo-set-size;
+    }
+  }
+
+  .search-photos-collection {
+    @include photo-set-photos-collection;
+  }
+}
 
 .pm-trash {
   h1 {
