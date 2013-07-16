@@ -13,13 +13,14 @@ define(
     'plmCommon/plm', 
     'plmCommon/msg-bus',
     'plmCommon/plm-ui',
+    'app/router',
     'app/views/home/library/last-import',
     'app/views/home/library/all-photos',
     'app/views/home/library/trash',
     'app/views/home/library/uncategorized',
     'app/views/home/library/last-search'
   ],
-  function($, _, Backbone, Plm, MsgBus, PlmUI, LastImportView, AllPhotosView, TrashView, UncategorizedView, LastSearchView) {
+  function($, _, Backbone, Plm, MsgBus, PlmUI, Router, LastImportView, AllPhotosView, TrashView, UncategorizedView, LastSearchView) {
 
     var moduleName = '/app/photo-manager/views/home';
     var debugPrefix = moduleName + '.HomeView';
@@ -98,7 +99,8 @@ define(
       // Navigate to somewhere within the photo-manager home view.
       //
       navigateTo: function(path) {
-        this._updateView(path, {render: true});
+        this._updateView(path, {render: true,
+                                refresh: true});
       },
 
       render: function() {
@@ -141,11 +143,14 @@ define(
       //    path: path, ie: library/all-photos, library/last-import.
       //    options:
       //      render: true or false, default === false.
+      //      refresh: true or false, default === false. Forces refreshing the
+      //        view, ie: teardown and recreate the view even paths are the same
+      //        and then render if render is true.
       //
       _updateView: function(path, options) {
         options = options || {render: false};
         options.render = _.has(options, 'render') ? options.render : false;
-        if (this.path != path) {
+        if ((this.path != path) || options.refresh) {
           this.path = path;
 
           if (this.contentView) {
@@ -311,13 +316,27 @@ define(
 
       _handleSearch: function(searchTerm) {
         // Assign the search term to local storage
-          localStorage["lastsearch"] = searchTerm;
+        localStorage["lastsearch"] = searchTerm;
 
-          // Forward user to the search page, which will automatically pick
-          // up the stored term
-          //this._updateView("library/last-search");
-
+        // Forward user to the search page, which will automatically pick
+        // up the stored term.
+        if (window.location === "/photos#home/library/last-search") {
+          //
+          // If the location is the same, routing won't happen unless we explicitly
+          // route. We could call _updateView but the the history won't get updated
+          // so this is a bit more correct.
+          //
+          Router.navigate("/photos#home/library/last-search",
+                          {trigger: true});
+          //
+          // this._updateView("library/last-search",
+          //   {refresh: true,
+          //    render: true});
+          //
+        }
+        else {
           window.location = "/photos#home/library/last-search";
+        }
       },
 
       //

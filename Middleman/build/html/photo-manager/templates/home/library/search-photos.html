@@ -1,6 +1,13 @@
 <div class='search-photos'>
   <div class='search-photos-header'>
     <div class='image-count'>{{_.size(images)}} Photos</div>
+    <div class='select-all'>
+      <label class='plm-cb-label'>
+        <input class='plm-cb' data-select-scope='search-photos-collection' type='checkbox'>
+        <span class='cb-img'></span>
+        <span class='cb-text'>Select All</span>
+      </label>
+    </div>
     <div class='clearfix'></div>
   </div>
   <div class='search-photos-collection'>

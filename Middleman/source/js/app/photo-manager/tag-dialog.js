@@ -3,7 +3,7 @@
 //
 
 /*
- * tag-dialog: Command code related to the tag dialog.
+ * tag-dialog: Code to be mixed in via extending a view in support of the tag dialog.
  */
 
 console.log('/js/app/photo-manager/tag-dialog: Running...');
@@ -59,6 +59,9 @@ define(
                   contentType: 'application/json',
                   success: function(data) {
                     tagItem.remove();
+                  },
+                  error: function() {
+                    !Plm.debug || console.log('');
                   }
                 });
               })));

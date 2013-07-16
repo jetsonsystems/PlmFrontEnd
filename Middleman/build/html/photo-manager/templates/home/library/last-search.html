@@ -1,7 +1,14 @@
 <div class='photos-header'>
   <h2>
-    Last Search: {{searchTerm || "N/A"}}
+    Last Search: {{searchTerm || "No search results available!"}}
   </h2>
+  <div class='selection-toolbar' style='display:none'>
+    <a class='plm-icon icon-button share' title='Share'></a>
+    <a class='plm-icon icon-button edit' title='Edit'></a>
+    <a class='plm-icon icon-button tag' title='Tag'></a>
+    <a class='plm-icon icon-button print' title='Print'></a>
+    <a class='icon-button plm-icon to-trash trash' title='Send to Trash'></a>
+  </div>
 </div>
 <div class='photos-collection'>
   <div class='search-photos'></div>

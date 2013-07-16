@@ -1,6 +1,7 @@
 %div.search-photos
   %div.search-photos-header
     %div{:class => "image-count"} {{_.size(images)}} Photos
+    = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "search-photos-collection" }
     .clearfix
 
   %div{:class => "search-photos-collection"}

@@ -45,6 +45,9 @@ define(
       }
 
     });
+
+    var router;
+
     var initialize =  function() {
       !Plm.debug || console.log('/js/app/photo-manager/router: Initializing...');
       router = new Router();
@@ -52,8 +55,13 @@ define(
                               root: "/photos#home/library/all-photos"});
       router.navigate('#home/library/all-photos', {trigger: true, replace: false});
     };
+
     return {
-      initialize: initialize
+      initialize: initialize,
+      navigate: function() {
+        router.navigate.apply(router, arguments);
+      }
     };
+
   }
 );

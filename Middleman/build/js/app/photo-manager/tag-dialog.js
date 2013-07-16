@@ -3,7 +3,7 @@
 //
 
 /*
- * tag-dialog: Command code related to the tag dialog.
+ * tag-dialog: Code to be mixed in via extending a view in support of the tag dialog.
  */
 
 
@@ -60,6 +60,9 @@ define(
                   contentType: 'application/json',
                   success: function(data) {
                     tagItem.remove();
+                  },
+                  error: function() {
+                    !Plm.debug || console.log('');
                   }
                 });
               })));
@@ -89,7 +92,7 @@ define(
             success: function(data) {
               closeTagDialog();
               var msg = '';
-              if (imageIds.length > 0) {
+              if (imageIds.length > 1) {
                 msg = 'Images have been tagged with "' + tagToAdd + '".';
               }
               else {
