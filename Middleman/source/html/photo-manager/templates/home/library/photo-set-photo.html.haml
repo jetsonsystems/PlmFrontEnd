@@ -1,0 +1,20 @@
+-#
+-# photo-manager/templates/home/libary/photo-set-photo:
+-#
+-#  Args:
+-#    image - The image to render.
+-#
+%div{:class => "photo", "data-id" => "{{image.get('id')}}"}
+  != '{% var thumbnail = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'thumbnail.jpg\'; })); %}'
+  != '{% var fullSmall = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'full-small.jpg\'; })); %}'
+
+  %a{:class => "photo-link", :href => "{{fullSmall.url}}"}
+    %img{:class => "photo-thumbnail", :src => "{{thumbnail.url}}"}
+
+  %div{:class => "photo-caption"}
+    %label{ :class => "plm-cb-label" }
+      %input{ :type => "checkbox", :class => "plm-cb", "data-select-scope" => "image" }
+      %span.cb-img
+      %span.cb-text
+        != "{{ image.get('name').replace(/^\$/, '') }}"
+    -# %img{:class => "edit-photo", :src => "/imgs/Pencil.png"}

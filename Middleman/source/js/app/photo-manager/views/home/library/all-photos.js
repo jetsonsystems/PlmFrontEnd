@@ -6,8 +6,8 @@ define(
     'jquery',
     'underscore',
     'backbone',
-    'plmCommon/plm', 
-    'plmCommon/msg-bus', 
+    'plmCommon/plm',
+    'plmCommon/msg-bus',
     'app/image-selection-manager',
     'app/lightbox',
     'app/tag-dialog',
@@ -134,7 +134,7 @@ define(
         _.extend(this, TagDialog.handlers);
 
         this.status = this.STATUS_UNRENDERED;
-        this.importers = new ImportersCollection(undefined, 
+        this.importers = new ImportersCollection(undefined,
                                                  {
                                                    filterWithoutStartedAt: true
                                                  });
@@ -171,16 +171,16 @@ define(
               that._imageSelectionManager.reset();
               that.trigger(that.id + ":rendered");
 
-                // After imports have been rendered, assign click events to them
-                $('.import-collection').find('.import-pip').on('click', function() {
-                    $(this).toggleClass('open');
-                    var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
-                    if(collection.hasClass('open')) {
-                        collection.width($("#row").width());
-                    } else {
-                        collection.css('width', '100%');
-                    }
-                });
+              // After imports have been rendered, assign click events to them
+              $('.import-collection').find('.import-pip').on('click', function() {
+                $(this).toggleClass('open');
+                var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+                if(collection.hasClass('open')) {
+                  collection.width($("#row").width());
+                } else {
+                  collection.css('width', '100%');
+                }
+              });
             }});
         };
         var onError = function() {

@@ -1,0 +1,12 @@
+%div.photo-set-collection
+  %div.photo-set-header
+    %div.photo-set-pip
+    %div{:class => "photo-set-size"} {{_.size(images)}} Photos
+    = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "photo-set-collection" }
+    .clearfix
+
+  %div{:class => "photo-set-photos-collection"}
+    != '{% images.length && images.each(function(image) { %}'
+    != '  {{ _.template(photoTemplate, { image : image, _ : _ }) }}'
+    != '{% }); %}'
+    .clearfix

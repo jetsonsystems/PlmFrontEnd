@@ -44,6 +44,28 @@
   }
 }
 
+/*
+ * Apply photo set mixins to generic classes in case we just do it vanilla, ie: don't want to override anything.
+ */
+.photo-set-collection {
+  @include photo-set-collection;
+
+  .photo-set-header {
+    @include photo-set-header;
+
+    .photo-set-pip {
+      @include photo-set-pip;
+    }
+    .photo-set-size {
+      @include photo-set-size;
+    }
+  }
+
+  .photo-set-photos-collection {
+    @include photo-set-photos-collection;
+  }
+}
+
 .pm-trash {
   h1 {
     padding-left: 30px;

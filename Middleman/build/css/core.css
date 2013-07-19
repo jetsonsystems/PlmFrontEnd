@@ -3474,11 +3474,56 @@ aside {
   white-space: normal;
 }
 
-/* line 48, apps/photo-manager/_index.scss */
+/*
+ * Apply photo set mixins to generic classes in case we just do it vanilla, ie: don't want to override anything.
+ */
+/* line 50, apps/photo-manager/_index.scss */
+.photo-set-collection {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+/* line 53, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+}
+/* line 56, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header .photo-set-pip {
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  cursor: pointer;
+  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
+  float: left;
+  margin-right: 5px;
+}
+/* line 36, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-header .photo-set-pip.open {
+  background-position: 0 0;
+}
+/* line 59, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header .photo-set-size {
+  float: left;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+/* line 64, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-photos-collection {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* line 67, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection.open {
+  white-space: normal;
+}
+
+/* line 70, apps/photo-manager/_index.scss */
 .pm-trash h1 {
   padding-left: 30px;
 }
-/* line 50, apps/photo-manager/_index.scss */
+/* line 72, apps/photo-manager/_index.scss */
 .pm-trash h1 .plm-icon {
   position: absolute;
   top: 2px;
