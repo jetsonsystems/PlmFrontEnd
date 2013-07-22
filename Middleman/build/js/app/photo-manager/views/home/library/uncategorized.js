@@ -50,8 +50,12 @@ define(
 
         var that = this;
 
-        _.extend(this, TagDialog.handlers);
-        _.extend(this, Trash.handlers);
+        _.extend(this, TagDialog.handlersFactory(function() {
+          that._onTagDialogClose.apply(that, arguments);
+        }));
+        _.extend(this, Trash.handlersFactory('.photo-set-collection',
+                                             '.photo-set-size',
+                                             '.photo'));
 
         this.images = new UncategorizedImagesCollection();
 
@@ -69,7 +73,7 @@ define(
 
       render: function() {
         var that = this;
-        var dbgPrefix = this._debugPrefix + '.render: ';
+        var dbgPrefix = that._debugPrefix + '.render: ';
         !Plm.debug || console.log(dbgPrefix + 'Rendering...');
 
         var compiledTemplate = _.template(uncategorizedTemplate);
@@ -96,7 +100,7 @@ define(
       teardown: function() {
         var that = this;
             
-        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
       },
 
       _reRender: function() {
@@ -129,6 +133,38 @@ define(
               collection.css('width', '100%');
             }
           });
+        }
+      },
+
+      //
+      // _onTagDialogClose: Callback executed when a tag dialog is closed.
+      //
+      //  if there where any selected elements in hadTagsRemoved or withError then
+      //    re-render the entire view.
+      //  else
+      //    for all selected elements in hadTagsAdded
+      //      remove the element from the view.
+      //
+      _onTagDialogClose: function(hadTagsAdded,
+                                  hadTagsRemoved,
+                                  withSuccess,
+                                  withError) {
+        !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed.');
+
+        if ((withError && withError.length) || (hadTagsRemoved && hadTagsRemoved.length)) {
+          //
+          // Note, one could have added tags, and then removed one or more. So, if any were removed,
+          // the entire view needs to be re-rendered.
+          //
+          this._reRender();
+        }
+        else if (hadTagsAdded && hadTagsAdded.length) {
+          _.each(hadTagsAdded, function(selected) {
+            selected.$el.remove();
+          });
+        }
+        else {
+          !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed, nothing to do, had tags added - ' + hadTagsAdded.length + ', had tags removed - ' + hadTagsRemoved.length + ', with success - ' + withSuccess.length + ', with error - ' + withError.length + '.');
         }
       }
 

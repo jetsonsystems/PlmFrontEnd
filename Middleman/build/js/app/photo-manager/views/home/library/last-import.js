@@ -20,7 +20,6 @@ define(
   function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = '/app/photo-manager/views/home/library/last-import';
-    var debugPrefix = moduleName + '.LastImportView';
 
     //
     // LastImportView: The photo-manager/home/library/last-import view.
@@ -30,6 +29,8 @@ define(
     //    <id>:rendered - the view was rendered.
     //
     var LastImportView = Backbone.View.extend({
+
+      _debugPrefix: moduleName + '.LastImportView',
 
       tagName: 'div',
 
@@ -57,10 +58,10 @@ define(
       },
     
       initialize: function() {
-        !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
+        !Plm.debug || console.log(this._debugPrefix + '.initialize: initializing...');
         var that = this;
 
-        _.extend(this, TagDialog.handlers);
+        _.extend(this, TagDialog.handlersFactory());
 
         this.status = this.STATUS_UNRENDERED;
         this.lastImport = new LastImportCollection();
@@ -84,14 +85,14 @@ define(
         var onSuccess = function(lastImport,
                                  response,
                                  options) {
-          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onSuccess: successfully loaded recent uploads...');
+          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onSuccess: successfully loaded recent uploads...');
           that._doRender();
           that.status = that.STATUS_RENDERED;
           that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
         };
         var onError = function(lastImport, xhr, options) {
-          !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._render.onError: error loading recent uploads.');
+          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onError: error loading recent uploads.');
           that.trigger(that.id + ":rendered");
         };
         this.lastImport.fetch({success: onSuccess,
@@ -117,7 +118,7 @@ define(
       teardown: function() {
         var that = this;
 
-        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
 
         _.each(_.keys(that.subscriptions), function(key) {
           MsgBus.unsubscribe(key);
@@ -133,7 +134,7 @@ define(
       //  the true last import and re-render the view.
       //   
       _reRender: function() {
-        !Plm.debug || console.log(debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        !Plm.debug || console.log(this._debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
         this.status = this.STATUS_UNRENDERED;
         this.$el.html('');
         this.lastImport = new LastImportCollection();
@@ -258,7 +259,7 @@ define(
       // _toTrashHandler: Move selected images to trash.
       //
       _toTrashHandler: function() {
-        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+        var dbgPrefix = this._debugPrefix + "._toTrashHandler: ";
         !Plm.debug || console.log(dbgPrefix + "invoked...");
         var that = this;
         var selected = this._imageSelectionManager.selected();
@@ -663,8 +664,8 @@ define(
                                  //   view as being dirty.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
-                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: msg.data - ' + msg.data);
                                    that.dirty = true;
                                  });
         that.subscriptions[subId] = {
@@ -682,9 +683,9 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                                  'sync.completed',
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed event...');
                                    if (that.dirty) {
-                                     !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                                     !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
                                      if (that.status !== that.STATUS_INCREMENTALLY_RENDERING) {
                                        that._reRender();
                                      }

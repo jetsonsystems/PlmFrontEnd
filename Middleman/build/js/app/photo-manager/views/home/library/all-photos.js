@@ -22,12 +22,14 @@ define(
   function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
-    var debugPrefix = moduleName + '.AllPhotosView';
+
 
     //
     // AllPhotosView: The photo-manager/home/library/all-photos view.
     //
     var AllPhotosView = Backbone.View.extend({
+
+      _debugPrefix: moduleName + '.AllPhotosView',
 
       tagName: 'div',
 
@@ -81,9 +83,9 @@ define(
       dirtyImporters: {},
 
       _updateDirtyImporters: function(id, status, created_at) {
-        !Plm.debug || console.log(debugPrefix + '._updateDirtyImporters: id - ' + id + ', status - ' + status + ', created_at - ' + created_at);
+        !Plm.debug || console.log(this._debugPrefix + '._updateDirtyImporters: id - ' + id + ', status - ' + status + ', created_at - ' + created_at);
         if (!id) {
-          !Plm.debug || console.log(debugPrefix + '._updateDirtyImporters: Error, invalid id - ' + id);
+          !Plm.debug || console.log(this._debugPrefix + '._updateDirtyImporters: Error, invalid id - ' + id);
           return;
         }
         if (_.has(this.dirtyImporters, id)) {
@@ -128,10 +130,10 @@ define(
       },
 
       initialize: function() {
-        !Plm.debug || console.log(debugPrefix + '.initialize: initializing...');
+        !Plm.debug || console.log(this._debugPrefix + '.initialize: initializing...');
         var that = this;
 
-        _.extend(this, TagDialog.handlers);
+        _.extend(this, TagDialog.handlersFactory());
 
         this.status = this.STATUS_UNRENDERED;
         this.importers = new ImportersCollection(undefined,
@@ -161,13 +163,13 @@ define(
         var onSuccess = function() {
           that._renderImports({
             success: function(importer) {
-              console.log(debugPrefix + '.render: success for importer w/ id - ' + importer.id);
+              console.log(that._debugPrefix + '.render: success for importer w/ id - ' + importer.id);
             },
             error: function(importer) {
-              console.log(debugPrefix + '.render: error for importer w/ id - ' + importer.id);
+              console.log(that._debugPrefix + '.render: error for importer w/ id - ' + importer.id);
             },
             done: function() {
-              console.log(debugPrefix + '.render: rendered all importers...');
+              console.log(that._debugPrefix + '.render: rendered all importers...');
               that._imageSelectionManager.reset();
               that.trigger(that.id + ":rendered");
 
@@ -195,7 +197,7 @@ define(
       teardown: function() {
         var that = this;
 
-        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
 
         _.each(_.keys(that.subscriptions), function(key) {
           MsgBus.unsubscribe(key);
@@ -211,7 +213,7 @@ define(
       //  the true last import and re-render the view.
       //   
       _reRender: function() {
-        !Plm.debug || console.log(debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        !Plm.debug || console.log(this._debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
         this.status = this.STATUS_UNRENDERED;
         this.$el.html('');
         this.importers = new ImportersCollection(undefined, 
@@ -245,7 +247,7 @@ define(
           }
         }
         else {
-          console.log(debugPrefix + '._renderImports: Rendering ' + this.importers.length + ' imports...');
+          console.log(that._debugPrefix + '._renderImports: Rendering ' + this.importers.length + ' imports...');
           this.status = this.STATUS_RENDERING;
           this.rendering.full = true;
           var toRender = this.importers.toArray();
@@ -307,7 +309,7 @@ define(
         // We only allow starting an incremental rendering when nothing else is going on.
         //
         if (that.status === that.STATUS_RENDERED) {
-          console.log(debugPrefix + '._startIncrementallyRenderingImport: Starting to incrementally render import, importer - ' + JSON.stringify(importer));
+          console.log(that._debugPrefix + '._startIncrementallyRenderingImport: Starting to incrementally render import, importer - ' + JSON.stringify(importer));
 
           that.status = that.STATUS_RENDERING;
 
@@ -323,13 +325,13 @@ define(
           var importEl = $('#' + importElId);
 
           if (importEl.length > 0) {
-            console.log(debugPrefix + '._startIncrementallyRenderingImport: import already in DOM, will use it...');
+            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: import already in DOM, will use it...');
             that.$importRenderingInc = importEl;
             that.$importRenderingInc.find('.import-count').html('0 Photos');
             that.$importRenderingInc.find('.import-photos-collection').html('<div class="clearfix"/>');
           }
           else {
-            console.log(debugPrefix + '._startIncrementallyRenderingImport: compiling initial template for import...');
+            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: compiling initial template for import...');
 
             var compiledTemplate = _.template(importTemplate, { importer: that.importRenderingInc,
                                                                 importImages: that.importRenderingIncImages,
@@ -337,7 +339,7 @@ define(
                                                                 _: _ });
             that.$el.find('.photos-collection').prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
-            console.log(debugPrefix + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
+            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
           that.rendering.incremental = true;
         }
@@ -347,7 +349,7 @@ define(
       _addToIncrementalImportRender: function(image) {
         var that = this;
         if (that.rendering.incremental) {
-          console.log(debugPrefix + '._addToIncrementalImportRender: Adding image to import w/ id - ' + image.id + ', to view.');
+          console.log(that._debugPrefix + '._addToIncrementalImportRender: Adding image to import w/ id - ' + image.id + ', to view.');
           //
           // Add to the collection.
           //
@@ -407,7 +409,7 @@ define(
           return;
         }
         if (_.has(that.dirtyImporters, importerId)) {
-          !Plm.debug || console.log(debugPrefix + '._renderDirtyImport: About to render dirty import w/ id - ' + importerId);
+          !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport: About to render dirty import w/ id - ' + importerId);
           var importerToDo = that.dirtyImporters[importerId];
           delete that.dirtyImporters[importerId];
 
@@ -417,7 +419,7 @@ define(
           var importerImages = new ImportersImagesCollection(undefined, {importerId: importerId});
 
           var onSuccess = function(collection, response) {
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Have importer w/ id - ' + importerImages.importerId + ', response - ' + JSON.stringify(response));
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Have importer w/ id - ' + importerImages.importerId + ', response - ' + JSON.stringify(response));
             var iAttr = _.clone(response.importer);
             delete iAttr.images;
 
@@ -427,14 +429,14 @@ define(
             var importer = that.importers.findWhere({id: importerId});
             var index = -1;
 
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Found importer - ' + JSON.stringify(importer));
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Found importer - ' + JSON.stringify(importer));
             
             if (importer) {
               index = that.importers.indexOf(importer);
-              !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Found importer model w/ index - ' + index);
+              !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Found importer model w/ index - ' + index);
             }
             else {
-              !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Create importer model with attr - ' + JSON.stringify(iAttr));
+              !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Create importer model with attr - ' + JSON.stringify(iAttr));
               //
               // Not in the collection, figure out where to put it.
               //
@@ -442,7 +444,7 @@ define(
               var firstSmaller = that.importers.find(function(v) { return v.get('created_at') < iAttr.created_at; });
               if (firstSmaller) {
                 index = that.importers.indexOf(firstSmaller);
-                !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Adding new importer at index - ' + index);
+                !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Adding new importer at index - ' + index);
                 that.importers.add(importer, {at:index});
               }
               else {
@@ -450,19 +452,19 @@ define(
                 // Insert at end.
                 //
                 index = that.importers.length;
-                !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Inserting importer at end...');
+                !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Inserting importer at end...');
                 that.importers.push(importer);
                 if (Plm.debug) {
-                  console.log(debugPrefix + '._renderDirtyImport.onSuccess: Trying to retrieve inserted importer w/id - ' + importer.id + ' (' + importerId + '), importers collection size - ' + that.importers.length);
+                  console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Trying to retrieve inserted importer w/id - ' + importer.id + ' (' + importerId + '), importers collection size - ' + that.importers.length);
                   that.importers.each(function(imp, i) {
-                    console.log(debugPrefix + '._renderDirtyImport.inSuccess: collection importer at index - ' + i + ', importer - ' + JSON.stringify(imp));
+                    console.log(that._debugPrefix + '._renderDirtyImport.inSuccess: collection importer at index - ' + i + ', importer - ' + JSON.stringify(imp));
                   });
                   var tmp = that.importers.findWhere({id: importer.id});
-                  console.log(debugPrefix + '._renderDirtyImport.onSuccess: Retrieved importer - ' + JSON.stringify(tmp));
+                  console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Retrieved importer - ' + JSON.stringify(tmp));
                 }
               }
             }
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Compiling import template.');
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Compiling import template.');
             var compiledTemplate = _.template(importTemplate, { importer: importer,
                                                                 importImages: importerImages,
                                                                 imageTemplate: importImageTemplate,
@@ -489,7 +491,7 @@ define(
             if (!that.rendering.full && !that.rendering.incremental) {
               that.status = that.STATUS_RENDERED;
             }
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImport.onSuccess: Invoking success callback...');
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Invoking success callback...');
             !options || !options.success || options.success();
           };
           var onError = function() {
@@ -501,7 +503,7 @@ define(
             !options || !options.error || options.error('There was an unexpected retrieving images for an import!');
           };
 
-          !Plm.debug || console.log(debugPrefix + '._renderDirtyImport: Fetching importer images...');
+          !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport: Fetching importer images...');
           importerImages.fetch({success: onSuccess,
                                 error: onError});
         }
@@ -514,13 +516,13 @@ define(
 
       _renderDirtyImports: function() {
         var that = this;
-        !Plm.debug || console.log(debugPrefix + '._renderDirtyImports: Have ' + _.size(that.dirtyImporters) + ' importers to render.');
+        !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports: Have ' + _.size(that.dirtyImporters) + ' importers to render.');
         var doOne = function(onSuccess, onError) {
           var toDo = _.sortBy(that.dirtyImporters,
                               function(v, k) { return v.created_at; });
           if (_.size(toDo) > 0) {
             var importerToDo = _.first(toDo);
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImports: Selected importer w/ id - ' + importerToDo.id + ', w/ created_at - ' + importerToDo.created_at);
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports: Selected importer w/ id - ' + importerToDo.id + ', w/ created_at - ' + importerToDo.created_at);
             that._renderDirtyImport(importerToDo.id,
                                     {success: onSuccess,
                                      error: onError});
@@ -531,7 +533,7 @@ define(
         };
         var onSuccess = function(id) {
           if (_.size(that.dirtyImporters) > 0) {
-            !Plm.debug || console.log(debugPrefix + '._renderDirtyImports.onSuccess: Have ' + _.size(that.dirtyImporters) + ' importers left to render.');
+            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports.onSuccess: Have ' + _.size(that.dirtyImporters) + ' importers left to render.');
             doOne(onSuccess, onError);
           }
         };
@@ -551,7 +553,7 @@ define(
       // _toTrashHandler: Move selected images to trash.
       //
       _toTrashHandler: function() {
-        var dbgPrefix = debugPrefix + "._toTrashHandler: ";
+        var dbgPrefix = this._debugPrefix + "._toTrashHandler: ";
         !Plm.debug || console.log(dbgPrefix + "invoked...");
         var that = this;
         var selected = this._imageSelectionManager.selected();
@@ -820,8 +822,8 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.started',
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
-                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
                                    if (that.rendering.incremental) {
                                      that.dirty = true;
                                      that._updateDirtyImporters(msg.data.id,
@@ -842,7 +844,7 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.image.saved',
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
                                    if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
                                      that._addToIncrementalImportRender(msg.data.doc);
                                    }
@@ -862,8 +864,8 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.completed',
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: import completed, rendering incremental - ' + that.rendering.incremental);
-                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import completed, rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
                                    if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
                                      that._finishIncrementalImportRender(msg.data);
                                    }
@@ -890,8 +892,8 @@ define(
                                  //   view as being dirty.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
-                                   !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: msg.data - ' + JSON.stringify(msg.data));
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
+                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: msg.data - ' + JSON.stringify(msg.data));
                                    var parsedEvent = msg.event.split('.');
                                    if (parsedEvent[1] === 'importer') {
                                      that.dirty = true;
@@ -914,7 +916,7 @@ define(
                                      //
                                      // Any change to an image implies the corresponding importer has changed.
                                      //
-                                     !Plm.debug || !Plm.verbose || console.log(debugPrefix + '._respondToEvents: have image event...');
+                                     !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: have image event...');
                                      that.dirty = true;
                                      if (_.has(msg.data.doc, 'importer_id')) {
                                        //
@@ -935,9 +937,9 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                                  'sync.completed',
                                  function(msg) {
-                                   !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed event...');
+                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed event...');
                                    if (that.dirty) {
-                                     !Plm.debug || console.log(debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                                     !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
                                      that._renderDirtyImports();
                                    }
                                  });

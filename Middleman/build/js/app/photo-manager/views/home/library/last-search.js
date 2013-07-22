@@ -14,10 +14,10 @@ define(
     'app/trash',
     'app/collections/search-images',
     'text!/html/photo-manager/templates/home/library/last-search.html',
-    'text!/html/photo-manager/templates/home/library/search-photos.html',
-    'text!/html/photo-manager/templates/home/library/search-photo.html'
+    'text!/html/photo-manager/templates/home/library/photo-set.html',
+    'text!/html/photo-manager/templates/home/library/photo-set-photo.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, Trash, SearchImagesCollection, searchTemplate, searchPhotosTemplate, searchPhotoTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, Trash, SearchImagesCollection, searchTemplate, photoSetTemplate, photoSetPhotoTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/last-search';
 
@@ -52,8 +52,12 @@ define(
 
         var that = this;
 
-        _.extend(this, TagDialog.handlers);
-        _.extend(this, Trash.handlers);
+        _.extend(this, TagDialog.handlersFactory(function() {
+          that._onTagDialogClose.apply(that, arguments);
+        }));
+        _.extend(this, Trash.handlersFactory('.photo-set-collection',
+                                             '.photo-set-size',
+                                             '.photo'));
 
         this.images = new SearchImagesCollection();
 
@@ -63,7 +67,7 @@ define(
           console.log(this);
         }
 
-        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.search-photos', 'search-photos-collection');
+        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.photo-set-collection', 'photo-set-photos-collection');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
             $(".selection-toolbar").show();
@@ -72,7 +76,7 @@ define(
             $(".selection-toolbar").hide();
           }
         });
-        this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.search-photos');
+        this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.photo-set-collection');
       },
 
       render: function() {
@@ -105,7 +109,7 @@ define(
       teardown: function() {
         var that = this;
             
-        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
       },
 
       _reRender: function() {
@@ -122,16 +126,16 @@ define(
           Plm.showFlash('Your search returned no results.');
         }
         else {
-          var compiledTemplate = _.template(searchPhotosTemplate,
+          var compiledTemplate = _.template(photoSetTemplate,
                                             {
                                               images: this.images,
-                                              imageTemplate: searchPhotoTemplate
+                                              photoTemplate: photoSetPhotoTemplate
                                             });
-          this.$el.find('.search-photos').replaceWith(compiledTemplate);
+          this.$el.find('.photos-collection').html(compiledTemplate);
           // After view has been rendered, assign click events to show all images
-          this.$el.find('.search-photos').find('.search-photos-pip').on('click', function() {
+          this.$el.find('.photo-set-collection').find('.photo-set-pip').on('click', function() {
             $(this).toggleClass('open');
-            var collection = $(this).parent().siblings('.search-photos-collection').toggleClass('open');
+            var collection = $(this).parent().siblings('.photo-set-photos-collection').toggleClass('open');
             if(collection.hasClass('open')) {
               collection.width($("#row").width());
             } else {
@@ -161,6 +165,28 @@ define(
           }
         };
         return updateStatus;
+      },
+
+      //
+      // _onTagDialogClose: Executed via callback when tag dialog is closed.
+      //  If there were any tags removed, or any errors, then rerender the view.
+      //
+      _onTagDialogClose: function(hadTagsAdded,
+                                  hadTagsRemoved,
+                                  withSuccess,
+                                  withError) {
+        !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed.');
+
+        if ((withError && withError.length) || (hadTagsRemoved && hadTagsRemoved.length)) {
+          //
+          // Note, one could have added tags, and then removed one or more. So, if any were removed,
+          // the entire view needs to be re-rendered.
+          //
+          this._reRender();
+        }
+        else {
+          !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed, nothing to do, had tags added - ' + hadTagsAdded.length + ', had tags removed - ' + hadTagsRemoved.length + ', with success - ' + withSuccess.length + ', with error - ' + withError.length + '.');
+        }
       }
 
     });

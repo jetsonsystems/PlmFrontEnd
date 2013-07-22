@@ -24,6 +24,7 @@
       top: 2px;
       left: 1px;
     }
+
   }
 
   input {
@@ -48,6 +49,11 @@
 
   .tagBody {
     padding: 15px;
+  }
+
+  .tagInputError {
+    font-size: 1.25em;
+    line-height: 1.5em;
   }
 
   .tagCloud {
