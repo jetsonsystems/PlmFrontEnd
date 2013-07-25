@@ -9,6 +9,7 @@ define(
     'plmCommon/plm',
     'plmCommon/msg-bus',
     'app/image-selection-manager',
+    'app/photo-set',
     'app/lightbox',
     'app/tag-dialog',
     'app/models/importer',
@@ -19,7 +20,7 @@ define(
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
 
@@ -295,10 +296,8 @@ define(
               var compiledTemplate = _.template(importTemplate, { importer: importer,
                                                                   importImages: importerImages,
                                                                   imageTemplate: importImageTemplate,
-                                                                  _: _ });
-
-
-
+                                                                  _: _,
+                                                                  formatDate: Plm.localDateTimeString});
 
               if(importerImages.length > 0) {
                   // Assign import pip toggles before adding them to the page
@@ -372,11 +371,17 @@ define(
             var compiledTemplate = _.template(importTemplate, { importer: that.importRenderingInc,
                                                                 importImages: that.importRenderingIncImages,
                                                                 imageTemplate: importImageTemplate,
-                                                                _: _ });
+                                                                _: _,
+                                                                formatDate: Plm.localDateTimeString });
             that.$el.find('.photos-collection').prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
+            that.$importRenderingInc.find('.import-pip').on('click', 
+                                                            PhotoSet.twirlDownClickHandlerFactory(
+                                                              that,
+                                                              '.import-photos-collection'));
             console.log(that._debugPrefix + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
+          that._imageSelectionManager.reset();
           that.rendering.incremental = true;
         }
         return that;
@@ -399,7 +404,8 @@ define(
           // Also add the image to the view.
           //
           var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          this.$importRenderingInc.find('.import-photos-collection').append(compiledTemplate);
+          that.$importRenderingInc.find('.import-photos-collection').append(compiledTemplate);
+          that._imageSelectionManager.reset();
         }
         return that;
       },
@@ -504,7 +510,8 @@ define(
             var compiledTemplate = _.template(importTemplate, { importer: importer,
                                                                 importImages: importerImages,
                                                                 imageTemplate: importImageTemplate,
-                                                                _: _ });
+                                                                _: _,
+                                                                formatDate: Plm.localDateTimeString });
             //
             // Find the element to insert after, or if it exists, do a replace:
             //  - index is where the new one should be:
@@ -571,6 +578,13 @@ define(
           if (_.size(that.dirtyImporters) > 0) {
             !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports.onSuccess: Have ' + _.size(that.dirtyImporters) + ' importers left to render.');
             doOne(onSuccess, onError);
+          }
+          else {
+            $('.import-collection').find('.import-pip').off('click').on('click',
+                                                                        PhotoSet.twirlDownClickHandlerFactory(
+                                                                          that,
+                                                                          '.import-photos-collection'));
+            that._imageSelectionManager.reset();
           }
         };
         var onError = function(err) {

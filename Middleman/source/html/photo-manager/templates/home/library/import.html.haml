@@ -9,7 +9,8 @@
       {% importedDate = (importedDate === '') && importer.has('updated_at') ? importer.get('updated_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('started_at') ? importer.get('started_at') : importedDate; %}
       {% importedDate = (importedDate === '') && importer.has('created_at') ? importer.get('created_at') : importedDate; %}
-      != "{{importedDate}}"
+      {% formatedDate = formatDate(importedDate, true); %}
+      != "{{formatedDate}}"
     = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "importer" }
     .clearfix
 

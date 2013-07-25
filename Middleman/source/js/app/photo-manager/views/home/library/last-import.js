@@ -9,6 +9,7 @@ define(
     'plmCommon/plm', 
     'plmCommon/msg-bus',
     'app/image-selection-manager',
+    'app/photo-set',
     'app/lightbox',
     'app/tag-dialog',
     'app/models/image',
@@ -17,7 +18,7 @@ define(
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = '/app/photo-manager/views/home/library/last-import';
 
@@ -204,7 +205,8 @@ define(
           var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
-                                                              _: _ });
+                                                              _: _,
+                                                              formatDate: Plm.localDateTimeString});
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
         }
       },
@@ -224,9 +226,16 @@ define(
           var compiledTemplate = _.template(importTemplate, { importer: this.lastImport.importer,
                                                               importImages: this.lastImport,
                                                               imageTemplate: importImageTemplate,
-                                                              _: _ });
+                                                              _: _,
+                                                              formatDate: Plm.localDateTimeString});
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
           this._imageSelectionManager.reset();
+
+          this.$el.find('.import-collection').find('.import-pip').on('click', 
+                                                                     PhotoSet.twirlDownClickHandlerFactory(
+                                                                       this,
+                                                                       '.import-photos-collection'));
+
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
         return this;

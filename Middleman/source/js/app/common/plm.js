@@ -29,11 +29,32 @@ define(
 
     var PLM = {};
 
-    PLM.VERSION = '0.0.13';
+    PLM.VERSION = '0.0.14';
 
     PLM.debug = false;
 
     PLM.verbose = false;
+
+    //
+    // localDateTimeString: Converts an ISO date string, to a local date string.
+    //  Given: 2013-07-25T22:36:56.590Z
+    //
+    //  will produce:
+    //
+    //    Thursday, July 25, 2013 15:36:56
+    //
+    PLM.localDateTimeString = function(dateStr, includeTime) {
+      includeTime = (includeTime || (includeTime === false))?includeTime:false;
+
+      var date = new Date(dateStr);
+
+      var d = date.toLocaleDateString();
+
+      if (includeTime) {
+        d = d + ' ' + date.toLocaleTimeString();
+      }
+      return d;
+    };
 
     //
     // showFlash: Include for backward compatability. This might not be needed anymore.
