@@ -1,6 +1,6 @@
-%div.trash-photos
+%div.trash-photos.photo-set-collection
   %div.trash-photos-header
-    %div{:class => "image-count"} {{_.size(images)}} Photos
+    %div{:class => "trash-size"} {{_.size(images)}} Photos
     = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "trash" }
     = partial "html/photo-manager/templates/home/library/trash-actions"
     .clearfix

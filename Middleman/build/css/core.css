@@ -1235,9 +1235,10 @@ footer ul li.location:after {
   height: 100%;
   background: black;
   padding-top: 98px;
+  padding-bottom: 30px;
 }
 
-/* line 648, _base.scss */
+/* line 649, _base.scss */
 nav {
   width: 60px;
   background: black;
@@ -1246,11 +1247,11 @@ nav {
   top: 98px;
   z-index: 10;
 }
-/* line 656, _base.scss */
+/* line 657, _base.scss */
 nav ul {
   height: 60px;
 }
-/* line 659, _base.scss */
+/* line 660, _base.scss */
 nav ul li {
   width: 60px;
   padding-top: 10px;
@@ -1259,143 +1260,143 @@ nav ul li {
   border-left: 5px solid black;
   border-right: 5px solid black;
 }
-/* line 667, _base.scss */
+/* line 668, _base.scss */
 nav ul li:hover, nav ul li.selected {
   color: #6dcff6;
   background: #2a2a2a;
   border-right: 5px solid #2a2a2a;
   border-left: 5px solid #6dcff6;
 }
-/* line 674, _base.scss */
+/* line 675, _base.scss */
 nav ul li.disabled {
   background: black !important;
   border-left-color: black !important;
   border-right-color: black !important;
 }
-/* line 681, _base.scss */
+/* line 682, _base.scss */
 nav ul a {
   font-family: 'entypo';
   font-size: 50px;
   display: block;
 }
 
-/* line 690, _base.scss */
+/* line 691, _base.scss */
 main {
   background: #474747;
   margin-left: 60px;
   height: 100%;
 }
-/* line 695, _base.scss */
+/* line 696, _base.scss */
 main #content {
   position: relative;
   min-height: 200px;
   background: #474747;
-  min-height: 100%;
+  height: 100%;
   width: 100%;
   z-index: 1;
 }
-/* line 708, _base.scss */
+/* line 707, _base.scss */
 main #content #left-column {
   width: 380px;
   background: #2a2a2a;
 }
-/* line 712, _base.scss */
+/* line 711, _base.scss */
 main #content #left-column #lighting-load {
   margin-left: 15px;
   padding-top: 20px;
 }
-/* line 718, _base.scss */
+/* line 717, _base.scss */
 main #content #middle-column {
   background: #474747;
   border-right: 1px solid #111111;
   border-left: 1px solid #636363;
-  overflow: auto;
+  overflow: hidden;
 }
-/* line 723, _base.scss */
+/* line 722, _base.scss */
 main #content #middle-column.half {
   width: 50%;
   height: 100%;
 }
-/* line 724, _base.scss */
+/* line 723, _base.scss */
 main #content #middle-column.no-border {
   border-right: none;
 }
-/* line 725, _base.scss */
+/* line 724, _base.scss */
 main #content #middle-column.surveillance {
   width: 300px;
   min-width: 300px;
   min-height: 100%;
 }
-/* line 727, _base.scss */
+/* line 726, _base.scss */
 main #content #middle-column #floorplan {
   padding-top: 40px;
   margin-left: 40px;
 }
-/* line 731, _base.scss */
+/* line 730, _base.scss */
 main #content #middle-column #floorplan img {
   width: 700px;
 }
-/* line 736, _base.scss */
+/* line 735, _base.scss */
 main #content #middle-column #floorplan .light, main #content #middle-column #floorplan .video {
   width: 100px;
   cursor: pointer;
 }
-/* line 740, _base.scss */
+/* line 739, _base.scss */
 main #content #middle-column #floorplan .light .title, main #content #middle-column #floorplan .video .title {
   font-size: 15px;
   text-align: center;
 }
-/* line 745, _base.scss */
+/* line 744, _base.scss */
 main #content #middle-column #floorplan .light .title:hover, main #content #middle-column #floorplan .video .title:hover {
   color: #6dcff6;
 }
-/* line 749, _base.scss */
+/* line 748, _base.scss */
 main #content #middle-column #floorplan .light .icon, main #content #middle-column #floorplan .video .icon {
   font-family: 'entypo';
   font-size: 40px;
   text-align: center;
 }
-/* line 754, _base.scss */
+/* line 753, _base.scss */
 main #content #middle-column #floorplan .light .icon:hover, main #content #middle-column #floorplan .video .icon:hover {
   color: #6dcff6;
 }
-/* line 763, _base.scss */
+/* line 762, _base.scss */
 main #content #middle-column #floorplan div#kitchen-light, main #content #middle-column #floorplan div#kitchen-video {
   margin-top: -320px;
   margin-left: 130px;
 }
-/* line 769, _base.scss */
+/* line 768, _base.scss */
 main #content #middle-column #floorplan div#dining-light, main #content #middle-column #floorplan div#dining-video {
   margin-top: 55px;
   margin-left: 90px;
 }
-/* line 775, _base.scss */
+/* line 774, _base.scss */
 main #content #middle-column #floorplan div#living-light, main #content #middle-column #floorplan div#living-video {
   margin-top: -40px;
   margin-left: 220px;
 }
-/* line 781, _base.scss */
+/* line 780, _base.scss */
 main #content #middle-column #floorplan div#entertainment-light, main #content #middle-column #floorplan div#entertainment-video {
   margin-top: 0px;
   margin-left: 410px;
 }
-/* line 787, _base.scss */
+/* line 786, _base.scss */
 main #content #middle-column #floorplan div#patio-light, main #content #middle-column #floorplan div#patio-video {
   margin-top: -300px;
   margin-left: 460px;
 }
-/* line 794, _base.scss */
+/* line 793, _base.scss */
 main #content #right-column {
   border: 1px dashed red;
   width: 380px;
 }
 
-/* line 801, _base.scss */
+/* line 800, _base.scss */
 aside {
   background: #474747;
 }
 
-/* line 805, _base.scss */
+/* line 804, _base.scss */
 #pageslide {
   display: none;
   position: fixed;
@@ -1408,32 +1409,32 @@ aside {
   overflow: hidden;
 }
 
-/* line 818, _base.scss */
+/* line 817, _base.scss */
 #hamburger {
   display: none;
   padding-bottom: 80px;
 }
-/* line 822, _base.scss */
+/* line 821, _base.scss */
 #hamburger a {
   cursor: pointer;
 }
 
-/* line 825, _base.scss */
+/* line 824, _base.scss */
 .gallery-header {
   padding: 22px 0 22px 20px;
 }
-/* line 827, _base.scss */
+/* line 826, _base.scss */
 .gallery-header:hover {
   background: #2a2a2a;
 }
 
-/* line 830, _base.scss */
+/* line 829, _base.scss */
 .import-photos-container {
   overflow: hidden;
   width: 100%;
 }
 
-/* line 837, _base.scss */
+/* line 836, _base.scss */
 .hamburger-section.first {
   -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -1442,17 +1443,17 @@ aside {
   box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   border-bottom: 1px solid #111111;
 }
-/* line 839, _base.scss */
+/* line 838, _base.scss */
 .hamburger-section ul {
   margin-top: 22px;
 }
-/* line 841, _base.scss */
+/* line 840, _base.scss */
 .hamburger-section .gallery-section-title {
   font-size: 20px;
   float: left;
   margin: 0 0 0 6px;
 }
-/* line 846, _base.scss */
+/* line 845, _base.scss */
 .hamburger-section .gallery-section-title .add-gallery {
   text-shadow: 1px 2px 2px black;
   display: inline-block;
@@ -1463,11 +1464,11 @@ aside {
   font-size: 50px;
   font-family: 'entypo';
 }
-/* line 856, _base.scss */
+/* line 855, _base.scss */
 .hamburger-section .gallery-section-title .add-gallery:before {
   content: "\E003";
 }
-/* line 860, _base.scss */
+/* line 859, _base.scss */
 .hamburger-section .headericon {
   font-family: 'entypo';
   color: white;
@@ -1476,19 +1477,19 @@ aside {
   line-height: 40%;
   margin-left: 11px;
 }
-/* line 867, _base.scss */
+/* line 866, _base.scss */
 .hamburger-section .headericon:before {
   display: inline-block;
   content: "\E760";
   width: 17px;
 }
-/* line 869, _base.scss */
+/* line 868, _base.scss */
 .hamburger-section .headericon.closed:before {
   display: inline-block;
   content: "\E762";
   width: 17px;
 }
-/* line 872, _base.scss */
+/* line 871, _base.scss */
 .hamburger-section .gallery {
   margin: 0 0 22px 0;
   cursor: pointer;
@@ -1506,7 +1507,7 @@ aside {
 .ie7 .hamburger-section .gallery, .ie8 .hamburger-section .gallery {
   zoom: 1;
 }
-/* line 877, _base.scss */
+/* line 876, _base.scss */
 .hamburger-section .gallery .album-icon {
   display: block;
   float: left;
@@ -1514,7 +1515,7 @@ aside {
   font-size: 50px;
   line-height: 30px;
 }
-/* line 884, _base.scss */
+/* line 883, _base.scss */
 .hamburger-section .gallery .gallery-pip {
   display: block;
   float: left;
@@ -1525,27 +1526,27 @@ aside {
   line-height: 20px;
   margin-left: 20px;
 }
-/* line 895, _base.scss */
+/* line 894, _base.scss */
 .hamburger-section .gallery .gallery-pip.closed:before {
   content: "\E762";
 }
-/* line 896, _base.scss */
+/* line 895, _base.scss */
 .hamburger-section .gallery .gallery-pip.open:before {
   content: "\E760";
 }
-/* line 899, _base.scss */
+/* line 898, _base.scss */
 .hamburger-section .gallery .gallery-title {
   margin-left: 80px;
   font-size: 18px;
 }
-/* line 904, _base.scss */
+/* line 903, _base.scss */
 .hamburger-section .gallery > span {
   font-size: 10px;
   margin-left: 10px;
   display: block;
   float: left;
 }
-/* line 910, _base.scss */
+/* line 909, _base.scss */
 .hamburger-section .gallery ul {
   -webkit-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px 3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -1555,7 +1556,7 @@ aside {
   border-bottom: 1px solid #111111;
   margin-top: 22px;
 }
-/* line 913, _base.scss */
+/* line 912, _base.scss */
 .hamburger-section .album {
   -webkit-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0px -3px 1px -2px rgba(100, 100, 100, 0.3);
@@ -1566,22 +1567,22 @@ aside {
   padding: 11px 0 11px 50px;
   background: #131313;
 }
-/* line 919, _base.scss */
+/* line 918, _base.scss */
 .hamburger-section .album img {
   float: left;
   margin-bottom: 10px;
 }
-/* line 920, _base.scss */
+/* line 919, _base.scss */
 .hamburger-section .album .album-title {
   font-weight: bold;
   font-size: 14px;
   margin-left: 46px;
 }
-/* line 925, _base.scss */
+/* line 924, _base.scss */
 .hamburger-section .album .album-title:hover {
   color: #6dcff6;
 }
-/* line 927, _base.scss */
+/* line 926, _base.scss */
 .hamburger-section .album .album-date {
   display: block;
   float: left;
@@ -1590,32 +1591,32 @@ aside {
   margin-left: 10px;
   font-size: 12px;
 }
-/* line 928, _base.scss */
+/* line 927, _base.scss */
 .hamburger-section .album .album-description {
   float: left;
   margin-left: 10px;
   font-size: 12px;
 }
 
-/* line 946, _base.scss */
+/* line 945, _base.scss */
 .hamburger-sections h3 {
   font-size: 16px;
   line-height: 1.5em;
   margin-left: 32px;
 }
 
-/* line 949, _base.scss */
+/* line 948, _base.scss */
 .hamburger-header {
   margin-top: 22px;
 }
 
-/* line 952, _base.scss */
+/* line 951, _base.scss */
 .hamburger-header-title {
   font-size: 16px;
   line-height: 1.5em;
 }
 
-/* line 956, _base.scss */
+/* line 955, _base.scss */
 .hamburger-header-item {
   *display: inline-block;
   padding: 0 0 22px 0;
@@ -1628,11 +1629,11 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 960, _base.scss */
+/* line 959, _base.scss */
 .hamburger-header-item.lead {
   padding: 22px 0 22px 10px;
 }
-/* line 962, _base.scss */
+/* line 961, _base.scss */
 .hamburger-header-item .icon {
   font-family: 'entypo';
   color: white;
@@ -1640,18 +1641,18 @@ aside {
   float: left;
   line-height: 40%;
 }
-/* line 969, _base.scss */
+/* line 968, _base.scss */
 .hamburger-header-item .icon.header:before {
   content: "\E760";
 }
-/* line 972, _base.scss */
+/* line 971, _base.scss */
 .hamburger-header-item h2 {
   font-size: 20px;
   float: left;
   margin-left: 6px;
 }
 
-/* line 980, _base.scss */
+/* line 979, _base.scss */
 .hamburger-item {
   *display: inline-block;
   padding: 0 0 22px 50px;
@@ -1664,55 +1665,55 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 985, _base.scss */
+/* line 984, _base.scss */
 .hamburger-item .icon {
   font-family: 'entypo';
   font-size: 40px;
   float: left;
   line-height: 60%;
 }
-/* line 991, _base.scss */
+/* line 990, _base.scss */
 .hamburger-item .icon.photos:before {
   content: "\1F304";
 }
-/* line 992, _base.scss */
+/* line 991, _base.scss */
 .hamburger-item .icon.lastimport:before {
   content: "\1F304";
 }
-/* line 993, _base.scss */
+/* line 992, _base.scss */
 .hamburger-item .icon.uncategorized:before {
   content: "\E777";
 }
-/* line 994, _base.scss */
+/* line 993, _base.scss */
 .hamburger-item .icon.trash:before {
   content: "\E729";
 }
-/* line 997, _base.scss */
+/* line 996, _base.scss */
 .hamburger-item .text {
   margin-left: 15px;
   float: left;
 }
-/* line 1001, _base.scss */
+/* line 1000, _base.scss */
 .hamburger-item .text .title {
   font-size: 18px;
 }
 
-/* line 1007, _base.scss */
+/* line 1006, _base.scss */
 .hamburger-item.photos {
   margin-padding: 5px;
   height: 40px;
 }
-/* line 1011, _base.scss */
+/* line 1010, _base.scss */
 .hamburger-item.photos .icon {
   margin-top: -12px;
 }
 
-/* line 1016, _base.scss */
+/* line 1015, _base.scss */
 .library-buttons {
   float: left;
   margin: -6px 0 0 12px;
 }
-/* line 1020, _base.scss */
+/* line 1019, _base.scss */
 .library-buttons a {
   text-shadow: 1px 2px 2px black;
   display: inline-block;
@@ -1723,21 +1724,21 @@ aside {
   font-family: 'entypo';
 }
 
-/* line 1035, _base.scss */
+/* line 1034, _base.scss */
 #surveillance-collection {
   padding: 20px;
   padding-bottom: 0;
 }
-/* line 1041, _base.scss */
+/* line 1040, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium {
   border: 1px solid black;
   width: 340px;
 }
-/* line 1046, _base.scss */
+/* line 1045, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-medium:hover {
   border: 1px solid white;
 }
-/* line 1050, _base.scss */
+/* line 1049, _base.scss */
 #surveillance-collection .surveillance-medium-thumb .surveillance-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -1750,14 +1751,14 @@ aside {
   z-index: 200;
   position: absolute;
 }
-/* line 1062, _base.scss */
+/* line 1061, _base.scss */
 #surveillance-collection .surveillance-medium-thumb-title {
   color: white;
   text-align: center;
   padding: 10px;
 }
 
-/* line 1070, _base.scss */
+/* line 1069, _base.scss */
 #surveillance-thumbs-collection {
   *display: inline-block;
   padding: 20px 20px;
@@ -1771,23 +1772,23 @@ aside {
   clear: both;
   visibility: hidden;
 }
-/* line 1075, _base.scss */
+/* line 1074, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb {
   float: left;
   margin-right: 5px;
   margin-bottom: 5px;
 }
-/* line 1080, _base.scss */
+/* line 1079, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small {
   border: 1px solid black;
   width: 165px;
   height: 125px;
 }
-/* line 1085, _base.scss */
+/* line 1084, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small:hover {
   border: 1px solid white;
 }
-/* line 1089, _base.scss */
+/* line 1088, _base.scss */
 #surveillance-thumbs-collection .surveillance-small-thumb .surveillance-small-thumb-overlay {
   background: black;
   background: rgba(0, 0, 0, 0.4);
@@ -1801,139 +1802,43 @@ aside {
   position: absolute;
 }
 
-/* line 1102, _base.scss */
-.photos-header {
-  padding: 22px 0 0 10px;
-  overflow: hidden;
-  min-height: 75px;
-}
-/* line 1107, _base.scss */
-.photos-header h2 {
-  font-size: 25px;
-  float: left;
-}
-
-/* line 1111, _base.scss */
+/* line 1101, _base.scss */
 .select-all {
   display: inline-block;
   position: relative;
   top: 2px;
   font-size: 1.1em;
 }
-/* line 1117, _base.scss */
+/* line 1107, _base.scss */
 .photos-header .select-all {
   top: 8px;
 }
 
-/* line 1121, _base.scss */
+/* line 1112, _base.scss */
 .plm-cb-label {
   display: inline-block;
 }
 
-/* line 1125, _base.scss */
-.photos-collection {
-  *display: inline-block;
-  margin-left: 15px;
-  margin-bottom: 40px;
-}
-/* line 208, _mixins.scss */
-.photos-collection:after {
-  content: " ";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-/* line 1131, _base.scss */
-.photo {
-  padding: 10px;
-  display: inline-block;
-  width: 150px;
-  min-height: 160px;
-}
-/* line 1138, _base.scss */
-.photo-edit .photo {
-  cursor: pointer;
-}
-/* line 1140, _base.scss */
-.photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 1144, _base.scss */
-.photo:hover .edit-photo {
-  display: block;
-}
-/* line 1148, _base.scss */
-.photo .photo-thumbnail {
-  border: 1px solid black;
-}
-
-/* line 1154, _base.scss */
-.photo-caption {
-  line-height: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-family: Arial;
-  font-weight: bold;
-  color: #c2c2c2;
-  margin-top: 10px;
-}
-/* line 1165, _base.scss */
-.photo-caption img {
-  margin-bottom: -5px;
-  margin-right: 10px;
-}
-/* line 1170, _base.scss */
-.photo-caption .edit-photo {
-  float: right;
-  margin-right: 0;
-  display: none;
-}
-
-/* line 1179, _base.scss */
-.trash-photos-header .image-count {
-  float: left;
-  font-size: 1.675em;
-}
-/* line 1183, _base.scss */
-.trash-photos-header .select-all {
-  float: left;
-  padding-top: 5px;
-  margin-right: 60px;
-}
-/* line 1191, _base.scss */
-.trash-photos-header .button-group li {
-  display: inline-block;
-}
-
-/* line 1197, _base.scss */
+/* line 1116, _base.scss */
 #notifications-collection {
   position: absolute;
   top: 22px;
   left: 600px;
 }
-/* line 1202, _base.scss */
+/* line 1121, _base.scss */
 #notifications-collection #notification {
   display: inline-block;
   font-size: 1.5em;
   margin-right: 10px;
 }
-/* line 1208, _base.scss */
+/* line 1127, _base.scss */
 #notifications-collection #notification-progress {
   font-size: 1.675em;
   font-weight: bold;
   display: inline-block;
 }
 
-/* line 1215, _base.scss */
+/* line 1134, _base.scss */
 .appLoadAnimationBackdrop {
   position: absolute;
   top: 0;
@@ -1943,7 +1848,7 @@ aside {
   background: rgba(0, 0, 0, 0.8);
   z-index: 100;
 }
-/* line 1224, _base.scss */
+/* line 1143, _base.scss */
 .appLoadAnimationBackdrop .appLoadAnimation {
   width: 220px;
   height: 19px;
@@ -3179,358 +3084,4 @@ aside {
 /* line 34, apps/property-manager/_propertyManager.scss */
 .property p {
   margin: 0 0 0 80px;
-}
-
-/* line 1, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog {
-  -webkit-box-shadow: 0px 0px 3px #111111;
-  -moz-box-shadow: 0px 0px 3px #111111;
-  -ms-box-shadow: 0px 0px 3px #111111;
-  -o-box-shadow: 0px 0px 3px #111111;
-  box-shadow: 0px 0px 3px #111111;
-  border: 1px solid #111111;
-  position: fixed;
-  top: 30%;
-  left: 30%;
-  width: 500px;
-  background: #222;
-  overflow: hidden;
-  z-index: 10;
-}
-/* line 13, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagTitle {
-  background-image: -webkit-linear-gradient(top, #555555, #444444);
-  background-image: -moz-linear-gradient(top, #555555, #444444);
-  background-image: -ms-linear-gradient(top, #555555, #444444);
-  background-image: -o-linear-gradient(top, #555555, #444444);
-  background-image: linear-gradient(top, #555555, #444444);
-  -webkit-box-shadow: 0px 1px 2px #111111;
-  -moz-box-shadow: 0px 1px 2px #111111;
-  -ms-box-shadow: 0px 1px 2px #111111;
-  -o-box-shadow: 0px 1px 2px #111111;
-  box-shadow: 0px 1px 2px #111111;
-  font-size: 1.675em;
-  line-height: 1.75em;
-  padding-left: 35px;
-  position: relative;
-  margin: 0;
-}
-/* line 22, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagTitle .plm-icon {
-  position: absolute;
-  top: 2px;
-  left: 1px;
-}
-/* line 30, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog input {
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.5) , inset -1px -1px 3px black;
-  -moz-box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.5) , inset -1px -1px 3px black;
-  -ms-box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.5) , inset -1px -1px 3px black;
-  -o-box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.5) , inset -1px -1px 3px black;
-  box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.5) , inset -1px -1px 3px black;
-  display: block;
-  border: none;
-  background: #141414;
-  width: 100%;
-  color: #fff;
-  font-size: 1em;
-  height: 20px;
-  margin-bottom: 22px;
-}
-/* line 43, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog input.placeholding {
-  color: #6dcff6;
-  font-size: 1.25em;
-  font-style: italic;
-}
-/* line 50, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagBody {
-  padding: 15px;
-}
-/* line 54, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagInputError {
-  font-size: 1.25em;
-  line-height: 1.5em;
-}
-/* line 59, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagCloud {
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  background: #444;
-  padding: 10px;
-  margin-bottom: 22px;
-  min-height: 60px;
-}
-/* line 68, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons {
-  text-align: right;
-}
-/* line 70, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button {
-  width: 85px;
-  margin-left: 10px;
-}
-/* line 74, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button .plm-icon {
-  position: absolute;
-}
-/* line 76, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button .plm-icon.plus {
-  top: 3px;
-  left: 9px;
-}
-/* line 77, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button .plm-icon.x {
-  top: 2px;
-  left: 0px;
-}
-/* line 81, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button:hover .plus {
-  background-position: -30px -1050px;
-}
-/* line 82, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog .tagButtons .plm-button:hover .x {
-  background-position: -30px -1080px;
-}
-/* line 87, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog ul {
-  list-style: disc;
-}
-/* line 89, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog ul li {
-  list-style: disc;
-  display: inline-block;
-  margin-right: 10px;
-  line-height: 1.75em;
-}
-/* line 95, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog ul li span {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
-  display: inline-block;
-  color: #fff;
-  padding-top: 1px;
-  padding-left: 3px;
-  line-height: 90%;
-  font-weight: bold;
-  display: inline-block;
-  width: 15px;
-  margin-left: 8px;
-  margin-top: 2px;
-  height: 15px;
-  cursor: pointer;
-  float: right;
-  border: 1px solid #333333;
-}
-/* line 113, apps/photo-manager/_tagDialog.scss */
-.PMTagDialog ul li span:hover {
-  background: #fff;
-  color: #6dcff6;
-}
-
-/* line 129, apps/photo-manager/_tagDialog.scss */
-.tagDialogBackdrop,
-.trashDialogBackdrop,
-.emptyDialogBackdrop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1;
-}
-
-/*
- * Get stypes for photo sets. Mixins to be used to style an import, last search, uncategorized, trash etc views.
- */
-/*
- * _photoSet.scss: Styling of photo sets. Could be used for an import, last search, uncategorized, trash etc.
- *  Mostly mixins.
- */
-/*
- * Photo set collection: Container for photo-set-header, and photo-set-photos-collection.
- */
-/*
- * Photo Set header.
- */
-/*
- * Photo Set header - twirl down within the header.
- */
-/*
- * Photo Set header - size of the photo set.
- */
-/*
- * Photo Set header - date associated with the photo set.
- */
-/*
- * Collection of phots with the photo set.
- */
-/*
- * Apply photo set mixins to photos in an import, ie: last-import and all-photos views.
- */
-/* line 11, apps/photo-manager/_index.scss */
-.import-collection {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 14, apps/photo-manager/_index.scss */
-.import-collection .import-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 17, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.import-collection .import-header .import-pip.open {
-  background-position: 0 0;
-}
-/* line 18, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-count {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 19, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-date {
-  float: left;
-  margin-left: 10px;
-  font-size: 14px;
-}
-/* line 56, apps/photo-manager/_photoSet.scss */
-.import-collection .import-header .import-date span {
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-right: 5px;
-}
-/* line 22, apps/photo-manager/_index.scss */
-.import-collection .import-photos-collection {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-/* line 67, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection.open {
-  white-space: normal;
-}
-
-/*
- * Apply photo set mixins to photos as a result of a search.
- */
-/* line 28, apps/photo-manager/_index.scss */
-.search-photos {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 31, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 34, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header .search-photos-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-header .search-photos-pip.open {
-  background-position: 0 0;
-}
-/* line 37, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header .search-photos-size {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 42, apps/photo-manager/_index.scss */
-.search-photos .search-photos-collection {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-/* line 67, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection.open {
-  white-space: normal;
-}
-
-/*
- * Apply photo set mixins to generic classes in case we just do it vanilla, ie: don't want to override anything.
- */
-/* line 50, apps/photo-manager/_index.scss */
-.photo-set-collection {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 53, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 56, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header .photo-set-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-header .photo-set-pip.open {
-  background-position: 0 0;
-}
-/* line 59, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header .photo-set-size {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 64, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-photos-collection {
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-/* line 67, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection.open {
-  white-space: normal;
-}
-
-/* line 70, apps/photo-manager/_index.scss */
-.pm-trash h1 {
-  padding-left: 30px;
-}
-/* line 72, apps/photo-manager/_index.scss */
-.pm-trash h1 .plm-icon {
-  position: absolute;
-  top: 2px;
-  left: 1px;
 }

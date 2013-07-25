@@ -59,11 +59,87 @@
  * Collection of phots with the photo set.
  */
 @mixin photo-set-photos-collection {
-  width: 100%;
-  overflow: hidden;
+  //
+  // Font size to zero to get rid of space between photo cells.
+  //
+  font-size: 0;
   white-space: nowrap;
 
   &.open {
     white-space: normal;
   }
+
+  &.photo-set-clip-overflow-cells {
+    overflow: hidden;
+  }
+
+  .photo {
+    display: inline-block;
+    // border: 1px solid red;
+    padding: $small-spacing;
+    width: 160px;
+    min-height: 160px;
+
+    .photo-edit & { cursor: pointer; }
+
+    &:hover {
+      @include boxShadow(0px 0px 10px #333333);
+      background: $highlighted-gray-bg;
+
+      .edit-photo {
+        display: block;
+      }
+    }
+
+    $photo-cell-width: 140px;
+
+    .photo-thumbnail-cell {
+      width: $photo-cell-width;
+      height: 134px;
+      text-align: center;
+      font-size: 0;
+
+      &:before {
+        content: '';
+        display: inline-block;
+        box-sizing: content-box;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        width: 0px;
+        height: 134px;
+        vertical-align: middle;
+      }
+
+      .photo-thumbnail {
+        display: inline-block;
+        box-sizing: content-box;
+        border: 1px solid black;
+
+        &.square-orientation {
+          width: 132px;
+          height: 132px;
+        }
+
+        &.portrait-orientation {
+          height: 132px;
+        }
+
+        &.landscape-orientation {
+          width: 132px;
+          vertical-align: middle;
+        }
+
+      }
+    }
+  }
+
+  .photo:hover {
+    @include boxShadow(0px 0px 10px #333333);
+    background: $highlighted-gray-bg;
+    img.edit-photo {
+      display: block;
+    }
+  }
+
 }

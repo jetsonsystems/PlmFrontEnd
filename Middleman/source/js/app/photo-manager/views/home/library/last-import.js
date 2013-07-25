@@ -56,6 +56,8 @@ define(
         'click .selection-toolbar .tag': "_tagDialogHandler",
         'click .selection-toolbar .to-trash': "_toTrashHandler"
       },
+
+      _photosMin: 6,
     
       initialize: function() {
         !Plm.debug || console.log(this._debugPrefix + '.initialize: initializing...');
@@ -75,6 +77,26 @@ define(
           }
         });
         this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.import-collection');
+
+
+        $(window).resize(function() {
+          var parentCol = that.$el.find('.photos-collection');
+          var col = that.$el.find('.import-photos-collection');
+          var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+          if (col.hasClass('open')) {
+            !Plm.debug || console.log(that._debugPrefix + '.render.onSuccess: window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+            if (parentCol.width() > (that._photosMin * photoWidth)) {
+              col.removeClass('photo-set-clip-overflow-cells');
+              col.css('width', '100%');
+            }
+            else {
+              col.addClass('photo-set-clip-overflow-cells');
+              col.width(that._photosMin * photoWidth);
+            }
+          }
+        });
+
         this._respondToEvents();
       },
 
@@ -90,6 +112,29 @@ define(
           that.status = that.STATUS_RENDERED;
           that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
+
+          // After import has been rendered, assign click events to them
+          $('.import-collection').find('.import-pip').off('click').on('click', function() {
+            $(this).toggleClass('open');
+            var parentCol = that.$el.find('.photos-collection');
+            var col = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+            if (col.hasClass('open')) {
+              var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+              !Plm.debug || console.log(that._debugPrefix + '.render: .import-pip click event, collection inner width - ' + col.innerWidth() + ', photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+
+              if (parentCol.width() > (that._photosMin * photoWidth)) {
+                col.removeClass('photo-set-clip-overflow-cells');
+                col.css('width', '100%');
+              }
+              else {
+                col.addClass('photo-set-clip-overflow-cells');
+                col.width(that._photosMin * photoWidth);
+              }
+            } else {
+              col.css('width', '100%');
+            }
+          });
         };
         var onError = function(lastImport, xhr, options) {
           !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onError: error loading recent uploads.');
@@ -98,16 +143,6 @@ define(
         this.lastImport.fetch({success: onSuccess,
                                error: onError});
 
-        // After import has been rendered, assign click events to them
-        $('.import-collection').find('.import-pip').off('click').on('click', function() {
-          $(this).toggleClass('open');
-          var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
-          if(collection.hasClass('open')) {
-            collection.width($("#row").width());
-          } else {
-            collection.css('width', '100%');
-          }
-        });
         return this;
       },
 
@@ -171,19 +206,6 @@ define(
                                                               imageTemplate: importImageTemplate,
                                                               _: _ });
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
-
-            console.log("attemting to assign click events");
-            console.log($('.import-collection'));
-
-            setTimeout(function() {
-                // After import has been rendered, assign click events to them
-                $('.import-collection').find('.import-pip').on('click', function() {
-                    $(this).toggleClass('open');
-                    $(this).parent().siblings('.import-photos-collection').toggleClass('open');
-                });
-            },50);
-
-
         }
       },
 

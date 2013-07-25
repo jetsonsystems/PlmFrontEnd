@@ -1,9 +1,12 @@
 <div class='photo' data-id="{{image.get('id')}}">
   {% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; })); %}
   {% var fullSmall = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'full-small.jpg'; })); %}
-  <a class='photo-link' href='{{fullSmall.url}}'>
-    <img class='photo-thumbnail' src='{{thumbnail.url}}'>
-  </a>
+  {% var orientationClass = (thumbnail.size.width === thumbnail.size.height)? "square-orientation" : (thumbnail.size.width > thumbnail.size.height) ? "landscape-orientation" : "portrait-orientation"; %}
+  <div class='photo-thumbnail-cell'>
+    <a class='photo-link' href='{{fullSmall.url}}'>
+      <img class='photo-thumbnail {{orientationClass}}' src='{{thumbnail.url}}'>
+    </a>
+  </div>
   <div class='photo-caption'>
     <label class='plm-cb-label'>
       <input class='plm-cb' data-select-scope='image' type='checkbox'>

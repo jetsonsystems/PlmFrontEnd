@@ -643,6 +643,7 @@ footer {
   height: 100%;
   background: $black;
   padding-top: 98px;
+  padding-bottom: 30px;
 }
 
 nav {
@@ -696,9 +697,7 @@ main {
     position: relative;
     min-height: $min-body-height;
     background: $right-column-gray-bg;
-    //border-left: 1px solid $emboss-light;
-    min-height: 100%;
-    //height: 100%;
+    height: 100%;
     width: 100%;
     z-index: 1;
 
@@ -719,7 +718,7 @@ main {
       background: #474747;
       border-right: 1px solid #111;
       border-left: 1px solid #636363;
-      overflow: auto;
+      overflow: hidden;
       &.half { width: 50%; height: 100%; }
       &.no-border { border-right: none; }
       &.surveillance { width: 300px; min-width: 300px; min-height: 100%; }
@@ -1099,17 +1098,8 @@ aside {
   }
 }
 
-.photos-header {
-  padding: $leading 0 0 10px;
-  overflow: hidden;
-  min-height: 75px;
-
-  h2 { font-size: 25px; float: left; }
-
-}
-
 .select-all {
- display: inline-block;
+  display: inline-block;
   position: relative;
   top: 2px;
   font-size: 1.1em;
@@ -1118,80 +1108,9 @@ aside {
     top: 8px;
   }
 }
+
 .plm-cb-label {
   display: inline-block;
-}
-
-.photos-collection {
-  @include clearfix;
-  margin-left: $standard-spacing - 5px;
-  margin-bottom: $standard-spacing * 2;
-}
-
-.photo {
-  padding: $small-spacing;
-  display: inline-block;
-  width: 150px;
-  min-height: 160px;
-
-
-  .photo-edit & { cursor: pointer; }
-
-  &:hover {
-    @include boxShadow(0px 0px 10px #333333);
-    background: $highlighted-gray-bg;
-
-    .edit-photo {
-      display: block;
-    }
-  }
-  .photo-thumbnail {
-    border: 1px solid black;
-  }
-}
-
-// Right column photo labels: 13px Arial bold
-.photo-caption {
-  line-height: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-family: Arial;
-  font-weight: bold;
-  color: $gray-text;
-  margin-top: $small-spacing;
-
-  img {
-    margin-bottom: -5px;
-    margin-right: $small-spacing;
-  }
-
-  .edit-photo {
-    float: right;
-    margin-right: 0;
-    display: none;
-  }
-}
-
-.trash-photos-header {
-
-  .image-count {
-    float: left;
-    font-size: 1.675em;
-  }
-  .select-all {
-    float: left;
-    padding-top: 5px;
-    margin-right: 60px;
-  }
-
-  .button-group {
-
-    li {
-      display: inline-block;
-    }
-  }
 }
 
 #notifications-collection {

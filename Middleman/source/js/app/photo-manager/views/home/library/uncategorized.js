@@ -9,6 +9,7 @@ define(
     'plmCommon/plm',
     'plmCommon/msg-bus',
     'app/image-selection-manager',
+    'app/photo-set',
     'app/lightbox',
     'app/tag-dialog',
     'app/trash',
@@ -17,7 +18,7 @@ define(
     'text!/html/photo-manager/templates/home/library/photo-set.html',
     'text!/html/photo-manager/templates/home/library/photo-set-photo.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, Lightbox, TagDialog, Trash, UncategorizedImagesCollection, uncategorizedTemplate, photoSetTemplate, photoSetPhotoTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, Trash, UncategorizedImagesCollection, uncategorizedTemplate, photoSetTemplate, photoSetPhotoTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/uncategorized';
 
@@ -69,6 +70,8 @@ define(
           }
         });
         this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.photo-set-collection');
+        $(window).resize(PhotoSet.onResizeHandlerFactory(this,
+                                                         '.photo-set-photos-collection'));
       },
 
       render: function() {
@@ -123,16 +126,12 @@ define(
                                               photoTemplate: photoSetPhotoTemplate
                                             });
           this.$el.find('.photos-collection').html(compiledTemplate);
+
           // After view has been rendered, assign click events to show all images
-          this.$el.find('.photo-set-collection').find('.photo-set-pip').on('click', function() {
-            $(this).toggleClass('open');
-            var collection = $(this).parent().siblings('.photo-set-photos-collection').toggleClass('open');
-            if(collection.hasClass('open')) {
-              collection.width($("#row").width());
-            } else {
-              collection.css('width', '100%');
-            }
-          });
+          this.$el.find('.photo-set-collection').find('.photo-set-pip').on('click', 
+                                                                           PhotoSet.twirlDownClickHandlerFactory(
+                                                                             this,
+                                                                             '.photo-set-photos-collection'));
         }
       },
 

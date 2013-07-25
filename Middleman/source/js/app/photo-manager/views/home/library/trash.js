@@ -87,7 +87,7 @@ define(
       teardown: function() {
         var that = this;
 
-        !Plm.debug || console.log(debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
       },
 
       _reRender: function() {

@@ -1,3 +1,7 @@
+/*
+ * Photo Manager Specific Styles.
+ */
+
 @import "tagDialog";
 
 /*
@@ -22,6 +26,23 @@
   .import-photos-collection { @include photo-set-photos-collection; }
 }
 
+.import {
+  h4 {
+    color: $gray-text;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: $standard-spacing;
+    margin-top: $small-spacing;
+  }
+
+
+  .imported-timestamp {
+    margin-left: $standard-spacing*2;
+  }
+}
+
 /*
  * Apply photo set mixins to photos as a result of a search.
  */
@@ -40,6 +61,41 @@
   }
 
   .search-photos-collection {
+    @include photo-set-photos-collection;
+  }
+}
+
+.trash-photos {
+  @include photo-set-collection;
+
+  .trash-photos-header {
+    @include photo-set-header;
+    line-height: 38px;
+
+    .trash-size {
+      display: inline-block;
+      font-size: 1.125em;
+    }
+    .select-all {
+      display: inline-block;
+      padding-top: 5px;
+      margin-right: 60px;
+      line-height: 1.1em;
+      font-size: 1.1em;
+    }
+
+    .button-group {
+      display: inline-block;
+
+      li {
+        display: inline-block;
+        line-height: 100%;
+        font-size: 100%;
+      }
+    }
+  }
+
+  .trash-photos-collection {
     @include photo-set-photos-collection;
   }
 }
@@ -63,6 +119,59 @@
 
   .photo-set-photos-collection {
     @include photo-set-photos-collection;
+  }
+}
+
+.photos-header {
+  padding: $leading 0 0 10px;
+  overflow: hidden;
+  min-height: 75px;
+
+  h2 { font-size: 25px; float: left; }
+
+}
+
+.photos-collection {
+  @include clearfix;
+
+  position: absolute;
+  top: 75px;
+  right: 0;
+  bottom: $standard-spacing * 2;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding-left: $standard-spacing - 5px;
+}
+
+// Right column photo labels: 13px Arial bold
+.photo-caption {
+  margin-top: $small-spacing;
+  line-height: 18px;
+  font-size: 13px;
+  font-family: Arial;
+  font-weight: bold;
+  color: $gray-text;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  img  {
+    margin-bottom: -5px;
+    margin-right: $small-spacing;
+  }
+
+  .edit-photo {
+    float: right;
+    margin-right: 0;
+    display: none;
+  }
+
+  img.edit-photo {
+    float: right;
+    margin-right: 0;
+    display: none;
   }
 }
 

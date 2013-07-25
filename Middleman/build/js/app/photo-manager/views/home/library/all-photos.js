@@ -129,6 +129,8 @@ define(
         'click .selection-toolbar .to-trash': "_toTrashHandler"
       },
 
+      _photosMin: 6,
+
       initialize: function() {
         !Plm.debug || console.log(this._debugPrefix + '.initialize: initializing...');
         var that = this;
@@ -150,6 +152,29 @@ define(
           }
         });
         this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.import-collection');
+
+        $(window).resize(function() {
+          var parentCol = that.$el.find('.photos-collection');
+          var collections = that.$el.find('.import-photos-collection');
+
+          collections.each(function() {
+            var col = $(this);
+            var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+            if (col.hasClass('open')) {
+              !Plm.debug || console.log(that._debugPrefix + '.render.onSuccess: window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+              if (parentCol.width() > (that._photosMin * photoWidth)) {
+                col.removeClass('photo-set-clip-overflow-cells');
+                col.css('width', '100%');
+              }
+              else {
+                col.addClass('photo-set-clip-overflow-cells');
+                col.width(that._photosMin * photoWidth);
+              }
+            }
+          });
+        });
+
         this._respondToEvents();
       },
 
@@ -173,14 +198,26 @@ define(
               that._imageSelectionManager.reset();
               that.trigger(that.id + ":rendered");
 
-              // After imports have been rendered, assign click events to them
-              $('.import-collection').find('.import-pip').on('click', function() {
+              // After import has been rendered, assign click events to them
+              $('.import-collection').find('.import-pip').off('click').on('click', function() {
                 $(this).toggleClass('open');
-                var collection = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
-                if(collection.hasClass('open')) {
-                  collection.width($("#row").width());
+                var parentCol = that.$el.find('.photos-collection');
+                var col = $(this).parent().siblings('.import-photos-collection').toggleClass('open');
+                if (col.hasClass('open')) {
+                  var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+                  !Plm.debug || console.log(that._debugPrefix + '.render: .import-pip click event, collection inner width - ' + col.innerWidth() + ', photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+                  
+                  if (parentCol.width() > (that._photosMin * photoWidth)) {
+                    col.removeClass('photo-set-clip-overflow-cells');
+                    col.css('width', '100%');
+                  }
+                  else {
+                    col.addClass('photo-set-clip-overflow-cells');
+                    col.width(that._photosMin * photoWidth);
+                  }
                 } else {
-                  collection.css('width', '100%');
+                  col.css('width', '100%');
                 }
               });
             }});
@@ -267,7 +304,6 @@ define(
                   // Assign import pip toggles before adding them to the page
                   that.$el.find('.photos-collection').append(compiledTemplate);
               }
-              //that.$el.find('.photos-collection').append(compiledTemplate);
               if (options && options.success) {
                 options.success(importer);
               }
@@ -641,170 +677,6 @@ define(
 
         openTrashDialog();
 
-      },
-
-      //
-      // _tagDialogHandler: Manage the tag dialog when the user clicks the Tagging icon
-      //
-      _tagDialogHandler_NO_LONGER_USED: function() {
-
-          var selected = this._imageSelectionManager.selected(),
-              imageIds = "";
-
-          _.each(selected, function(selectedItem) {
-              imageIds += selectedItem.id+",";
-          });
-          imageIds = imageIds.substring(0, imageIds.length - 1);
-
-          var openTagDialog = function() {
-
-            // Fetch the tags for the currently selected images
-              $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
-                  if(data.tags.length > 0) {
-                      var ul = $(document.createElement('ul'));
-                      _.each(data.tags, function(tag) {
-                          var tagItem = $(document.createElement('li')).html(tag);
-                          var deleteTagButton = $(document.createElement('span')).html('x');
-                          ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
-                              var tagToDelete = tag,
-                                  tagDeleteData = JSON.stringify({
-                                      remove : {
-                                          images : [imageIds],
-                                          tags: [tagToDelete]
-                                      }
-                                  });
-
-                              $.ajax({
-                                  type: "POST",
-                                  url: '/api/media-manager/v0/tagger',
-                                  data: tagDeleteData,
-                                  contentType: 'application/json',
-                                  success: function(data) {
-                                      tagItem.remove();
-                                  }
-                              });
-                          })));
-                      });
-                      $("#tagDialog").find('ul').remove();
-                      $("#tagDialog").find('p').remove();
-                      $("#tagDialog").find(".tagCloud").append(ul);
-                  } else {
-                      $("#tagDialog").find(".tagCloud").append("<p>This image does not have any tags associated with it. To add a tag, use the text box above.</p>");
-                  }
-
-              });
-
-            $("#tagDialog").find('.confirm').on('click', function() {
-
-            });
-            $("#tagDialog").find('.cancel').on('click', function() {
-                closeTagDialog();
-            });
-            $(".tagDialogBackdrop").on('click', function() {
-                closeTagDialog();
-            });
-            $("#tagDialog").show();
-            $(".tagDialogBackdrop").show();
-          };
-
-          var closeTagDialog = function() {
-              $("#tagDialog").find('.confirm').off('click');
-              $("#tagDialog").find('.cancel').off('click');
-              $(".tagDialogBackdrop").off('click');
-              $("#tagDialog").hide();
-              $(".tagDialogBackdrop").hide();
-              $("#tagDialog").find('.tagInput').off('focus').off('blur').off('keydown');
-          };
-
-          var addTagToSelectedImages = function() {
-
-          };
-
-          // Tag input functionality
-          (function(elem) {
-              var placehold = "Add New Tag";
-
-              elem.on('focus', function(e) {
-                if(elem.val().trim() === placehold) {
-                    elem.val('').removeClass('placeholding');
-                }
-              });
-
-              elem.on('blur', function(e) {
-                if(elem.val().trim().length === 0) {
-                    elem.val(placehold).addClass('placeholding');
-                }
-              });
-
-              elem.on('keydown', function(e) {
-                  var key = e.which,
-                      value = elem.val();
-
-                  // If the user hits the Enter or Tab key while
-                  // inside the tag input, add the text as a tag
-                  if (key === 9 || key === 13) {
-                      e.preventDefault();
-                      e.stopPropagation();
-
-                      var taggerData = JSON.stringify({
-                          add : {
-                              images : [imageIds],
-                              tags: [value]
-                          }
-                      });
-
-                      // Add tags to selected images
-                      $.ajax({
-                          type: "POST",
-                          url: '/api/media-manager/v0/tagger',
-                          data: taggerData,
-                          contentType: 'application/json',
-                          success: function(data) {
-
-                              // After the tag has been added, fetch the new tag list
-                              $.get('/api/media-manager/v0/tags?images='+imageIds, function(data) {
-
-                                  elem.val('').removeClass('placeholding');
-                                  var ul = $(document.createElement('ul'));
-                                  _.each(data.tags, function(tag) {
-                                      var tagItem = $(document.createElement('li')).html(tag);
-                                      var deleteTagButton = $(document.createElement('span')).html('x');
-                                      ul.append(tagItem.append(deleteTagButton.on('click', function(e) {
-                                          var tagToDelete = tag,
-                                              tagDeleteData = JSON.stringify({
-                                              remove : {
-                                                  images : [imageIds],
-                                                  tags: [tagToDelete]
-                                              }
-                                          });
-
-                                          $.ajax({
-                                              type: "POST",
-                                              url: '/api/media-manager/v0/tagger',
-                                              data: tagDeleteData,
-                                              contentType: 'application/json',
-                                              success: function(data) {
-                                                tagItem.remove();
-                                              }
-                                          });
-                                      })));
-                                  });
-                                  $("#tagDialog").find('ul').remove();
-                                  $("#tagDialog").find('p').remove();
-                                  $("#tagDialog").find(".tagCloud").append(ul);
-                              });
-                          }
-                      });
-
-                      //TagsAPI.addTag(value);
-                  }
-              });
-
-              elem.val(placehold).addClass('placeholding');
-
-          })($("#tagDialog").find('.tagInput'));
-
-          openTagDialog();
       },
 
       //
