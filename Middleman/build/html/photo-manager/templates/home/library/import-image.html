@@ -1,11 +1,12 @@
-<div class='photo' data-id="{{image.get('id')}}">
-  {% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; })); %}
-  {% var fullSmall = _.first(_.filter(image.get('variants'), function(variant) { return variant.name === 'full-small.jpg'; })); %}
+{% var importStatusValue = importStatus ? importStatus : "imported"; %}
+<div class='photo' data-id="{{image.get('id')}}" data-import-status='{{importStatusValue}}'>
+  {% var thumbnail = _.first(_.filter(image.get('variants'), function(variant) { return variant.url && (variant.name === 'thumbnail.jpg'); })); %}
+  {% var fullSmall = _.first(_.filter(image.get('variants'), function(variant) { return variant.url && (variant.name === 'full-small.jpg'); })); %}
+  {% thumbnail = thumbnail || fullSmall || image.attributes %}
+  {% fullSmall = fullSmall || thumbnail || image.attributes %}
   {% var orientationClass = (thumbnail.size.width === thumbnail.size.height)? "square-orientation" : (thumbnail.size.width > thumbnail.size.height) ? "landscape-orientation" : "portrait-orientation"; %}
   <div class='photo-thumbnail-cell'>
-    <a class='photo-link' href='{{fullSmall.url}}'>
-      <img class='photo-thumbnail {{orientationClass}}' src='{{thumbnail.url}}'>
-    </a>
+    <img class='photo-link photo-thumbnail {{orientationClass}}' data-url-full-small='{{fullSmall.url}}' src='{{thumbnail.url}}'>
   </div>
   <div class='photo-caption'>
     <label class='plm-cb-label' title="{{ image.get('name').replace(/^$/, '') }}">

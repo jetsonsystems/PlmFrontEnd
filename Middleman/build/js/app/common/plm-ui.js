@@ -73,10 +73,8 @@ define(
       },
 
       update: function(text, options) {
-        options = options || _.isObject(text) ? text : {};
-        if (!_.isString(text)) {
-          text = undefined;
-        }
+        options = options || (!_.isString(text) ? text : {});
+        text = _.isString(text)?text:undefined;
 
         if (text !== undefined) {
           $("#notification").text(text);

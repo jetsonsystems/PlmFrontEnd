@@ -30,11 +30,11 @@ define(
 
     var PLM = {};
 
-    PLM.VERSION = '0.0.14';
+    PLM.VERSION = '0.0.15';
 
-    PLM.debug = false;
+    PLM.debug = true;
 
-    PLM.verbose = false;
+    PLM.verbose = true;
 
     //
     // localDateTimeString: Converts an ISO date string, to a local date string.

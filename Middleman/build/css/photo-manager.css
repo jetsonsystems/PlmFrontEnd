@@ -402,7 +402,11 @@
   width: 132px;
   vertical-align: middle;
 }
-/* line 138, apps/photo-manager/_photoSet.scss */
+/* line 139, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 144, apps/photo-manager/_photoSet.scss */
 .import-collection .import-photos-collection .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -411,7 +415,7 @@
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 141, apps/photo-manager/_photoSet.scss */
+/* line 147, apps/photo-manager/_photoSet.scss */
 .import-collection .import-photos-collection .photo:hover img.edit-photo {
   display: block;
 }
@@ -541,7 +545,11 @@
   width: 132px;
   vertical-align: middle;
 }
-/* line 138, apps/photo-manager/_photoSet.scss */
+/* line 139, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 144, apps/photo-manager/_photoSet.scss */
 .search-photos .search-photos-collection .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -550,7 +558,7 @@
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 141, apps/photo-manager/_photoSet.scss */
+/* line 147, apps/photo-manager/_photoSet.scss */
 .search-photos .search-photos-collection .photo:hover img.edit-photo {
   display: block;
 }
@@ -666,7 +674,11 @@
   width: 132px;
   vertical-align: middle;
 }
-/* line 138, apps/photo-manager/_photoSet.scss */
+/* line 139, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 144, apps/photo-manager/_photoSet.scss */
 .trash-photos .trash-photos-collection .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -675,7 +687,7 @@
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 141, apps/photo-manager/_photoSet.scss */
+/* line 147, apps/photo-manager/_photoSet.scss */
 .trash-photos .trash-photos-collection .photo:hover img.edit-photo {
   display: block;
 }
@@ -790,7 +802,11 @@
   width: 132px;
   vertical-align: middle;
 }
-/* line 138, apps/photo-manager/_photoSet.scss */
+/* line 139, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 144, apps/photo-manager/_photoSet.scss */
 .photo-set-collection .photo-set-photos-collection .photo:hover {
   -webkit-box-shadow: 0px 0px 10px #333333;
   -moz-box-shadow: 0px 0px 10px #333333;
@@ -799,7 +815,7 @@
   box-shadow: 0px 0px 10px #333333;
   background: #555555;
 }
-/* line 141, apps/photo-manager/_photoSet.scss */
+/* line 147, apps/photo-manager/_photoSet.scss */
 .photo-set-collection .photo-set-photos-collection .photo:hover img.edit-photo {
   display: block;
 }

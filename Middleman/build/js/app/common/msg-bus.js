@@ -70,13 +70,14 @@ console.log('/js/app/common/msg-bus: Running...');
 
 define(
   [
-    'postal'
+    'postal',
+    'plmCommon/plm'
   ],
-  function(postal) {
+  function(postal, Plm) {
     var moduleName = '/app/common/msg-bus';
     var debugPrefix = moduleName;
 
-    console.log(debugPrefix + ': Loading, typeof postal - ' + typeof(postal));
+    !Plm.debug || console.log(debugPrefix + ': Loading, typeof postal - ' + typeof(postal));
 
     var uuid = require('node-uuid');
 
@@ -87,7 +88,7 @@ define(
     var _listenToApiEvents = function() {
 
       var dp = debugPrefix + '._listToApiEvents: ';
-      console.log(dp + 'listening to API events...');
+      !Plm.debug || console.log(dp + 'listening to API events...');
 
       function isConnectionEstablished(parsedMsg) {
         return (parsedMsg.resource === '/notifications' && parsedMsg.event === 'connection.established');
@@ -96,7 +97,12 @@ define(
       function isValidResourceEvent(parsedMsg) {
         var isValid = 
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.started') ||
-          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.saved') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.images.created') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.created') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.images.variant.created') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.variant.created') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.images.imported') ||
+          (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.image.imported') ||
           (parsedMsg.resource === '/importers' && parsedMsg.event === 'import.completed') ||
 
           (parsedMsg.resource === '/storage/synchronizers' && parsedMsg.event === 'sync.started') ||
@@ -112,7 +118,7 @@ define(
       };
 
       function doSubscriptions(ws) {
-        console.log('photo-manager/views/home._respondToEvents: Subscribing to notification events');
+        console.log(dp + 'Subscribing to notification events');
         ws.send(JSON.stringify({
           "resource": "_client",
           "event": "subscribe",
@@ -131,7 +137,7 @@ define(
           "data": {
             "resource": "/storage/changes-feed"
           }}));
-        console.log('photo-manager/views/home._respondToEvents: Subscribed to notification events');
+        console.log(dp + 'Subscribed to notification events');
       };
 
       ws.onerror = function() {
@@ -139,9 +145,7 @@ define(
       };
 
       ws.onmessage = function(msg) {
-        console.log('photo-manager/views/home._respondToEvents: ' + msg.data);
-          
-        console.log('>> msg.data: ' + msg.data);
+        console.log(dp + msg.data);
           
         var parsedMsg = JSON.parse(msg.data);
 

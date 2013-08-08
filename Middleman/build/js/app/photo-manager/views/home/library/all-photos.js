@@ -30,7 +30,7 @@ define(
     //
     var AllPhotosView = Backbone.View.extend({
 
-      _debugPrefix: moduleName + '.AllPhotosView',
+      _debugPrefix: moduleName + '.AllPhotosView: ',
 
       tagName: 'div',
 
@@ -84,9 +84,10 @@ define(
       dirtyImporters: {},
 
       _updateDirtyImporters: function(id, status, created_at) {
-        !Plm.debug || console.log(this._debugPrefix + '._updateDirtyImporters: id - ' + id + ', status - ' + status + ', created_at - ' + created_at);
+        var dp = this._debugPrefix.replace(': ', '._updateDirtyImporters: ');
+        !Plm.debug || console.log(dp + 'id - ' + id + ', status - ' + status + ', created_at - ' + created_at);
         if (!id) {
-          !Plm.debug || console.log(this._debugPrefix + '._updateDirtyImporters: Error, invalid id - ' + id);
+          !Plm.debug || console.log(dp + 'Error, invalid id - ' + id);
           return;
         }
         if (_.has(this.dirtyImporters, id)) {
@@ -133,8 +134,11 @@ define(
       _photosMin: 6,
 
       initialize: function() {
-        !Plm.debug || console.log(this._debugPrefix + '.initialize: initializing...');
         var that = this;
+
+        var dp = that._debugPrefix.replace(': ', '.initialize: ');
+        !Plm.debug || console.log(dp + 'initializing...');
+
 
         _.extend(this, TagDialog.handlersFactory());
 
@@ -152,7 +156,19 @@ define(
             $(".selection-toolbar").hide();
           }
         });
-        this._lightbox = new Lightbox(that.$el, '.photo', '.photo-link', '.import-collection');
+        this._lightbox = new Lightbox(that.$el, 
+                                      '.photo', 
+                                      '.photo-link', 
+                                      '.import-collection',
+                                      {
+                                        href: function() {
+                                          var url = $(this).data('urlFullSmall');
+
+                                          !Plm.debug || console.log(dp.replace(': ', '.Lightbox.href: ') + 'element tag - ' + $(this).prop('tagName') + ', href url - ' + url);
+                                          return url;
+                                        }
+                                      }
+                                     );
 
         $(window).resize(function() {
           var parentCol = that.$el.find('.photos-collection');
@@ -163,7 +179,7 @@ define(
             var photoWidth = $(col.find('.photo')[0]).outerWidth();
 
             if (col.hasClass('open')) {
-              !Plm.debug || console.log(that._debugPrefix + '.render.onSuccess: window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+              !Plm.debug || console.log(dp.replace(': ', '.resize: ') + 'window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
               if (parentCol.width() > (that._photosMin * photoWidth)) {
                 col.removeClass('photo-set-clip-overflow-cells');
                 col.css('width', '100%');
@@ -184,18 +200,21 @@ define(
       //
       render: function() {
         var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '.render: ');
+
         var compiledTemplate = _.template(allPhotosTemplate);
         that.$el.append(compiledTemplate);
         var onSuccess = function() {
           that._renderImports({
             success: function(importer) {
-              console.log(that._debugPrefix + '.render: success for importer w/ id - ' + importer.id);
+              console.log(dp + 'success for importer w/ id - ' + importer.id);
             },
             error: function(importer) {
-              console.log(that._debugPrefix + '.render: error for importer w/ id - ' + importer.id);
+              console.log(dp + 'error for importer w/ id - ' + importer.id);
             },
             done: function() {
-              console.log(that._debugPrefix + '.render: rendered all importers...');
+              console.log(dp + 'rendered all importers...');
               that._imageSelectionManager.reset();
               that.trigger(that.id + ":rendered");
 
@@ -207,7 +226,7 @@ define(
                 if (col.hasClass('open')) {
                   var photoWidth = $(col.find('.photo')[0]).outerWidth();
 
-                  !Plm.debug || console.log(that._debugPrefix + '.render: .import-pip click event, collection inner width - ' + col.innerWidth() + ', photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+                  !Plm.debug || console.log(dp + '.import-pip click event, collection inner width - ' + col.innerWidth() + ', photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
                   
                   if (parentCol.width() > (that._photosMin * photoWidth)) {
                     col.removeClass('photo-set-clip-overflow-cells');
@@ -235,7 +254,9 @@ define(
       teardown: function() {
         var that = this;
 
-        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
+        var dp = this._debugPrefix.replace(': ', '.teardown: ');
+
+        !Plm.debug || console.log(dp + 'invoking...');
 
         _.each(_.keys(that.subscriptions), function(key) {
           MsgBus.unsubscribe(key);
@@ -251,7 +272,10 @@ define(
       //  the true last import and re-render the view.
       //   
       _reRender: function() {
-        !Plm.debug || console.log(this._debugPrefix + '._reRender: re-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        var dp = this._debugPrefix.replace(': ', '._reRender: ');
+
+        !Plm.debug || console.log(dp + 're-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+
         this.status = this.STATUS_UNRENDERED;
         this.$el.html('');
         this.importers = new ImportersCollection(undefined, 
@@ -276,6 +300,9 @@ define(
       //
       _renderImports: function(options) {
         var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._renderImports: ');
+
         if ((this.importers === undefined) || (this.importers.length === 0)) {
           Plm.showFlash('You\' have no imports! Please, import some photos!');
           that.rendering.full = false;
@@ -285,17 +312,21 @@ define(
           }
         }
         else {
-          console.log(that._debugPrefix + '._renderImports: Rendering ' + this.importers.length + ' imports...');
+          console.log(dp + 'Rendering ' + this.importers.length + ' imports...');
           this.status = this.STATUS_RENDERING;
           this.rendering.full = true;
           var toRender = this.importers.toArray();
 
           function renderImport(importer) {
+            !Plm.debug || console.log(dp.replace(': ', '.renderImport: ') + 'Rendering importer - ' + importer.id + ', import_dir - ' + importer.import_dir);
             var importerImages = new ImportersImagesCollection(undefined, {importerId: importer.id});
+            !Plm.debug || console.log(dp.replace(': ', '.renderImport: ') + 'Created /importers/images collection...');
             var onSuccess = function() {
+              !Plm.debug || console.log(dp.replace(': ', '.renderImport.onSuccess: ') + 'Success retrieving importer images...');
               var compiledTemplate = _.template(importTemplate, { importer: importer,
                                                                   importImages: importerImages,
                                                                   imageTemplate: importImageTemplate,
+                                                                  importStatus: "imported",
                                                                   _: _,
                                                                   formatDate: Plm.localDateTimeString});
 
@@ -328,6 +359,7 @@ define(
                 that.status = that.STATUS_RENDERED;
               }
             };
+            console.log(dp.replace(': ', '.renderImport: ') + 'About to fetch importer images w/ id - ' + importerImages.importerId);
             importerImages.fetch({success: onSuccess,
                                   error: onError});
           };
@@ -340,11 +372,14 @@ define(
       //
       _startIncrementallyRenderingImport: function(importer) {
         var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._startIncrementallyRenderingImport: ');
+
         //
         // We only allow starting an incremental rendering when nothing else is going on.
         //
         if (that.status === that.STATUS_RENDERED) {
-          console.log(that._debugPrefix + '._startIncrementallyRenderingImport: Starting to incrementally render import, importer - ' + JSON.stringify(importer));
+          console.log(dp + 'Starting to incrementally render import, importer - ' + JSON.stringify(importer));
 
           that.status = that.STATUS_RENDERING;
 
@@ -360,17 +395,18 @@ define(
           var importEl = $('#' + importElId);
 
           if (importEl.length > 0) {
-            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: import already in DOM, will use it...');
+            console.log(dp + 'import already in DOM, will use it...');
             that.$importRenderingInc = importEl;
             that.$importRenderingInc.find('.import-count').html('0 Photos');
             that.$importRenderingInc.find('.import-photos-collection').html('<div class="clearfix"/>');
           }
           else {
-            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: compiling initial template for import...');
+            console.log(dp + 'compiling initial template for import...');
 
             var compiledTemplate = _.template(importTemplate, { importer: that.importRenderingInc,
                                                                 importImages: that.importRenderingIncImages,
                                                                 imageTemplate: importImageTemplate,
+                                                                importStatus: "imported",
                                                                 _: _,
                                                                 formatDate: Plm.localDateTimeString });
             that.$el.find('.photos-collection').prepend(compiledTemplate);
@@ -379,7 +415,7 @@ define(
                                                             PhotoSet.twirlDownClickHandlerFactory(
                                                               that,
                                                               '.import-photos-collection'));
-            console.log(that._debugPrefix + '._startIncrementallyRenderingImport: compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
+            console.log(dp + 'compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
           that._imageSelectionManager.reset();
           that.rendering.incremental = true;
@@ -387,26 +423,78 @@ define(
         return that;
       },
 
-      _addToIncrementalImportRender: function(image) {
+      _addToIncrementalImportRender: function(image, eventTopic) {
         var that = this;
-        if (that.rendering.incremental) {
-          console.log(that._debugPrefix + '._addToIncrementalImportRender: Adding image to import w/ id - ' + image.id + ', to view.');
-          //
-          // Add to the collection.
-          //
-          var imageModel = new ImageModel(image);
-          this.importRenderingIncImages.add(imageModel);
-          //
-          // Update the size of the import.
-          //
-          this.$importRenderingInc.find('.import-count').text(this.importRenderingIncImages.size() + " Photos");
-          //
-          // Also add the image to the view.
-          //
-          var compiledTemplate = _.template(importImageTemplate, { image: imageModel });
-          that.$importRenderingInc.find('.import-photos-collection').append(compiledTemplate);
+
+        var dp = this._debugPrefix.replace(': ', '._addToIncrementalRender: ');
+
+        var numAdded = 0;
+
+        var addOne = function(image) {
+          if (that.rendering.incremental) {
+            if (!_.has(image, 'variants') || (image.variants.length === 0)) {
+              !Plm.debug || console.log(dp + 'Skipping image with no variants, image w/ id - ' + image.id);
+            }
+            else if (!that.importRenderingIncImages.get(image.id)) {
+              !Plm.debug || console.log(dp + 'Adding image to import w/ id - ' + image.id + ', to view.');
+              //
+              // Add to the collection.
+              //
+              var imageModel = new ImageModel(image);
+              that.importRenderingIncImages.add(imageModel);
+              //
+              // Update the size of the import.
+              //
+              that.$importRenderingInc.find('.import-count').text(that.importRenderingIncImages.size() + " Photos");
+              //
+              // Also add the image to the view.
+              //
+              var compiledTemplate = _.template(importImageTemplate,
+                                                {
+                                                  image: imageModel,
+                                                  importStatus: eventTopic.split('.').splice(2).join('.')
+                                                });
+              that.$importRenderingInc.find('.import-photos-collection').append(compiledTemplate);
+              numAdded++;
+            }
+            else if ((eventTopic === 'import.images.imported') || (eventTopic === 'import.image.imported')) {
+              //
+              // Replace the image model within the collection.
+              //
+              var imageModel = new ImageModel(image);
+              that.importRenderingIncImages.set([imageModel], {remove: false});
+              //
+              // Update the size of the import.
+              //
+              that.$importRenderingInc.find('.import-count').text(that.importRenderingIncImages.size() + " Photos");
+              //
+              // Replace the DOM element reresenting the image.
+              //
+              var compiledTemplate = _.template(importImageTemplate,
+                                                {
+                                                  image: imageModel,
+                                                  importStatus: eventTopic.split('.').splice(2).join('.')
+                                                });
+              that.$importRenderingInc.find('.import-photos-collection [data-id="' + image.id + '"]').replaceWith(compiledTemplate);
+              numAdded++;
+            }
+            else {
+              !Plm.debug || console.log('photo-manager/views/home/library/last-import._addToIncrementalRender: last import already contains image w/ id - ' + image.id);
+            }
+          }
+        };
+
+        if (_.isArray(image)) {
+          _.map(image, addOne);
+        }
+        else {
+          addOne(image);
+        }
+
+        if (numAdded) {
           that._imageSelectionManager.reset();
         }
+
         return that;
       },
 
@@ -443,6 +531,8 @@ define(
       _renderDirtyImport: function(importerId, options) {
         var that = this;
 
+        var dp = this._debugPrefix.replace(': ', '._renderDirtyImport: ');
+
         //
         // Don't allow us to do if a full render is inprogess:
         //
@@ -451,7 +541,7 @@ define(
           return;
         }
         if (_.has(that.dirtyImporters, importerId)) {
-          !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport: About to render dirty import w/ id - ' + importerId);
+          !Plm.debug || console.log(dp + 'About to render dirty import w/ id - ' + importerId);
           var importerToDo = that.dirtyImporters[importerId];
           delete that.dirtyImporters[importerId];
 
@@ -461,7 +551,7 @@ define(
           var importerImages = new ImportersImagesCollection(undefined, {importerId: importerId});
 
           var onSuccess = function(collection, response) {
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Have importer w/ id - ' + importerImages.importerId + ', response - ' + JSON.stringify(response));
+            !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Have importer w/ id - ' + importerImages.importerId + ', response - ' + JSON.stringify(response));
             var iAttr = _.clone(response.importer);
             delete iAttr.images;
 
@@ -471,14 +561,14 @@ define(
             var importer = that.importers.findWhere({id: importerId});
             var index = -1;
 
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Found importer - ' + JSON.stringify(importer));
+            !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Found importer - ' + JSON.stringify(importer));
             
             if (importer) {
               index = that.importers.indexOf(importer);
-              !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Found importer model w/ index - ' + index);
+              !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Found importer model w/ index - ' + index);
             }
             else {
-              !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Create importer model with attr - ' + JSON.stringify(iAttr));
+              !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Create importer model with attr - ' + JSON.stringify(iAttr));
               //
               // Not in the collection, figure out where to put it.
               //
@@ -486,7 +576,7 @@ define(
               var firstSmaller = that.importers.find(function(v) { return v.get('created_at') < iAttr.created_at; });
               if (firstSmaller) {
                 index = that.importers.indexOf(firstSmaller);
-                !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Adding new importer at index - ' + index);
+                !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Adding new importer at index - ' + index);
                 that.importers.add(importer, {at:index});
               }
               else {
@@ -494,19 +584,19 @@ define(
                 // Insert at end.
                 //
                 index = that.importers.length;
-                !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Inserting importer at end...');
+                !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Inserting importer at end...');
                 that.importers.push(importer);
                 if (Plm.debug) {
-                  console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Trying to retrieve inserted importer w/id - ' + importer.id + ' (' + importerId + '), importers collection size - ' + that.importers.length);
+                  !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Trying to retrieve inserted importer w/id - ' + importer.id + ' (' + importerId + '), importers collection size - ' + that.importers.length);
                   that.importers.each(function(imp, i) {
-                    console.log(that._debugPrefix + '._renderDirtyImport.inSuccess: collection importer at index - ' + i + ', importer - ' + JSON.stringify(imp));
+                    !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'collection importer at index - ' + i + ', importer - ' + JSON.stringify(imp));
                   });
                   var tmp = that.importers.findWhere({id: importer.id});
-                  console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Retrieved importer - ' + JSON.stringify(tmp));
+                  console.log(dp.replace(': ', '.onSuccess: ') + 'Retrieved importer - ' + JSON.stringify(tmp));
                 }
               }
             }
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Compiling import template.');
+            !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Compiling import template.');
             var compiledTemplate = _.template(importTemplate, { importer: importer,
                                                                 importImages: importerImages,
                                                                 imageTemplate: importImageTemplate,
@@ -534,7 +624,7 @@ define(
             if (!that.rendering.full && !that.rendering.incremental) {
               that.status = that.STATUS_RENDERED;
             }
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport.onSuccess: Invoking success callback...');
+            !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Invoking success callback...');
             !options || !options.success || options.success();
           };
           var onError = function() {
@@ -546,7 +636,7 @@ define(
             !options || !options.error || options.error('There was an unexpected retrieving images for an import!');
           };
 
-          !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImport: Fetching importer images...');
+          !Plm.debug || console.log(dp + 'Fetching importer images...');
           importerImages.fetch({success: onSuccess,
                                 error: onError});
         }
@@ -559,13 +649,16 @@ define(
 
       _renderDirtyImports: function() {
         var that = this;
-        !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports: Have ' + _.size(that.dirtyImporters) + ' importers to render.');
+
+        var dp = this._debugPrefix.replace(': ', '._renderDirtyImports: ');
+
+        !Plm.debug || console.log(dp + 'Have ' + _.size(that.dirtyImporters) + ' importers to render.');
         var doOne = function(onSuccess, onError) {
           var toDo = _.sortBy(that.dirtyImporters,
                               function(v, k) { return v.created_at; });
           if (_.size(toDo) > 0) {
             var importerToDo = _.first(toDo);
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports: Selected importer w/ id - ' + importerToDo.id + ', w/ created_at - ' + importerToDo.created_at);
+            !Plm.debug || console.log(dp+ 'Selected importer w/ id - ' + importerToDo.id + ', w/ created_at - ' + importerToDo.created_at);
             that._renderDirtyImport(importerToDo.id,
                                     {success: onSuccess,
                                      error: onError});
@@ -576,7 +669,7 @@ define(
         };
         var onSuccess = function(id) {
           if (_.size(that.dirtyImporters) > 0) {
-            !Plm.debug || console.log(that._debugPrefix + '._renderDirtyImports.onSuccess: Have ' + _.size(that.dirtyImporters) + ' importers left to render.');
+            !Plm.debug || console.log(dp.replace(': ', '.onSuccess: ') + 'Have ' + _.size(that.dirtyImporters) + ' importers left to render.');
             doOne(onSuccess, onError);
           }
           else {
@@ -603,12 +696,14 @@ define(
       // _toTrashHandler: Move selected images to trash.
       //
       _toTrashHandler: function() {
-        var dbgPrefix = this._debugPrefix + "._toTrashHandler: ";
-        !Plm.debug || console.log(dbgPrefix + "invoked...");
         var that = this;
+
+        var dp = this._debugPrefix.replace(': ', "._toTrashHandler: ");
+        !Plm.debug || console.log(dp + "invoked...");
+
         var selected = this._imageSelectionManager.selected();
 
-        !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
+        !Plm.debug || console.log(dp + selected.length + ' images are selected.');
 
         var numTodo = selected.length;
         var numSuccess = 0;
@@ -653,7 +748,7 @@ define(
 
         var trashDialogConfirm = function() {
             _.each(selected, function(selectedItem) {
-                !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+                !Plm.debug || console.log(dp + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
                 var imageModel = new ImageModel({
                     id: selectedItem.id,
                     in_trash: false
@@ -663,10 +758,10 @@ define(
                 // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
                 //
                 (function(imageModel, $el, updateStatus) {
-                    !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
+                    !Plm.debug || console.log(dp + 'Moving selected image to trash, image id - ' + imageModel.id);
                     imageModel.save({'in_trash': true},
                         {success: function(model, response, options) {
-                            !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
+                            !Plm.debug || console.log(dp + "Success saving image, id - " + model.id);
                             var $importColEl = $el.parents('.import-collection');
                             $el.remove();
                             var $photoEls = $importColEl.find('.photo');
@@ -679,7 +774,7 @@ define(
                             updateStatus(0);
                         },
                             error: function(model, xhr, options) {
-                                !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                                !Plm.debug || console.log(dp + "Error saving image, id - " + model.id);
                                 updateStatus(1);
                             }});
                 })(imageModel, selectedItem.$el, updateStatus);
@@ -699,6 +794,8 @@ define(
       _respondToEvents: function() {
         var that = this;
 
+        var dp = this._debugPrefix.replace(': ', '._respondToEvents: ');
+
         var subId;
         var channel;
         var topic;
@@ -708,8 +805,8 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.started',
                                  function(msg) {
-                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
-                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: import started, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'event - import.started, status - ' + that.status + ', rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'event - import.started, msg - ' + JSON.stringify(msg));
                                    if (that.rendering.incremental) {
                                      that.dirty = true;
                                      that._updateDirtyImporters(msg.data.id,
@@ -726,13 +823,53 @@ define(
         };
 
         channel = '_notif-api:' + '/importers';
-        topic = 'import.image.saved';
+        topic = 'import.images.variant.created';
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
-                                 'import.image.saved',
+                                 topic,
                                  function(msg) {
-                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import image saved, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'event - import.images.variant.created ...');
                                    if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
-                                     that._addToIncrementalImportRender(msg.data.doc);
+                                     that._addToIncrementalImportRender(msg.data.doc, 'import.images.variant.created');
+                                   }
+                                   else {
+                                     that.dirty = true;
+                                     that._updateDirtyImporters(msg.data.id,
+                                                                that.IMPORTER_STATUS_UPDATED);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.images.imported';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 topic,
+                                 function(msg) {
+                                   !Plm.debug || console.log(dp + 'event - import.images.imported ...');
+                                   if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
+                                     that._addToIncrementalImportRender(msg.data.doc, 'import.images.imported');
+                                   }
+                                   else {
+                                     that.dirty = true;
+                                     that._updateDirtyImporters(msg.data.id,
+                                                                that.IMPORTER_STATUS_UPDATED);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.image.imported';
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 topic,
+                                 function(msg) {
+                                   !Plm.debug || console.log(dp + 'event - import.image.imported ...');
+                                   if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
+                                     that._addToIncrementalImportRender(msg.data.doc, 'import.image.imported');
                                    }
                                    else {
                                      that.dirty = true;
@@ -750,8 +887,8 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
                                  'import.completed',
                                  function(msg) {
-                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: import completed, rendering incremental - ' + that.rendering.incremental);
-                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: import completed, msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'event - import.completed, rendering incremental - ' + that.rendering.incremental);
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'event - import.completed, msg - ' + JSON.stringify(msg));
                                    if (that.rendering.incremental && (that.importRenderingInc.id === msg.data.id)) {
                                      that._finishIncrementalImportRender(msg.data);
                                    }
@@ -778,8 +915,8 @@ define(
                                  //   view as being dirty.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: doc change event, event - ' + msg.event);
-                                   !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: msg.data - ' + JSON.stringify(msg.data));
+                                   !Plm.debug || console.log(dp + 'event - ' + msg.event);
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'event - ' + msg.event + ', msg.data - ' + JSON.stringify(msg.data));
                                    var parsedEvent = msg.event.split('.');
                                    if (parsedEvent[1] === 'importer') {
                                      that.dirty = true;
@@ -802,7 +939,7 @@ define(
                                      //
                                      // Any change to an image implies the corresponding importer has changed.
                                      //
-                                     !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._respondToEvents: have image event...');
+                                     !Plm.debug || !Plm.verbose || console.log(dp + 'event - ' + msg.event + ', Have image event...');
                                      that.dirty = true;
                                      if (_.has(msg.data.doc, 'importer_id')) {
                                        //
@@ -823,9 +960,9 @@ define(
         subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
                                  'sync.completed',
                                  function(msg) {
-                                   !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed event...');
+                                   !Plm.debug || console.log(dp + 'event - sync.completed ...');
                                    if (that.dirty) {
-                                     !Plm.debug || console.log(that._debugPrefix + '._respondToEvents: sync.completed, view is dirty...');
+                                     !Plm.debug || console.log(dp + 'event - sync.completed, view is dirty...');
                                      that._renderDirtyImports();
                                    }
                                  });

@@ -134,6 +134,12 @@
     }
   }
 
+  .photo[data-import-status="imported"] {
+    .photo-link {
+      cursor: pointer;
+    }
+  }
+
   .photo:hover {
     @include boxShadow(0px 0px 10px #333333);
     background: $highlighted-gray-bg;

@@ -16,5 +16,5 @@
 
   %div{:class => "import-photos-collection"}
     != '{% importImages.length && importImages.each(function(image) { %}'
-    != '  {{ _.template(imageTemplate, { image : image, _ : _ }) }}'
+    != '  {{ _.template(imageTemplate, { image : image, importStatus : importStatus, _ : _ }) }}'
     != '{% }); %}'

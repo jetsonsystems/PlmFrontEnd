@@ -41,8 +41,12 @@ define(
     //      * active local import: The lastImport is replaced and incrementally updated.
     //        On import.started:
     //          state = STATUS_INCREMENTALLY_RENDERING
-    //        On import.image.saved:
+    //        On import.image(s).variant.created:
     //          if state === STATUS_INCREMENTALLY_RENDERING then
+    //            - add or update image in collection.
+    //            - if previously had no variant for image
+    //              - update view with image in collection.
+    //        On import.image(s).imported
     //            - add or update image in collection.
     //            - update view with image in collection.
     //        On import.completed
@@ -346,6 +350,7 @@ define(
         var that = this;
         
         // Use this variable to keep track of the number of images imported
+        var current_thumbnailed_images_count = 0;
         var current_imported_images_count = 0;
         var total_images_to_import_count = 0;
         var importStarted = false;
@@ -360,7 +365,7 @@ define(
         subId = MsgBus.subscribe(channel,
                                  topic,
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import started, msg.data - ' + msg.data);
+                                   !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import.started, msg.data - ' + msg.data);
 
                                    if (importStarted) {
                                      Plm.showFlash('An import is already in progress, please wait til the current import finishes!');
@@ -371,13 +376,13 @@ define(
                                      total_images_to_import_count = msg.data.num_to_import;
                                      PlmUI.notif.start("Now importing images",
                                                        {
-                                                         progressText: current_imported_images_count + "/" + total_images_to_import_count,
+                                                         progressText: current_thumbnailed_images_count + "/" + total_images_to_import_count,
                                                          rotateLogo: false
                                                        }
                                                       );
 
                                      !Plm.debug || console.log(">> Number of files to import: " + msg.data.num_to_import);
-                                     !Plm.debug || console.log(">> Current number of images imported: " + current_imported_images_count);
+                                     !Plm.debug || console.log(">> Current number of images imported: " + current_thumbnailed_images_count);
                                    }
                                  });
         that.subscriptions[subId] = {
@@ -386,17 +391,63 @@ define(
         };
 
         channel = '_notif-api:' + '/importers';
-        topic = 'import.image.saved';
+        topic = 'import.images.imported'
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
-                                 'import.image.saved',
+                                 topic,
                                  function(msg) {
                                    if (importStarted) {
-                                     current_imported_images_count++;
-                                     !Plm.debug || console.log(">> Current number of images imported: " + current_imported_images_count);
+                                     current_imported_images_count = current_imported_images_count + msg.data.doc.length;
                                      
-                                     PlmUI.notif.update({progressText: current_imported_images_count + "/" + total_images_to_import_count});
+                                     PlmUI.notif.update("Now processing imported images",
+                                                        {
+                                                          progressText: current_imported_images_count + "/" + total_images_to_import_count
+                                                        });
                                      
-                                     !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import image saved!');
+                                     !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import.images.imported, imported - ' + msg.data.doc.length + ', current images imported - ' + current_imported_images_count);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.image.imported'
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 topic,
+                                 function(msg) {
+                                   if (importStarted) {
+                                     current_imported_images_count = current_imported_images_count + 1;
+                                     
+                                     PlmUI.notif.update("Now processing imported images",
+                                                        {
+                                                          progressText: current_imported_images_count + "/" + total_images_to_import_count
+                                                        });
+                                     
+                                     !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import.image.imported, current images imported - ' + current_imported_images_count);
+                                   }
+                                 });
+        that.subscriptions[subId] = {
+          channel: channel,
+          topic: topic
+        };
+
+        channel = '_notif-api:' + '/importers';
+        topic = 'import.images.variant.created'
+        subId = MsgBus.subscribe('_notif-api:' + '/importers',
+                                 topic,
+                                 function(msg) {
+                                   if (importStarted) {
+                                     var doOne = function(image) {
+                                       if (_.has(image, 'variants') && (image.variants.length === 1)) {
+                                         current_thumbnailed_images_count = current_thumbnailed_images_count + 1;
+                                     
+                                         PlmUI.notif.update({progressText: current_thumbnailed_images_count + "/" + total_images_to_import_count});
+                                     
+                                         !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import.images.variant.created, imported - 1, current images imported - ' + current_thumbnailed_images_count);
+                                       }
+                                     };
+                                     _.each(msg.data.doc, doOne);
                                    }
                                  });
         that.subscriptions[subId] = {
@@ -407,7 +458,7 @@ define(
         channel = '_notif-api:' + '/importers';
         topic = 'import.completed';
         subId = MsgBus.subscribe('_notif-api:' + '/importers',
-                                 'import.completed',
+                                 topic,
                                  function(msg) {
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import completed!');
 
@@ -419,6 +470,7 @@ define(
                                                      });
                                      
                                      current_imported_images_count = 0;
+                                     current_thumbnailed_images_count = 0;
                                      total_images_to_import_count = 0;
                                      importStarted = false;
                                    }
@@ -435,7 +487,7 @@ define(
         channel = '_notif-api:' + '/storage/synchronizers';
         topic = 'sync.started';
         subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
-                                 'sync.started',
+                                 topic,
                                  function(msg) {
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: sync started...');
                                    !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._respondToEvents: msg.data - ' + msg.data);
@@ -462,7 +514,7 @@ define(
         channel = '_notif-api:' + '/storage/synchronizers';
         topic = 'sync.completed';
         subId = MsgBus.subscribe('_notif-api:' + '/storage/synchronizers',
-                                 'sync.completed',
+                                 topic,
                                  function(msg) {
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: sync completed!');
                                    if (sync_in_progress) {
