@@ -116,10 +116,38 @@ define(
       },
 
       _doRender: function() {
+        var that = this;
         if (this.images.length === 0) {
           Plm.showFlash('You have no uncategorized images. My you sure are organized!');
         }
         else {
+          if (Plm.debug) {
+            this.images.each(function(image) {
+              var variants = image.get('variants');
+              if (variants) {
+                _.each(variants, function(variant) {
+                  if (!variant.url) {
+                    console.log(that._debugPrefix + '._doRender: image variant w/ id - ' + image.id + ', has variant w/ no URL, variant w/ id - ' + variant.id);
+                  }
+                });
+                var thumbnail = _.first(_.filter(variants, function(variant) { return variant.name === 'thumbnail.jpg'; }));
+                var fullSmall = _.first(_.filter(variants, function(variant) { return variant.name === 'full-small.jpg'; }));
+
+                if (!thumbnail) {
+                  console.log(that._debugPrefix + '._doRender: image has NO thumbnail variant, id - ' + image.id);
+                }
+                if (!fullSmall) {
+                  console.log(that._debugPrefix + '._doRender: image has NO full-small variant, id - ' + image.id);
+                }
+              }
+              else {
+                console.log(that._debugPrefix + '._doRender: image has NO variants, id - ' + image.id);
+              }
+
+            });
+            console.log(that._debugPrefix + '._doRender: successfully verified image URL properties of ' + this.images.length + ' images.');
+          }
+          
           var compiledTemplate = _.template(photoSetTemplate,
                                             {
                                               images: this.images,

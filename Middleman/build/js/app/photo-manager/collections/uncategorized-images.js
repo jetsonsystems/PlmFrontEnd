@@ -35,10 +35,7 @@ define(
       },
 
       url: function() {
-        console.log("THE URL HAS BEEN REQUESTED");
-        var url = '/api/media-manager/v0/images?tags=';
-        
-        return url;
+        return '/api/media-manager/v0/images?tags=';
       },
     });
     
