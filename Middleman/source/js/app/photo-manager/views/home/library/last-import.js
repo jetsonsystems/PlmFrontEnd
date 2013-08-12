@@ -98,7 +98,7 @@ define(
           var photoWidth = $(col.find('.photo')[0]).outerWidth();
 
           if (col.hasClass('open')) {
-            !Plm.debug || console.log(db.replace(': ', '.render.onSuccess: ') + 'window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
+            !Plm.debug || console.log(dp.replace(': ', '.render.onSuccess: ') + 'window resize, collection inner width - ' + col.innerWidth() + ', parent coll (inner width, width, css width) - (' + parentCol.innerWidth() + ', ' + parentCol.width() + ', ' + parentCol.css("width") + '), photos min - ' + that._photosMin + ', photo width - ' + photoWidth);
             if (parentCol.width() > (that._photosMin * photoWidth)) {
               col.removeClass('photo-set-clip-overflow-cells');
               col.css('width', '100%');
@@ -252,10 +252,16 @@ define(
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
           this._imageSelectionManager.reset();
 
-          this.$el.find('.import-collection').find('.import-pip').on('click', 
-                                                                     PhotoSet.twirlDownClickHandlerFactory(
-                                                                       this,
-                                                                       '.import-photos-collection'));
+          var twirlDownHandler = PhotoSet.twirlDownClickHandlerFactory(
+            this,
+            '.import-photos-collection');
+
+          //
+          // Setup the "Twirldown handler" to open close the import. Also, call it 
+          // immediately to open the view.
+          //
+          this.$el.find('.import-collection').find('.import-pip').on('click', twirlDownHandler);
+          twirlDownHandler.call(this.$el.find('.import-collection').find('.import-pip'));
 
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
         }
@@ -358,12 +364,12 @@ define(
       _toTrashHandler: function() {
         var that = this;
 
-        var dbgPrefix = this._debugPrefix.replace(': ', "._toTrashHandler: ");
-        !Plm.debug || console.log(dbgPrefix + "invoked...");
+        var dp = this._debugPrefix.replace(': ', "._toTrashHandler: ");
+        !Plm.debug || console.log(dp + "invoked...");
 
         var selected = this._imageSelectionManager.selected();
         
-        !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected.');
+        !Plm.debug || console.log(dp + selected.length + ' images are selected.');
         
         var numTodo = selected.length;
         var numSuccess = 0;
@@ -408,7 +414,7 @@ define(
         
         var trashDialogConfirm = function() {
           _.each(selected, function(selectedItem) {
-            !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+            !Plm.debug || console.log(dp + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
             var imageModel = new ImageModel({
               id: selectedItem.id,
               in_trash: false
@@ -418,10 +424,10 @@ define(
             // Invoke a function to create a closure so we have a handle to the image model, and the jQuery element.
             //
             (function(imageModel, $el, updateStatus) {
-              !Plm.debug || console.log(dbgPrefix + 'Moving selected image to trash, image id - ' + imageModel.id);
+              !Plm.debug || console.log(dp + 'Moving selected image to trash, image id - ' + imageModel.id);
               imageModel.save({'in_trash': true},
                               {success: function(model, response, options) {
-                                !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
+                                !Plm.debug || console.log(dp + "Success saving image, id - " + model.id);
                                 var $importColEl = $el.parents('.import-collection');
                                 $el.remove();
                                 var $photoEls = $importColEl.find('.photo');
@@ -434,7 +440,7 @@ define(
                                 updateStatus(0);
                               },
                                error: function(model, xhr, options) {
-                                 !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
+                                 !Plm.debug || console.log(dp + "Error saving image, id - " + model.id);
                                  updateStatus(1);
                                }});
             })(imageModel, selectedItem.$el, updateStatus);

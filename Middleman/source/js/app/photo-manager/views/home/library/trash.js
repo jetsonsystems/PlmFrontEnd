@@ -9,12 +9,13 @@ define(
     'plmCommon/plm', 
     'plmCommon/msg-bus',
     'app/image-selection-manager',
+    'app/photo-set',
     'app/collections/trash-images',
     'text!/html/photo-manager/templates/home/library/trash.html',
     'text!/html/photo-manager/templates/home/library/trash-photos.html',
     'text!/html/photo-manager/templates/home/library/trash-photo.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, TrashImagesCollection, trashTemplate, trashPhotosTemplate, trashPhotoTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, TrashImagesCollection, trashTemplate, trashPhotosTemplate, trashPhotoTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/trash';
 
@@ -57,10 +58,13 @@ define(
             $("#trash-delete-selected").addClass('disabled');
           }
         });
+        $(window).resize(PhotoSet.onResizeHandlerFactory(this,
+                                                         '.trash-photos-collection'));
       },
 
       render: function() {
         var that = this;
+
         var dbgPrefix = this._debugPrefix + '.render: ';
         !Plm.debug || console.log(dbgPrefix + 'Rendering...');
 
@@ -79,6 +83,7 @@ define(
           !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onError: error loading recent uploads.');
           that.trigger(that.id + ":rendered");
         };
+        !Plm.debug || console.log(dbgPrefix + 'About to fetch trash images...');
         this.images.fetch({success: onSuccess,
                            error: onError});
         return this;
@@ -110,6 +115,20 @@ define(
                                               imageTemplate: trashPhotoTemplate
                                             });
           this.$el.find('.trash-photos').replaceWith(compiledTemplate);
+          var parentCol = $('#middle-column');
+          var col = this.$el.find('.trash-photos-collection');
+          var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+          console.log(this._debugPrefix + '._doRender: parent col width - ' + parentCol.width() + ', photo set photos min - ' + PhotoSet.photosMin + ', photoWidth - ' + photoWidth);
+          
+          if (parentCol.width() > (PhotoSet.photosMin * photoWidth)) {
+            col.removeClass('photo-set-clip-overflow-cells');
+            col.css('width', '100%');
+          }
+          else {
+            col.addClass('photo-set-clip-overflow-cells');
+            col.width(PhotoSet.photosMin * photoWidth);
+          }
         }
       },
 

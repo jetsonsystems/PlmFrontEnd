@@ -411,10 +411,15 @@ define(
                                                                 formatDate: Plm.localDateTimeString });
             that.$el.find('.photos-collection').prepend(compiledTemplate);
             that.$importRenderingInc = $('#' + importElId);
-            that.$importRenderingInc.find('.import-pip').on('click', 
-                                                            PhotoSet.twirlDownClickHandlerFactory(
-                                                              that,
-                                                              '.import-photos-collection'));
+            var twirlDownHandler = PhotoSet.twirlDownClickHandlerFactory(
+              that,
+              '.import-photos-collection');
+            that.$importRenderingInc.find('.import-pip').on('click', twirlDownHandler);
+            //
+            // Setup the "Twirldown handler" to open close the import. Also, call it 
+            // immediately to open the view.
+            //
+            twirlDownHandler.call(that.$importRenderingInc.find('.import-pip'));
             console.log(dp + 'compiled initial template for import, element ID - ' + importElId + ', element found - ' + that.$importRenderingInc.length);
           }
           that._imageSelectionManager.reset();

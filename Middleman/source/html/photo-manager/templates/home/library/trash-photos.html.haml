@@ -5,7 +5,7 @@
     = partial "html/photo-manager/templates/home/library/trash-actions"
     .clearfix
 
-  %div{:class => "trash-photos-collection"}
+  %div{:class => "trash-photos-collection open"}
     != '{% images.length && images.each(function(image) { %}'
     != '  {{ _.template(imageTemplate, { image : image, _ : _ }) }}'
     != '{% }); %}'

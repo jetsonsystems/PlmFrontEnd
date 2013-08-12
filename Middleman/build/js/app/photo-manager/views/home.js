@@ -262,8 +262,23 @@ define(
                 success: function(data, textStatus, jqXHR) {
                   !Plm.debug || console.log(">> AJAX success");
                 },
-                error: function(jqXHR) {
+                error: function(jqXHR, textStatus, errorThrown) {
                   !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
+                  !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
+
+                  try {
+                    var rBody = $.parseJSON(jqXHR.responseText);
+
+                    if (rBody.error_code === 1) {
+                      Plm.showFlash('No supported image formats found in ' + dir + '.');
+                    }
+                    else {
+                      Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
+                    }
+                  }
+                  catch (e) {
+                    Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
+                  }
                   that.importInProgress = false;
                   that._enableImport();
                 }
