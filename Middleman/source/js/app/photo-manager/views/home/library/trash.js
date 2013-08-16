@@ -289,7 +289,7 @@ define(
       _emptyHandler: function() {
 
         var that = this;
-        var dbgPrefix = this._debugPrefix + '._emptySelectedHandler: ';
+        var dbgPrefix = this._debugPrefix + '._emptyHandler: ';
         !Plm.debug || console.log(dbgPrefix + 'Invoked...');
 
           var openEmptyDialog = function() {

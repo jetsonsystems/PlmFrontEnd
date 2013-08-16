@@ -68,7 +68,7 @@ define(
           console.log(this);
         }
 
-        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.photo-set-collection', 'photo-set-photos-collection');
+        this._imageSelectionManager = new ImageSelectionManager(this.$el, '.photo-set-collection', 'photo-set-collection');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
             $(".selection-toolbar").show();
