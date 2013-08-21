@@ -245,45 +245,52 @@ define(
               dirSelect:true, // Directory selector
               initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
             }, function( err , files ) {
-              var dir = String(files[0]);
+              if (err) {
+                !Plm.debug || console.log(debugPrefix + '._enableImport.click: dialog cancelled, err - ' + err);
+                that.importInProgress = false;
+                that._enableImport();
+              }
+              else {
 
-              !Plm.debug || console.log(">> dir: " + dir);
+                var dir = String(files[0]);
 
-              var payload = {
-                "import_dir" : dir
-              };
+                !Plm.debug || console.log(">> dir: " + dir);
 
-              $.ajax({
-                url: 'http://localhost:9001/api/media-manager/v0/importers',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(payload),
-                processData: false,
-                success: function(data, textStatus, jqXHR) {
-                  !Plm.debug || console.log(">> AJAX success");
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                  !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
-                  !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
+                var payload = {
+                  "import_dir" : dir
+                };
 
-                  try {
-                    var rBody = $.parseJSON(jqXHR.responseText);
-
-                    if (rBody.error_code === 1) {
-                      Plm.showFlash('No supported image formats found in ' + dir + '.');
+                $.ajax({
+                  url: 'http://localhost:9001/api/media-manager/v0/importers',
+                  type: 'POST',
+                  contentType: 'application/json',
+                  data: JSON.stringify(payload),
+                  processData: false,
+                  success: function(data, textStatus, jqXHR) {
+                    !Plm.debug || console.log(">> AJAX success");
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
+                    !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
+                    
+                    try {
+                      var rBody = $.parseJSON(jqXHR.responseText);
+                      
+                      if (rBody.error_code === 1) {
+                        Plm.showFlash('No supported image formats found in ' + dir + '.');
+                      }
+                      else {
+                        Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
+                      }
                     }
-                    else {
+                    catch (e) {
                       Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
                     }
+                    that.importInProgress = false;
+                    that._enableImport();
                   }
-                  catch (e) {
-                    Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
-                  }
-                  that.importInProgress = false;
-                  that._enableImport();
-                }
-              });
-
+                });
+              }
             });
             // End of Open Save Dialog
           }

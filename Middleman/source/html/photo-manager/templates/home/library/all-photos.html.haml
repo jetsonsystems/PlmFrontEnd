@@ -1,7 +1,12 @@
 .photos-header
   %h2
     All Photos
-  = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "global" }
+  -# 
+  -# The ability to select all photos in the view used to exist. Its unlikely that anyone will ever
+  -# want to do this, so its been disabled.
+  -#
+  -# partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "global" }
+  -#
   = partial "html/photo-manager/templates/home/library/selection-toolbar"
 
 .photos-collection
