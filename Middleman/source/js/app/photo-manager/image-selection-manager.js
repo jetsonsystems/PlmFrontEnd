@@ -25,7 +25,7 @@ define(
     //    scope: jQuery wrapped scope.
     //
     var ImageSelectionManager = function(scope, innerScopesSelector, innerSelectScope) {
-      debugPrefix = debugPrefix + ".ImageSelectionManager";
+      debugPrefix = debugPrefix + ".ImageSelectionManager: ";
 
       var that = this;
 
@@ -70,19 +70,19 @@ define(
       // Watching of elements in scope.
       //
       var _watchGlobal = function() {
-        var dbgPrefix = debugPrefix + "._watchGlobal: ";
+        var dp = debugPrefix.replace(': ', '._watchGlobal: ');
 
         var found = scope.find('.plm-cb[data-select-scope="global"]');
-        !Plm.debug || console.log(dbgPrefix + "Watching select all on " + found.length + " elements.");
+        !Plm.debug || console.log(dp + "Watching select all on " + found.length + " elements.");
         found.on("change", function(ev) {
-          !Plm.debug || console.log(dbgPrefix + "Select all change event detected.");
+          !Plm.debug || console.log(dp + "Select all change event detected.");
           if ($(ev.delegateTarget).prop('checked')) {
-            !Plm.debug || console.log(dbgPrefix + "Select all - checked.");
+            !Plm.debug || console.log(dp + "Select all - checked.");
             scope.find('.plm-cb').prop('checked', true);
             _updateAllSelected();
           }
           else {
-            !Plm.debug || console.log(dbgPrefix + "Select all - unchecked.");
+            !Plm.debug || console.log(dp + "Select all - unchecked.");
             scope.find('.plm-cb').prop('checked', false);
             _updateAllSelected();
           }
@@ -95,23 +95,23 @@ define(
       };
 
       var _watchInnerScopes = function() {
-        var dbgPrefix = debugPrefix + "._watchInnerScopes: ";
+        var dp = debugPrefix.replace(': ', '._watchInnerScopes: ');
 
-        !Plm.debug || console.log(dbgPrefix + "Invoking with inner select scope - " + innerSelectScope + ", inner scopes selector - " + innerScopesSelector + ".");
+        !Plm.debug || console.log(dp + "Invoking with inner select scope - " + innerSelectScope + ", inner scopes selector - " + innerScopesSelector + ".");
 
         var found = scope.find('.plm-cb[data-select-scope="' + innerSelectScope + '"]');
-        !Plm.debug || console.log(dbgPrefix + "Watching select all on inner scope " + found.length + " elements.");
+        !Plm.debug || console.log(dp + "Watching select all on inner scope " + found.length + " elements.");
         found.on("change", function(ev) {
-          !Plm.debug || console.log(dbgPrefix + "Importer select all change event detected.");
+          !Plm.debug || console.log(dp + "Importer select all change event detected.");
           var importer = $(ev.delegateTarget).parents(innerScopesSelector);
-          !Plm.debug || console.log(dbgPrefix + "Importer select all foubnd - " + importer.length);
+          !Plm.debug || console.log(dp + "Importer select all foubnd - " + importer.length);
           if ($(ev.delegateTarget).prop('checked')) {
-            !Plm.debug || console.log(dbgPrefix + "Importer select all - checked.");
+            !Plm.debug || console.log(dp + "Importer select all - checked.");
             importer.find('.plm-cb').prop('checked', true);
             _updateAllSelected();
           }
           else {
-            !Plm.debug || console.log(dbgPrefix + "Importer select all - unchecked.");
+            !Plm.debug || console.log(dp + "Importer select all - unchecked.");
             importer.find('.plm-cb').prop('checked', false);
             _updateAllSelected();
           }
@@ -126,13 +126,13 @@ define(
       var _watchImages = function() {
         var found = scope.find('.photo .plm-cb').on("change", function(ev) {
           if ($(ev.delegateTarget).prop('checked')) {
-            var dbgPrefix = debugPrefix + "._watchImages: ";
+            var dp = debugPrefix.replace(': ', '._watchImages: ');
 
-            !Plm.debug || console.log(dbgPrefix + "Image - checked.");
+            !Plm.debug || console.log(dp + "Image - checked.");
             _updateAllSelected();
           }
           else {
-            !Plm.debug || console.log(dbgPrefix + "Image - unchecked.");
+            !Plm.debug || console.log(dp + "Image - unchecked.");
             _updateAllSelected();
           }
           that.trigger('change');

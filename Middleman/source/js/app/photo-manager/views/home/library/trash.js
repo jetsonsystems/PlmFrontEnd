@@ -28,7 +28,7 @@ define(
     //
     var TrashView = Backbone.View.extend({
 
-      _debugPrefix: moduleName + '.TrashView',
+      _debugPrefix: moduleName + '.TrashView: ',
 
       tagName: 'div',
 
@@ -37,25 +37,31 @@ define(
       images: undefined,
 
       events: {
-        'click #trash-recover-selected': "_recoverSelectedHandler",
-        'click #trash-delete-selected': "_deleteSelectedHandler",
-        'click #trash-empty': "_emptyHandler"
+        'click #trash-recover-selected.enabled': "_recoverSelectedHandler",
+        'click #trash-delete-selected.enabled': "_deleteSelectedHandler",
+        'click #trash-empty.enabled': "_emptyHandler"
       },
 
+      //
+      // Set to true when any of "recover", "delete" or "empty" actions 
+      // have been initiated but not completed.
+      //
+      _actionInProgress: false,
+
       initialize: function() {
-        var dbgPrefix = this._debugPrefix + '.initialize: ';
-        !Plm.debug || console.log(dbgPrefix + 'Initializing...');
+        var dp = this._debugPrefix.replace(': ', '.initialize: ');
+        !Plm.debug || console.log(dp + 'Initializing...');
         var that = this;
         this.images = new TrashImagesCollection();
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.trash-photos', 'trash');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
-            $("#trash-recover-selected").removeClass('disabled');
-            $("#trash-delete-selected").removeClass('disabled');
+            that._enableButton("#trash-recover-selected");
+            that._enableButton("#trash-delete-selected");
           }
           else {
-            $("#trash-recover-selected").addClass('disabled');
-            $("#trash-delete-selected").addClass('disabled');
+            that._disableButton("#trash-recover-selected");
+            that._disableButton("#trash-delete-selected");
           }
         });
         $(window).resize(PhotoSet.onResizeHandlerFactory(this,
@@ -65,8 +71,8 @@ define(
       render: function() {
         var that = this;
 
-        var dbgPrefix = this._debugPrefix + '.render: ';
-        !Plm.debug || console.log(dbgPrefix + 'Rendering...');
+        var dp = this._debugPrefix.replace(': ', '.render: ');
+        !Plm.debug || console.log(dp + 'Rendering...');
 
         var compiledTemplate = _.template(trashTemplate);
         that.$el.append(compiledTemplate);
@@ -74,16 +80,16 @@ define(
         var onSuccess = function(images,
                                  response,
                                  options) {
-          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onSuccess: Successfully loaded images in trash...');
+          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix.replace(': ', '._render.onSuccess: Successfully loaded images in trash...'));
           that._doRender();
           that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
         };
         var onError = function(images, xhr, options) {
-          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix + '._render.onError: error loading recent uploads.');
+          !Plm.debug || !Plm.verbose || console.log(that._debugPrefix.replace(': ', '._render.onError: error loading recent uploads.'));
           that.trigger(that.id + ":rendered");
         };
-        !Plm.debug || console.log(dbgPrefix + 'About to fetch trash images...');
+        !Plm.debug || console.log(dp + 'About to fetch trash images...');
         this.images.fetch({success: onSuccess,
                            error: onError});
         return this;
@@ -92,12 +98,12 @@ define(
       teardown: function() {
         var that = this;
 
-        !Plm.debug || console.log(that._debugPrefix + '.teardown: invoking...');
+        !Plm.debug || console.log(that._debugPrefix.replace(': ', '.teardown: invoking...'));
       },
 
       _reRender: function() {
         var that = this;
-        !Plm.debug || console.log(that._debugPrefix + '._reRender: re-rendering...');
+        !Plm.debug || console.log(that._debugPrefix.replace(': ', '._reRender: re-rendering...'));
         this.$el.html('');
         this.images = new TrashImagesCollection();
         this.render();
@@ -105,6 +111,7 @@ define(
       },
 
       _doRender: function() {
+        var dp = this._debugPrefix.replace(': ', '._doRender: ');
         if (this.images.length === 0) {
           Plm.showFlash('You\'re trash is empty!');
         }
@@ -119,7 +126,7 @@ define(
           var col = this.$el.find('.trash-photos-collection');
           var photoWidth = $(col.find('.photo')[0]).outerWidth();
 
-          console.log(this._debugPrefix + '._doRender: parent col width - ' + parentCol.width() + ', photo set photos min - ' + PhotoSet.photosMin + ', photoWidth - ' + photoWidth);
+          console.log(dp + 'parent col width - ' + parentCol.width() + ', photo set photos min - ' + PhotoSet.photosMin + ', photoWidth - ' + photoWidth);
           
           if (parentCol.width() > (PhotoSet.photosMin * photoWidth)) {
             col.removeClass('photo-set-clip-overflow-cells');
@@ -150,6 +157,10 @@ define(
               that._reRender();
             }
           }
+          return {
+            numSuccess: numSuccess,
+            numError: numError
+          };
         };
         return updateStatus;
       },
@@ -162,20 +173,14 @@ define(
       //    options:
       //      selected: true | false, default === true
       //      unselected: true | false, default === false
+      //      callback(err, { numSuccess: <int>, numError: <int> });
       //
-      //  Returns:
-      //    status:
-      //      0 - success
-      //      1 - error
-      //
-      _processImages: function(action, options) {
+      _processImages: function(action, options, callback) {
         var that = this;
-        var dbgPrefix = this._debugPrefix + '._processImages: ';
-        !Plm.debug || console.log(dbgPrefix + 'Invoked...');
+        var dp = this._debugPrefix.replace(': ', '._processImages: ');
+        !Plm.debug || console.log(dp + 'Invoked...');
 
         options = options || { selected: true, unselected: false };
-
-        var status = 0;
 
         if ((action === 'recover') || (action === 'delete')) {
           var selected = that._imageSelectionManager.images({ selected: options.selected,
@@ -184,154 +189,265 @@ define(
           if (selected.length) {
             var updateStatus = that._updateStatusMethodFactory(selected.length);
 
-            !Plm.debug || console.log(dbgPrefix + selected.length + ' images are selected and about to perform action - ' + action + '...');
+            !Plm.debug || console.log(dp + selected.length + ' images are selected and about to perform action - ' + action + '...');
             _.each(selected, function(selectedItem) {
-              !Plm.debug || console.log(dbgPrefix + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
+              !Plm.debug || console.log(dp + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
 
               var imageModel = that.images.find(function(image) {
                 return selectedItem.id === image.id;
               });
               if (imageModel) {
-                !Plm.debug || console.log(dbgPrefix + 'Found model for selected item w/ id - ' + selectedItem.id);
+                !Plm.debug || console.log(dp + 'Found model for selected item w/ id - ' + selectedItem.id);
                 (function(imageModel, $el, updateStatus) {
                   if (action === 'recover') {
-                    !Plm.debug || console.log(dbgPrefix + 'About to recover model for selected item w/ id - ' + selectedItem.id);
+                    !Plm.debug || console.log(dp + 'About to recover model for selected item w/ id - ' + selectedItem.id);
                     imageModel.save({'in_trash': false},
                                     {success: function(model, response, options) {
-                                      !Plm.debug || console.log(dbgPrefix + "Success saving image, id - " + model.id);
+                                      !Plm.debug || console.log(dp + "Success saving image, id - " + model.id);
                                       var $colEl = $el.parents('.trash-photos');
                                       $el.remove();
                                       that.images.remove(imageModel);
-                                      $colEl.find('.image-count').html(that.images.size() + " Photos");
+                                      $colEl.find('.trash-size').html(that.images.size() + " Photos");
                                       that._imageSelectionManager.reset();
-                                      if (!that._imageSelectionManager.anySelected()) {
-                                        $("#trash-recover-selected").addClass('disabled');
-                                        $("#trash-delete-selected").addClass('disabled');
+                                      var stat = updateStatus(0);
+
+                                      if ((stat.numSuccess + stat.numError) === selected.length) {
+                                        var err = stat.numError ? stat.numError + " errors processing images." : null;
+                                        callback(err, stat);
                                       }
-                                      updateStatus(0);
                                     },
                                      error: function(model, xhr, options) {
-                                       !Plm.debug || console.log(dbgPrefix + "Error saving image, id - " + model.id);
-                                       updateStatus(1);
-                                       status = 1;
+                                       !Plm.debug || console.log(dp + "Error saving image, id - " + model.id);
+                                       var stat = updateStatus(1);
+
+                                       if ((stat.numSuccess + stat.numError) === selected.length) {
+                                         var err = stat.numError ? stat.numError + " errors processing images." : null;
+                                         callback(err, stat);
+                                       }
                                      }});
                   }
                   else {
-                    !Plm.debug || console.log(dbgPrefix + 'About to destroy model for selected item w/ id - ' + selectedItem.id);
+                    !Plm.debug || console.log(dp + 'About to destroy model for selected item w/ id - ' + selectedItem.id);
                     imageModel.destroy({
                       success: function(model, response, options) {
                         var $colEl = $el.parents('.trash-photos');
                         $el.remove();
                         that.images.remove(imageModel);
-                        $colEl.find('.image-count').html(that.images.size() + "  Photos");
+                        $colEl.find('.trash-size').html(that.images.size() + "  Photos");
                         that._imageSelectionManager.reset();
-                        if (!that._imageSelectionManager.anySelected()) {
-                          $("#trash-recover-selected").addClass('disabled');
-                          $("#trash-delete-selected").addClass('disabled');
+                        var stat = updateStatus(0);
+
+                        if ((stat.numSuccess + stat.numError) === selected.length) {
+                          var err = stat.numError ? stat.numError + " errors processing images." : null;
+                          callback(err, stat);
                         }
-                        updateStatus(0);
                       },
                       error: function(model, xhr, options) {
-                        updateStatus(1);
-                        status = 1;
+                        var stat = updateStatus(1);
+
+                        if ((stat.numSuccess + stat.numError) === selected.length) {
+                          var err = stat.numError ? stat.numError + " errors processing images." : null;
+                          callback(err, stat);
+                        }
                       }
                     });
                   }
                 })(imageModel, selectedItem.$el, updateStatus);
               }
               else {
-                !Plm.debug || console.log(dbgPrefix + 'Model for selected item w/ id - ' + selectedItem.id + ' not found.');
-                updateStatus(1);
-                status = 1;
+                !Plm.debug || console.log(dp + 'Model for selected item w/ id - ' + selectedItem.id + ' not found.');
+                var stat = updateStatus(1);
+
+                if ((stat.numSuccess + stat.numError) === selected.length) {
+                  var err = stat.numError ? stat.numError + " errors processing images." : null;
+                  callback(err, stat);
+                }
               }
             });
           }
+          else {
+            callback(null, {numSuccess: 0, numError: 0});
+          }
         }
         else {
-          status = 1;
+          callback('Invalid action - ' + action, {numSuccess: 0, numError: 0});
         }
-        return status;
       },
 
       _recoverSelectedHandler: function() {
         var that = this;
-        var dbgPrefix = this._debugPrefix + '._recoverSelectedHandler: ';
-        !Plm.debug || console.log(dbgPrefix + 'Invoked...');
-        if (that._processImages('recover',
-                                {
-                                  selected: true,
-                                  unselected: false
-                                }) === 0) {
-          !Plm.debug || console.log(dbgPrefix + 'Successfully recovered selected images!');
+        var dp = this._debugPrefix.replace(': ', '._recoverSelectedHandler: ');
+        !Plm.debug || console.log(dp + 'Invoked, action in progress - ' + that._actionInProgress);
+        //
+        // Don't allow while something is in progress. 
+        //
+        if (that._actionInProgress) {
+          !Plm.debug || console.log(dp + 'An action is in progress, aborting...');
+          return;
         }
-        else {
-          !Plm.debug || console.log(dbgPrefix + 'Error recovering selected images!');
-        }
+
+        that._preAction();
+
+        //
+        // Do the work.
+        //
+        that._processImages('recover',
+                            {
+                              selected: true,
+                              unselected: false
+                            },
+                            function(err, status) {
+                              if (err) {
+                                !Plm.debug || console.log(dp + 'Error recovering selected images, error - ' + err);
+                              }
+                              else {
+                                !Plm.debug || console.log(dp + 'Successfully recovered selected images!');
+                              }
+                              that._postAction();
+                            })
       },
 
       _deleteSelectedHandler: function() {
         var that = this;
-        var dbgPrefix = this._debugPrefix + '._deleteSelectedHandler: ';
-        !Plm.debug || console.log(dbgPrefix + 'Invoked...');
+        var dp = this._debugPrefix.replace(': ', '._deleteSelectedHandler: ');
+        !Plm.debug || console.log(dp + 'Invoked, action in progress - ' + that._actionInProgress);
+        //
+        // Don't allow while something is in progress. 
+        //
+        if (that._actionInProgress) {
+          !Plm.debug || console.log(dp + 'An action is in progress, aborting...');
+          return;
+        }
 
-        if (that._processImages('delete',
-                                {
-                                  selected: true,
-                                  unselected: false
-                                }) === 0) {
-          !Plm.debug || console.log(dbgPrefix + 'Successfully deleted selected images!');
-        }
-        else {
-          !Plm.debug || console.log(dbgPrefix + 'Error deleting selected images!');
-        }
+        that._preAction();
+
+        //
+        // Do the work.
+        //
+        that._processImages('delete',
+                            {
+                              selected: true,
+                              unselected: false
+                            },
+                            function(err, status) {
+                              if (err) {
+                                !Plm.debug || console.log(dp + 'Error deleting selected images, error - ' + err);
+                              }
+                              else {
+                                !Plm.debug || console.log(dp + 'Successfully deleted selected images!');
+                              }
+                              that._postAction();
+                            });
       },
 
       _emptyHandler: function() {
 
         var that = this;
-        var dbgPrefix = this._debugPrefix + '._emptyHandler: ';
-        !Plm.debug || console.log(dbgPrefix + 'Invoked...');
+        var dp = this._debugPrefix.replace(': ', '._emptyHandler: ');
+        !Plm.debug || console.log(dp + 'Invoked...');
 
-          var openEmptyDialog = function() {
-              $(".plm-dialog.pm-empty").find(".confirm").on('click', function() {
-                  emptyDialogConfirm();
-              });
-              $(".plm-dialog.pm-empty").find(".cancel").on('click', function() {
-                  closeEmptyDialog();
-              });
-              $(".emptyDialogBackdrop").on('click', function() {
-                  closeEmptyDialog();
-              });
-              $(".plm-dialog.pm-empty").show();
-              $(".emptyDialogBackdrop").show();
+        var openEmptyDialog = function() {
+          $(".plm-dialog.pm-empty").find(".confirm").on('click', function() {
+            emptyDialogConfirm();
+          });
+          $(".plm-dialog.pm-empty").find(".cancel").on('click', function() {
+            closeEmptyDialog();
+          });
+          $(".emptyDialogBackdrop").on('click', function() {
+            closeEmptyDialog();
+          });
+          $(".plm-dialog.pm-empty").show();
+          $(".emptyDialogBackdrop").show();
+          
+        };
 
-          };
+        var closeEmptyDialog = function() {
+          $(".plm-dialog.pm-empty").find(".confirm").off('click');
+          $(".plm-dialog.pm-empty").find(".cancel").off('click');
+          $(".emptyDialogBackdrop").off('click');
+          $(".plm-dialog.pm-empty").hide();
+          $(".emptyDialogBackdrop").hide();
+        };
 
-          var closeEmptyDialog = function() {
-              $(".plm-dialog.pm-empty").find(".confirm").off('click');
-              $(".plm-dialog.pm-empty").find(".cancel").off('click');
-              $(".emptyDialogBackdrop").off('click');
-              $(".plm-dialog.pm-empty").hide();
-              $(".emptyDialogBackdrop").hide();
-          };
+        var emptyDialogConfirm = function() {
+          //
+          // Don't allow while something is in progress. 
+          //
+          if (that._actionInProgress) {
+            !Plm.debug || console.log(dp + 'An action is in progress, aborting...');
+            return;
+          }
 
-          var emptyDialogConfirm = function() {
-              if (that._processImages('delete',
-                  {
-                      selected: true,
-                      unselected: true
-                  }) === 0) {
-                  !Plm.debug || console.log(dbgPrefix + 'Successfully emptied trash!');
+          that._preAction();
 
+          that._processImages('delete',
+                              {
+                                selected: true,
+                                unselected: true
+                              },
+                              function(err, status) {
+                                if (err) {
+                                  !Plm.debug || console.log(dp + 'Error emptying trash, err - ' + err);
+                                }
+                                else {
+                                  !Plm.debug || console.log(dp + 'Successfully emptied trash!');
+                                }
+                                that._postAction();                                
+                              });
+          closeEmptyDialog();
+        };
 
-              } else {
-                  !Plm.debug || console.log(dbgPrefix + 'Error emptying trash!');
-              }
-              closeEmptyDialog();
-          };
+        openEmptyDialog();
 
-          openEmptyDialog();
+      },
 
+      _preAction: function() {
+        var that = this;
+        var dp = this._debugPrefix.replace(': ', '._preAction: ');
+
+        !Plm.debug || console.log(dp + 'Invoked...');
+
+        that._actionInProgress = true;
+        //
+        // First disable all buttons.
+        //
+        that._disableButton('#trash-recover-selected');
+        that._disableButton('#trash-delete-selected');
+        that._disableButton('#trash-empty');
+        that.delegateEvents();
+        $('#hamburger-button').hide();
+      },
+
+      _postAction: function() {
+        var that = this;
+        var dp = this._debugPrefix.replace(': ', '._postAction: ');
+        //
+        // Re-enable buttons as needed.
+        //
+        if (that._imageSelectionManager.anySelected()) {
+          !Plm.debug || console.log(dp + 'Have selected images, enabling recover and delete of selected...');
+          that._enableButton("#trash-recover-selected");
+          that._enableButton("#trash-delete-selected");
+        }
+        else {
+          !Plm.debug || console.log(dp + 'No selected images...');
+          that._disableButton("#trash-recover-selected");
+          that._disableButton("#trash-delete-selected");
+        }
+        that._enableButton('#trash-empty');
+        that.delegateEvents();
+        $('#hamburger-button').show();
+        that._actionInProgress = false;
+      },
+
+      _enableButton: function(selector) {
+        $(selector).removeClass('disabled');
+        $(selector).addClass('enabled');        
+      },
+
+      _disableButton: function(selector) {
+        $(selector).removeClass('enabled');
+        $(selector).addClass('disabled');
       }
 
     });
