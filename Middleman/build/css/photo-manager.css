@@ -84,7 +84,10 @@
 /*
  * Photo Manager Specific Styles.
  */
-/* line 1, apps/photo-manager/_tagDialog.scss */
+/*
+ * Photo Manager Specific dialogs.
+ */
+/* line 6, apps/photo-manager/_dialogs.scss */
 .PMTagDialog {
   -webkit-box-shadow: 0px 0px 3px #111111;
   -moz-box-shadow: 0px 0px 3px #111111;
@@ -100,7 +103,7 @@
   overflow: hidden;
   z-index: 10;
 }
-/* line 13, apps/photo-manager/_tagDialog.scss */
+/* line 18, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagTitle {
   background-image: -webkit-linear-gradient(top, #555555, #444444);
   background-image: -moz-linear-gradient(top, #555555, #444444);
@@ -118,13 +121,13 @@
   position: relative;
   margin: 0;
 }
-/* line 22, apps/photo-manager/_tagDialog.scss */
+/* line 27, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagTitle .plm-icon {
   position: absolute;
   top: 2px;
   left: 1px;
 }
-/* line 30, apps/photo-manager/_tagDialog.scss */
+/* line 35, apps/photo-manager/_dialogs.scss */
 .PMTagDialog input {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -145,22 +148,22 @@
   height: 20px;
   margin-bottom: 22px;
 }
-/* line 43, apps/photo-manager/_tagDialog.scss */
+/* line 48, apps/photo-manager/_dialogs.scss */
 .PMTagDialog input.placeholding {
   color: #6dcff6;
   font-size: 1.25em;
   font-style: italic;
 }
-/* line 50, apps/photo-manager/_tagDialog.scss */
+/* line 55, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagBody {
   padding: 15px;
 }
-/* line 54, apps/photo-manager/_tagDialog.scss */
+/* line 59, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagInputError {
   font-size: 1.25em;
   line-height: 1.5em;
 }
-/* line 59, apps/photo-manager/_tagDialog.scss */
+/* line 64, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagCloud {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -172,49 +175,49 @@
   margin-bottom: 22px;
   min-height: 60px;
 }
-/* line 68, apps/photo-manager/_tagDialog.scss */
+/* line 73, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons {
   text-align: right;
 }
-/* line 70, apps/photo-manager/_tagDialog.scss */
+/* line 75, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button {
   width: 85px;
   margin-left: 10px;
 }
-/* line 74, apps/photo-manager/_tagDialog.scss */
+/* line 79, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button .plm-icon {
   position: absolute;
 }
-/* line 76, apps/photo-manager/_tagDialog.scss */
+/* line 81, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button .plm-icon.plus {
   top: 3px;
   left: 9px;
 }
-/* line 77, apps/photo-manager/_tagDialog.scss */
+/* line 82, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button .plm-icon.x {
   top: 2px;
   left: 0px;
 }
-/* line 81, apps/photo-manager/_tagDialog.scss */
+/* line 86, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button:hover .plus {
   background-position: -30px -1050px;
 }
-/* line 82, apps/photo-manager/_tagDialog.scss */
+/* line 87, apps/photo-manager/_dialogs.scss */
 .PMTagDialog .tagButtons .plm-button:hover .x {
   background-position: -30px -1080px;
 }
-/* line 87, apps/photo-manager/_tagDialog.scss */
+/* line 92, apps/photo-manager/_dialogs.scss */
 .PMTagDialog ul {
   list-style: disc;
 }
-/* line 89, apps/photo-manager/_tagDialog.scss */
+/* line 94, apps/photo-manager/_dialogs.scss */
 .PMTagDialog ul li {
   list-style: disc;
   display: inline-block;
   margin-right: 10px;
   line-height: 1.75em;
 }
-/* line 95, apps/photo-manager/_tagDialog.scss */
+/* line 100, apps/photo-manager/_dialogs.scss */
 .PMTagDialog ul li span {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -236,16 +239,17 @@
   float: right;
   border: 1px solid #333333;
 }
-/* line 113, apps/photo-manager/_tagDialog.scss */
+/* line 118, apps/photo-manager/_dialogs.scss */
 .PMTagDialog ul li span:hover {
   background: #fff;
   color: #6dcff6;
 }
 
-/* line 129, apps/photo-manager/_tagDialog.scss */
+/* line 135, apps/photo-manager/_dialogs.scss */
 .tagDialogBackdrop,
 .trashDialogBackdrop,
-.emptyDialogBackdrop {
+.emptyDialogBackdrop,
+.cancelImportDialogBackdrop {
   position: absolute;
   top: 0;
   left: 0;

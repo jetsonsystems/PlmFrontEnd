@@ -1,6 +1,7 @@
 %header
   = partial "html/subnav", :locals => { :view => view }
 
-  %div#notifications-collection
+  %div{ :id => "notifications-collection", :style => "display:none" }
     %div#notification
     %div#notification-progress
+    %a{ :id => "notification-cancel-icon", :style => "display:none" } &#10062

@@ -31,9 +31,10 @@
             <a class='camera plm-icon selected' href='/photos'></a>
           </li>
         </ul>
-        <div id='notifications-collection'>
+        <div id='notifications-collection' style='display:none'>
           <div id='notification'></div>
           <div id='notification-progress'></div>
+          <a id='notification-cancel-icon' style='display:none'>&#10062</a>
         </div>
       </header>
       <div id='row'>
@@ -182,6 +183,21 @@
               </div>
             </div>
             <div class='importInProgressDialogBackdrop' style='display:none;'></div>
+            <div class='plm-dialog pm-cancel-import' style='display:none;'>
+              <h1>
+                Confirm Import Cancel
+              </h1>
+              <div class='dialog-content'>
+                <div class='dialog-body'>
+                  <p>Are you sure you want to cancel the current import?</p>
+                </div>
+                <div class='dialog-buttons'>
+                  <div class='plm-button confirm'>Yes</div>
+                  <div class='plm-button cancel'>Cancel</div>
+                </div>
+              </div>
+            </div>
+            <div class='cancelImportDialogBackdrop' style='display:none;'></div>
             <div class='clearfix'></div>
             <div id='hamburger'>
               <div class='hamburger-header-item lead'>
@@ -280,9 +296,7 @@
         </div>
       </footer>
     </section>
-    <div class='appLoadAnimationBackdrop'>
-      <div class='appLoadAnimation'></div>
-    </div>
+    <div class='appLoadAnimationBackdrop'></div>
     <script src="/js/app/application.js" type="text/javascript"></script>
     <script data-main='js/app/photo-manager/main.js' src='/js/libs/require/require.js'></script>
   </body>

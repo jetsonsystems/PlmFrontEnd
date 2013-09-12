@@ -1115,8 +1115,9 @@ aside {
 
 #notifications-collection {
   position: absolute;
-  top: 22px;
+  top: 10px;
   left: 600px;
+  margin-right: 26px;
 
   #notification {
     display: inline-block;
@@ -1125,10 +1126,55 @@ aside {
   }
 
   #notification-progress {
+    @include clearfix;
+    display: inline-block;
+    margin-right: 0px;
+    min-width: 4em;
     font-size: 1.675em;
     font-weight: bold;
-    display: inline-block;
+    text-align: right;
   }
+
+  #nprogress {
+   display: block;
+    position: relative;
+    margin-top: 12px;
+    width: 100%;
+    height: 2px;
+    padding-right: 26px;
+    overflow-x: hidden;
+
+    .progress-bar {
+      display: block;
+      position: static;
+      width: 100%;
+      height: 2px;
+      background: red;
+      z-index: 100;
+    }
+
+    .progress-bar-backdrop {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 26px;
+      bottom: 0;
+      height: 2px;
+      background: gray;
+      z-index: -100;
+    }
+  }
+
+  #notification-cancel-icon {
+    position: absolute;
+    right: 0px;
+    bottom: -12px;
+    font-size: 26px;
+    line-height: 26px;
+    font-family: 'entypo';
+    color: white;
+  }
+
 }
 
 .appLoadAnimationBackdrop {
@@ -1139,13 +1185,4 @@ aside {
   height: 100%;
   background: rgba(0,0,0,0.8);
   z-index: 100;
-
-  .appLoadAnimation {
-    width: 220px;
-    height: 19px;
-    background: url('../imgs/app-loading.gif') 0 0 no-repeat;
-    position: absolute;
-    top: 35%;
-    left: 43%;
-  }
 }

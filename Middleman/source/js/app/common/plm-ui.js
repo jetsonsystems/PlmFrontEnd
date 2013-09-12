@@ -6,9 +6,10 @@ define(
   [
     'jquery',
     'jqueryPageSlide',
-    'underscore'
+    'underscore',
+    'nprogress'
   ],
-  function($, PageSlide, _) {
+  function($, PageSlide, _, NProgress) {
 
     //
     // showFlash: Render a flash message. 
@@ -51,25 +52,64 @@ define(
     //      options:
     //        rotateLogo: default is false.
     //        progressText: text representing progress.
+    //        withProgressBar: show progress bar.
+    //        withCancel: include cancel icon.
+    //        cancelHandler: handler
     //
     //    update: update a notification.
+    //
+    //      options:
+    //        progressBarPercent: progress bar percent, 0.0 - 1.0.
+    //
     //    end: end a notification.
     //
     var notif = {
 
+      withProgressBar: false,
+      withCancel: false,
+      cancelHandler: undefined,
+
+      init: function() {
+        $("#notifications-collection").hide();
+      },
+
       start: function(text, options) {
         options = options || { rotateLogo: false };
 
+        this.withProgressBar = false;
+        this.withCancel = false;
+        this.cancelHandler = undefined;
+
         if (options.rotateLogo) {
           // Start rotating the logo
-          console.log(">> Notif started, trying to rotate logo");
           $("#logo").addClass("rotate");
         }
+
+        $("#notification-cancel-icon").hide();
         $("#notifications-collection").show();
         $("#notification").text(text);
 
         var progressText = options.progressText || "";
         $("#notification-progress").text(progressText);
+
+        if (options.withProgressBar) {
+          this.withProgressBar = true;
+          NProgress.configure({
+            showSpinner: false,
+            trickle: false,
+            template: '<div class="progress-bar" role="bar"><div class="peg"></div></div><div class="progress-bar-backdrop"></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>',
+            container: $('#notifications-collection')
+          });
+          NProgress.start();
+        }
+        if (options.withCancel) {
+          this.withCancel = true;
+          $("#notification-cancel-icon").show();
+          if (options.cancelHandler) {
+            this.cancelHandler = options.cancelHandler;
+            $("#notification-cancel-icon").off('click').on('click', this.cancelHandler);
+          }
+        }
       },
 
       update: function(text, options) {
@@ -83,6 +123,18 @@ define(
         if (options.progressText) {
           $("#notification-progress").text(options.progressText);
         }
+
+        if (this.withProgressBar) {
+          if (options.progressBarPercent) {
+            if (options.progressBarPercent === 1.0) {
+              $("#notification-cancel-icon").hide();
+            }
+            NProgress.set(options.progressBarPercent);
+          }
+          else {
+            NProgress.inc();
+          }
+        }
       },
 
       end: function(text, options) {
@@ -90,8 +142,12 @@ define(
         if (!_.isString(text)) {
           text = undefined;
         }
-        console.log(">> Trying to stop logo rotation");
+
+        $("#notification-cancel-icon").hide();
+        NProgress.done();
+
         $("#logo").removeClass("rotate");
+
         if (text !== undefined) {
           $("#notification").text(text);
         }
@@ -106,13 +162,36 @@ define(
     // onReady: To be invoked when the document's onReady event is detected.
     //
     var onReady = function() {
+      notif.init();
+      NProgress.configure({
+        showSpinner: false,
+        template: '<div class="app-load-bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>',
+        trickle: true,
+        trickleRate: 0.05,
+        trickleSpeed: 100
+      });
+      NProgress.start();
       navManager.onReady();
+    };
+
+    //
+    // onAppReady: When the application is ready. 
+    //
+    var onAppReady = function() {
+      console.log('/js/app/common/plm-ui: app ready...');
+      NProgress.done();
+      NProgress.remove();
+      var loadingAnim = document.querySelectorAll('.appLoadAnimationBackdrop');
+      for(var i = 0; i < loadingAnim.length; i++) {
+        loadingAnim[i].style.display = "none";
+      }
     };
 
     return {
       showFlash: showFlash,
       notif: notif,
-      onReady: onReady
+      onReady: onReady,
+      onAppReady: onAppReady
     };
   }
 );

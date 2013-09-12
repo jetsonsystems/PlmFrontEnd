@@ -30,7 +30,7 @@ define(
 
     var PLM = {};
 
-    PLM.VERSION = '0.0.19';
+    PLM.VERSION = '0.0.20';
 
     PLM.debug = false;
 
@@ -61,6 +61,10 @@ define(
     // showFlash: Include for backward compatability. This might not be needed anymore.
     //
     PLM.showFlash = PlmUI.showFlash;
+
+    PLM.onAppReady = function() {
+      PlmUI.onAppReady();
+    };
 
     //
     // _initialize: Various initialization which needs to occur.

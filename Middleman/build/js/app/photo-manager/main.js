@@ -8,6 +8,47 @@
 
 console.log('app/photo-manager/main: Adding app-ready event listener...');
 
+requirejs.config({
+  nodeRequire: require,
+  text: { env: 'xhr' },
+  //
+  // By default, load anything from js/libs
+  //
+  baseUrl: 'js/libs',
+  //
+  // However, anything where module ID begins w/
+  // "app", load it from js/app/photo-manager.
+  //
+  paths: {
+    text: 'require/text',
+    jquery: 'jquery/jquery.min',
+    jqueryPageSlide: 'jquery/jquery.pageslide',
+    jqueryColorbox: 'jquery/jquery.colorbox',
+    jScrollPane: 'jquery/jquery.jScrollPane',
+    jqueryQtip: 'jquery/jquery.qtip',
+    underscore: 'underscore/underscore',
+    backbone: 'backbone/backbone',
+    postal: 'postal/postal',
+    nprogress: 'nprogress/nprogress',
+    plm: '../app',
+    plmCommon: '../app/common',
+    app: '../app/photo-manager'
+  },
+  //
+  // Non-AMD modules like underscore / backbone.
+  //
+  shim: {
+    jqueryPageSlide: ["jquery"],
+    underscore: {
+      exports: "_"
+    },
+    backbone: {
+      deps: ["underscore", "jquery"],
+      exports: "Backbone"
+    }
+  }
+});
+
 addEventListener('app-ready', function(e){
 
   console.log('Got app-ready event!');
@@ -24,57 +65,9 @@ addEventListener('app-ready', function(e){
 
   processedAppReady = true;
 
-  // Hide the App Loading animation, which is shown by default
-  var loadingAnim = document.querySelectorAll('.appLoadAnimationBackdrop');
-  for(var i = 0; i < loadingAnim.length; i++) {
-      loadingAnim[i].style.display = "none";
-  }
+  // console.log('App is now ready...');
 
-  console.log('App is now ready...');
-
-  // requirejs = require('requirejs');
-
-  requirejs.config({
-    nodeRequire: require,
-    text: { env: 'xhr' },
-    //
-    // By default, load anything from js/libs
-    //
-    baseUrl: 'js/libs',
-    //
-    // However, anything where module ID begins w/
-    // "app", load it from js/app/photo-manager.
-    //
-    paths: {
-      text: 'require/text',
-      jquery: 'jquery/jquery.min',
-      jqueryPageSlide: 'jquery/jquery.pageslide',
-      jqueryColorbox: 'jquery/jquery.colorbox',
-      jScrollPane: 'jquery/jquery.jScrollPane',
-      jqueryQtip: 'jquery/jquery.qtip',
-      underscore: 'underscore/underscore',
-      backbone: 'backbone/backbone',
-      postal: 'postal/postal',
-      plm: '../app',
-      plmCommon: '../app/common',
-      app: '../app/photo-manager'
-    },
-    //
-    // Non-AMD modules like underscore / backbone.
-    //
-    shim: {
-      jqueryPageSlide: ["jquery"],
-      underscore: {
-        exports: "_"
-      },
-      backbone: {
-        deps: ["underscore", "jquery"],
-        exports: "Backbone"
-      }
-    }
-  });
-
-  console.log('Testing require - ' + require('node-uuid').v4());
+  // console.log('Testing require - ' + require('node-uuid').v4());
 
   //
   // Load our app and pass it into our definition function, along
@@ -84,9 +77,19 @@ addEventListener('app-ready', function(e){
              'app/app'],
             function(Plm, App) {
               !Plm.debug || console.log('/js/app/photo-manager/main: Loading, typeof Plm - ' + typeof(Plm) + ', typeof is - ' + typeof(App));
+              Plm.onAppReady();
               App.initialize();
             });
 });
+
+//
+// Load Plm, this will trigger initialization on doc. ready which should occur before the app-ready event.
+// IE: Triggers the application load progress bar if the first time.
+//
+requirejs(['plmCommon/plm'],
+          function(Plm) {
+            !Plm.debug || console.log('/js/app/photo-manager/main: initial load...');
+          });
 
 //
 //  There is a possible race condition where the app-ready event may be dispatched before

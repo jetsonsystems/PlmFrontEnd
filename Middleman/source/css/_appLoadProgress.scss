@@ -1,0 +1,15 @@
+/*
+ * _appLoadProgress: Application load progress bar styles.
+ */
+
+#nprogress .app-load-bar {
+  background: red;
+
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+}

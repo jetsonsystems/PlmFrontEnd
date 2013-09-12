@@ -1822,23 +1822,76 @@ aside {
 /* line 1116, _base.scss */
 #notifications-collection {
   position: absolute;
-  top: 22px;
+  top: 10px;
   left: 600px;
+  margin-right: 26px;
 }
-/* line 1121, _base.scss */
+/* line 1122, _base.scss */
 #notifications-collection #notification {
   display: inline-block;
   font-size: 1.5em;
   margin-right: 10px;
 }
-/* line 1127, _base.scss */
+/* line 1128, _base.scss */
 #notifications-collection #notification-progress {
+  *display: inline-block;
+  display: inline-block;
+  margin-right: 0px;
+  min-width: 4em;
   font-size: 1.675em;
   font-weight: bold;
-  display: inline-block;
+  text-align: right;
+}
+/* line 208, _mixins.scss */
+#notifications-collection #notification-progress:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* line 1138, _base.scss */
+#notifications-collection #nprogress {
+  display: block;
+  position: relative;
+  margin-top: 12px;
+  width: 100%;
+  height: 2px;
+  padding-right: 26px;
+  overflow-x: hidden;
+}
+/* line 1147, _base.scss */
+#notifications-collection #nprogress .progress-bar {
+  display: block;
+  position: static;
+  width: 100%;
+  height: 2px;
+  background: red;
+  z-index: 100;
+}
+/* line 1156, _base.scss */
+#notifications-collection #nprogress .progress-bar-backdrop {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 26px;
+  bottom: 0;
+  height: 2px;
+  background: gray;
+  z-index: -100;
+}
+/* line 1168, _base.scss */
+#notifications-collection #notification-cancel-icon {
+  position: absolute;
+  right: 0px;
+  bottom: -12px;
+  font-size: 26px;
+  line-height: 26px;
+  font-family: 'entypo';
+  color: white;
 }
 
-/* line 1134, _base.scss */
+/* line 1180, _base.scss */
 .appLoadAnimationBackdrop {
   position: absolute;
   top: 0;
@@ -1848,14 +1901,90 @@ aside {
   background: rgba(0, 0, 0, 0.8);
   z-index: 100;
 }
-/* line 1143, _base.scss */
-.appLoadAnimationBackdrop .appLoadAnimation {
-  width: 220px;
-  height: 19px;
-  background: url("../imgs/app-loading.gif") 0 0 no-repeat;
+
+/*
+ * _progress: General progress bar styles.
+ */
+/* Make clicks pass-through */
+/* line 6, _progress.scss */
+#nprogress {
+  pointer-events: none;
+}
+
+/* Fancy blur effect */
+/* line 11, _progress.scss */
+#nprogress .peg {
+  display: block;
   position: absolute;
-  top: 35%;
-  left: 43%;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px #2299dd, 0 0 5px #2299dd;
+  opacity: 1.0;
+  -webkit-transform: rotate(3deg) translate(0px, -4px);
+  -ms-transform: rotate(3deg) translate(0px, -4px);
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* Remove these to get rid of the spinner */
+/* line 26, _progress.scss */
+#nprogress .spinner {
+  display: block;
+  position: fixed;
+  z-index: 100;
+  top: 15px;
+  right: 15px;
+}
+
+/* line 34, _progress.scss */
+#nprogress .spinner-icon {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: #29d;
+  border-left-color: #29d;
+  border-radius: 50%;
+  -webkit-animation: nprogress-spinner 400ms linear infinite;
+  animation: nprogress-spinner 400ms linear infinite;
+}
+
+@-webkit-keyframes nprogress-spinner {
+  /* line 49, _progress.scss */
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  /* line 50, _progress.scss */
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes nprogress-spinner {
+  /* line 53, _progress.scss */
+  0% {
+    transform: rotate(0deg);
+  }
+
+  /* line 54, _progress.scss */
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+ * _appLoadProgress: Application load progress bar styles.
+ */
+/* line 5, _appLoadProgress.scss */
+#nprogress .app-load-bar {
+  background: red;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
 }
 
 /*
