@@ -1889,9 +1889,10 @@ aside {
   line-height: 26px;
   font-family: 'entypo';
   color: white;
+  cursor: pointer;
 }
 
-/* line 1180, _base.scss */
+/* line 1181, _base.scss */
 .appLoadAnimationBackdrop {
   position: absolute;
   top: 0;
