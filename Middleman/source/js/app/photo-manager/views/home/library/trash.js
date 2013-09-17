@@ -17,6 +17,11 @@ define(
   ],
   function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, TrashImagesCollection, trashTemplate, trashPhotosTemplate, trashPhotoTemplate) {
 
+    //
+    // Sweet, we can require node's util...
+    //
+    // var util = require('util');
+
     var moduleName = 'photo-manager/views/home/library/trash';
 
     //
@@ -116,6 +121,7 @@ define(
           Plm.showFlash('You\'re trash is empty!');
         }
         else {
+          !Plm.debug || console.log(dp + 'About to render ' + _.size(this.images) + ' images...');
           var compiledTemplate = _.template(trashPhotosTemplate,
                                             {
                                               images: this.images,

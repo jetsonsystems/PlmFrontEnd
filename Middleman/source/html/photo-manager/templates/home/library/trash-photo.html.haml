@@ -6,6 +6,7 @@
 -#
 %div{:class => "photo", "data-id" => "{{image.get('id')}}"}
   != '{% var thumbnail = _.first(_.filter(image.get(\'variants\'), function(variant) { return variant.name === \'thumbnail.jpg\'; })); %}'
+  != '{% thumbnail = thumbnail || image.attributes %}'
   != '{% var orientationClass = (thumbnail.size.width === thumbnail.size.height)? "square-orientation" : (thumbnail.size.width > thumbnail.size.height) ? "landscape-orientation" : "portrait-orientation"; %}'
 
   %div{:class => "photo-thumbnail-cell"}
