@@ -29,7 +29,7 @@ define(
 
     var PLM = {};
 
-    PLM.VERSION = '0.0.21';
+    PLM.VERSION = '0.0.22';
 
     PLM.debug = false;
 

@@ -1989,6 +1989,16 @@ aside {
 }
 
 /*
+ * _viewLoadProgress: View load progress bar styles.
+ */
+/* line 5, _viewLoadProgress.scss */
+#nprogress .view-load-bar {
+  background: red;
+  z-index: 100;
+  height: 2px;
+}
+
+/*
  * qTip2 - Pretty powerful tooltips -
  * http://qtip2.com
  *

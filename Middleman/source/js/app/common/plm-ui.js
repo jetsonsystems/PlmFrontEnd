@@ -178,7 +178,6 @@ define(
     // onAppReady: When the application is ready. 
     //
     var onAppReady = function() {
-      console.log('/js/app/common/plm-ui: app ready...');
       NProgress.done();
       NProgress.remove();
       var loadingAnim = document.querySelectorAll('.appLoadAnimationBackdrop');
@@ -187,11 +186,50 @@ define(
       }
     };
 
+    //
+    // view: Each app loads into the #view container. Methods:
+    //  onRender: start rendering, displays progress bar.
+    //  onRendered: rendered, progress bar completes.
+    //    
+    var view = {
+      //
+      // onRender:
+      //  options:
+      //    showProgress: show progress bar.
+      //    progress: progress options.
+      //
+      onRender: function(options) {
+        options = options || {};
+        if (options.showProgress) {
+          var pOpts = (options && options.progress) ? options.progress : {};
+
+          pOpts.showSpinner = _.has(pOpts, 'showSpinner') ? pOpts.showSpinner : false;
+          pOpts.template = _.has(pOpts, 'template') ? 
+            pOpts.template : 
+            '<div class="view-load-bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>';
+          pOpts.trickle = _.has(pOpts, 'trickle') ? pOpts.trickle : true;
+          pOpts.trickleRate = _.has(pOpts, 'trickleRate') ? pOpts.trickleRate : 0.05;
+          pOpts.trickleSpeed = _.has(pOpts, 'trickleSpeed') ? pOpts.trickleSpeed : 100;
+
+          var util = require('util');
+          console.log('Configuring progress w/ options - ' + util.inspect(pOpts));
+
+          NProgress.configure(pOpts);
+          NProgress.start();
+        }
+      },
+      onRendered: function() {
+        NProgress.done();
+        NProgress.remove();
+      }
+    };
+
     return {
+      onReady: onReady,
+      onAppReady: onAppReady,
       showFlash: showFlash,
       notif: notif,
-      onReady: onReady,
-      onAppReady: onAppReady
+      view: view
     };
   }
 );

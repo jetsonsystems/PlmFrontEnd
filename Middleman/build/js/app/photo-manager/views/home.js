@@ -30,7 +30,7 @@ define(
     //
     // HomeView: The photo-manager/home view.
     //
-    //  Events: All events begin with the id, ie: photo-manager/home:<event>.
+    //  Events: All events begin with the id, ie: photo-manager.home:<event>.
     //
     //    <id>:rendered - the view was rendered.
     //
@@ -66,7 +66,7 @@ define(
 
       tagName: 'div',
 
-      id: 'photo-manager/home',
+      id: 'photo-manager.home',
 
       path: undefined,
 
@@ -115,16 +115,27 @@ define(
       },
 
       render: function() {
+        this._doRender({showProgress: false});
+      },
+
+      _doRender: function(options) {
         var that = this;
+        options = options || {};
         this.contentView.once(this.contentView.id + ":rendered",
                               function() {
                                 that.$el.html(that.contentView.$el);
+                                PlmUI.view.onRendered();
                                 that.trigger(that.id + ":rendered");
                               });
+        PlmUI.view.onRender({
+          showProgress: options.showProgress,
+          progress: {
+            container: $("#middle-column")
+          }
+        });
         this.contentView.render();
         return this;
       },
-
 
       //
       // teardown: Cleanup after ourselves. Should be called prior to invoking <view>.remove().
@@ -200,7 +211,7 @@ define(
             !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);
           }
           if (options.render) {
-            this.render();
+            this._doRender({showProgress: true});
           }
         }
         else {
@@ -562,10 +573,26 @@ define(
                                    !Plm.debug || console.log('photo-manager/views/home._respondToEvents: import completed!');
 
                                    if (importStarted) {
-                                     PlmUI.notif.end("Finished importing images",
+                                     if (msg.data.state === 'error') {
+                                       var errMsg = "";
+                                       if (msg.data.num_error > 0) {
+                                         errMsg = 'Import terminated with ' + msg.data.num_error + ' errors.';
+                                       }
+                                       else {
+                                         errMsg = 'Import terminated abnormally.';
+                                       }
+                                       PlmUI.notif.end(errMsg,
                                                      {
                                                        progressText: current_imported_images_count + "/" + total_images_to_import_count
                                                      });
+                                       Plm.showFlash('Import terminated abnormally, delete and re-import to ensure all images have been imported!');
+                                     }
+                                     else {
+                                       PlmUI.notif.end("Finished importing images",
+                                                       {
+                                                         progressText: current_imported_images_count + "/" + total_images_to_import_count
+                                                       });
+                                     }
                                      
                                      current_imported_images_count = 0;
                                      current_thumbnailed_images_count = 0;

@@ -8,9 +8,10 @@ define(
     'underscore',
     'backbone',
     'plmCommon/plm',
+    'plmCommon/plm-ui',
     'app/views/home'
   ],
-  function($, _, Backbone, Plm, HomeView) {
+  function($, _, Backbone, Plm, PlmUI, HomeView) {
     console.log('/js/app/photo-manager/router: Loading, jquery type - ' + typeof($) + ', backbone type - ' + typeof(Backbone) + ', home view type - ' + typeof(HomeView));
 
     var views = {};
@@ -38,8 +39,15 @@ define(
           views.home = view;
           view.once(view.id + ":rendered",
                     function() {
+                      PlmUI.view.onRendered();
                       $('#middle-column').html(view.$el);
                     });
+          PlmUI.view.onRender({
+            showProgress: true,
+            progress: {
+              container: $("#middle-column")
+            }
+          });
           view.render();
         }
       }

@@ -1,0 +1,10 @@
+/*
+ * _viewLoadProgress: View load progress bar styles.
+ */
+
+#nprogress .view-load-bar {
+  background: red;
+
+  z-index: 100;
+  height: 2px;
+}
