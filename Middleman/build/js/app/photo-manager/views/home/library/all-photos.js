@@ -145,7 +145,8 @@ define(
         this.status = this.STATUS_UNRENDERED;
         this.importers = new ImportersCollection(undefined,
                                                  {
-                                                   filterWithoutStartedAt: true
+                                                   withPagination: true,
+                                                   pageSize: this._getOptimalPageSize()
                                                  });
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
@@ -198,10 +199,12 @@ define(
       //
       // render: Load data, and render the view upon a successful load.
       //
-      render: function() {
+      render: function(options) {
         var that = this;
 
-        var dp = this._debugPrefix.replace(': ', '.render: ');
+        options = options || {};
+
+        var dp = that._debugPrefix.replace(': ', '.render: ');
 
         var compiledTemplate = _.template(allPhotosTemplate);
         that.$el.append(compiledTemplate);
@@ -216,6 +219,8 @@ define(
             done: function() {
               console.log(dp + 'rendered all importers...');
               that._imageSelectionManager.reset();
+              console.log(dp + 'image selection manager has been reset...');
+              that._enablePaginationControls();
               that.trigger(that.id + ":rendered");
 
               // After import has been rendered, assign click events to them
@@ -246,8 +251,19 @@ define(
           that._imageSelectionManager.reset();
           that.trigger(that.id + ":rendered");
         };
-        this.importers.fetch({success: onSuccess,
-                              error: onError});
+        that.importers.pageSize = that._getOptimalPageSize();
+        if (options.pageTo === 'previous') {
+          that.importers.fetchPrevious({success: onSuccess,
+                                        error: onError});
+        }
+        else if (options.pageTo === 'next') {
+          that.importers.fetchNext({success: onSuccess,
+                                    error: onError});
+        }
+        else {
+          that.importers.fetch({success: onSuccess,
+                                error: onError});
+        }
         return this;
       },
 
@@ -270,19 +286,27 @@ define(
       //
       // _reRender: a combination of initialize + render to fetch
       //  the true last import and re-render the view.
+      //
+      //  options:
+      //    pageTo: previous || next.
       //   
-      _reRender: function() {
+      _reRender: function(options) {
+        options = options || {};
+
         var dp = this._debugPrefix.replace(': ', '._reRender: ');
 
-        !Plm.debug || console.log(dp + 're-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        !Plm.debug || console.log(dp + 're-rendering, page to - ' + options.pageTo + ', status - ' + this.status + ', dirty - ' + this.dirty);
 
         this.status = this.STATUS_UNRENDERED;
         this.$el.html('');
-        this.importers = new ImportersCollection(undefined, 
-                                                 {
-                                                   filterWithoutStartedAt: true
-                                                 });
-        this.render();
+        if (!options.pageTo || (this.importers === undefined)) {
+          this.importers = new ImportersCollection(undefined, 
+                                                   {
+                                                     withPagination: true,
+                                                     pageSize: this._getOptimalPageSize()
+                                                   });
+        }
+        this.render(options);
         this.dirty = false;
         return this;
       },
@@ -791,6 +815,112 @@ define(
 
         openTrashDialog();
 
+      },
+
+      //
+      // _toPreviousPage: Go to the previoua page of imports.
+      //
+      _toPreviousPage: function() {
+        var dp = this._debugPrefix.replace(': ', '._toPreviousPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to previous page...');
+
+        this._reRender({pageTo: 'previous'});
+      },
+
+      //
+      // _toNextPage: Go to the next page of imports.
+      //
+      _toNextPage: function() {
+        var dp = this._debugPrefix.replace(': ', '._toNextPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to next page...');
+        this._reRender({pageTo: 'next'});
+      },
+
+      //
+      // _enablePaginationControls: Based upon pagination data received from the
+      //  API enable previous / next arrows as appropriate, alone with click events.
+      //
+      _enablePaginationControls: function() {
+        var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._enablePaginationControls: ');
+
+        !Plm.debug || console.log(dp + 'Checking pagination cursors...');
+
+        var enablePrevious = (this.importers && this.importers.paging && this.importers.paging.cursors && this.importers.paging.cursors.previous && (this.importers.paging.cursors.previous !== -1)) ? true : false;
+        var enableNext = (this.importers && this.importers.paging && this.importers.paging.cursors && this.importers.paging.cursors.next && (this.importers.paging.cursors.next !== -1)) ? true : false;;
+
+        !Plm.debug || console.log(dp + 'enable previous - ' + enablePrevious + ', enable next - ' + enableNext);
+
+        that._disablePaginationControls();
+
+        if (enablePrevious) {
+          var prevControl = this.$el.find('.pagination-controls .previous-page');
+          prevControl.on('click', function() {
+            that._disablePaginationControls();            
+            that._toPreviousPage();
+          });
+          prevControl.removeClass('disabled');
+          console.log(dp + 'Previous page enabled...');
+        }
+
+        if (enableNext) {
+          var nextControl = this.$el.find('.pagination-controls .next-page');
+          nextControl.on('click', function() {
+            that._disablePaginationControls();            
+            that._toNextPage();
+          });
+          nextControl.removeClass('disabled');
+          console.log(dp + 'Next page enabled...');
+        }
+
+        return that;
+      },
+
+      //
+      // _disablePaginationControls: disable them.
+      //
+      _disablePaginationControls: function() {
+        var prevControl = this.$el.find('.pagination-controls .previous-page');
+        prevControl.off('click');
+        prevControl.addClass('disabled');
+        var nextControl = this.$el.find('.pagination-controls .next-page');
+        nextControl.off('click');
+        nextControl.addClass('disabled');
+      },
+
+      //
+      // _getOptimalPageSize: Compute the number of rows of imports we can squeeze in.
+      //  Use this for the number of imports per page.
+      //
+      _getOptimalPageSize: function() {
+        var dp = this._debugPrefix.replace(': ', '._getOptimalPageSize: ');
+        //
+        // IMPORT_HEIGHT: Height of import in px. Of course, this would ahve to 
+        // change if the CSS changed. 
+        //
+        var IMPORT_HEIGHT = 225;
+        var BOTTOM_POSITION = 40;
+        var parentCol = this.$el.find('.photos-collection');
+        var pageSize = undefined;
+
+        if (parentCol.height() > 0) {
+          pageSize = Math.floor(parentCol.height() / IMPORT_HEIGHT);
+          !Plm.debug || console.log(dp + 'computed optimal page size relative to parent collection height - ' + parentCol.height());
+        }
+        else {
+          var containerHeight = $('#content').height() - this.$el.find('.photos-header').outerHeight() - BOTTOM_POSITION;
+          pageSize = Math.floor(containerHeight / IMPORT_HEIGHT);
+          !Plm.debug || console.log(dp + 'computed optimal page size based upon content container height - ' + $('#content').height() + ', photos header height - ' + this.$el.find('.photos-header').outerHeight());
+        }
+
+        if (pageSize < 1) {
+          pageSize = 1;
+        }
+        !Plm.debug || console.log(dp + 'optimal page size - ' + pageSize);
+        return pageSize;
       },
 
       //

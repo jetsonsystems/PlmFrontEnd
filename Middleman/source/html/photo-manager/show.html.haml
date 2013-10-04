@@ -14,34 +14,41 @@
     .library-buttons
       %a#import-button &#128228
       %a#sync-button &#128260
-  %div.hamburger-item
+
+  %div.hamburger-item.current-import{ :style => 'display:none' }
     .icon.photos
     %div.text
-      %a{:href => "/photos#home/library/all-photos", :class => "title"}
+      %a{:href => "#home/library/current-import", :class => "title"}
+        Current Import
+
+  %div.hamburger-item.all-photos
+    .icon.photos
+    %div.text
+      %a{:href => "#home/library/all-photos", :class => "title"}
         All Photos
 
-  %div.hamburger-item
-    .icon.lastimport
+  %div.hamburger-item.last-import
+    .icon.photos
     %div.text
-      %a{:href => "/photos#home/library/last-import", :class => "title"}
+      %a{:href => "#home/library/last-import", :class => "title"}
         Last Import
 
-  %div.hamburger-item
-    .icon.lastimport.last-search
+  %div.hamburger-item.last-search
+    .icon.photos.last-search
     %div.text
-      %a{:href => "/photos#home/library/last-search", :class => "title"}
+      %a{:href => "#home/library/last-search", :class => "title"}
         Last Search
 
-  %div.hamburger-item
+  %div.hamburger-item.uncategorized
     .icon.uncategorized
     %div.text
-      %a{:href => "/photos#home/library/uncategorized", :class => "title"}
+      %a{:href => "#home/library/uncategorized", :class => "title"}
         Uncategorized
 
-  %div.hamburger-item
+  %div.hamburger-item.trash
     .icon.trash
     %div.text
-      %a{:href => "/photos#home/library/trash", :class => "title"}
+      %a{:href => "#home/library/trash", :class => "title"}
         Trash
 
 #middle-column

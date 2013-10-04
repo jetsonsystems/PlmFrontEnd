@@ -15,13 +15,14 @@ define(
     'plmCommon/plm-ui',
     'app/router',
     'app/cancel-import-dialog',
+    'app/views/home/library/current-import',
     'app/views/home/library/last-import',
     'app/views/home/library/all-photos',
     'app/views/home/library/trash',
     'app/views/home/library/uncategorized',
     'app/views/home/library/last-search'
   ],
-  function($, _, Backbone, Plm, MsgBus, PlmUI, Router, CancelImportDialog, LastImportView, AllPhotosView, TrashView, UncategorizedView, LastSearchView) {
+  function($, _, Backbone, Plm, MsgBus, PlmUI, Router, CancelImportDialog, CurrentImportView, LastImportView, AllPhotosView, TrashView, UncategorizedView, LastSearchView) {
 
     var moduleName = '/app/photo-manager/views/home';
 
@@ -72,6 +73,8 @@ define(
 
       contentView: undefined,
 
+      currentImportView: undefined,
+
       subscriptions: {},
 
       // Reference to last search made by user (Note: currently does not persist between application closes)
@@ -83,7 +86,7 @@ define(
       importInProgress: false,
 
       events: {
-        'click #search-gear-collection .search': "_toggleSearchInput"
+        'click #search-gear-collection .search': '_toggleSearchInput'
       },
 
       initialize: function(options) {
@@ -97,6 +100,7 @@ define(
         _.extend(this, CancelImportDialog.handlersFactory());
 
         this._updateView(options.path, { render: false });
+        this._enableViewNavigation();
         this._enableImport();
         this._enableSync();
         this._respondToEvents();
@@ -130,7 +134,9 @@ define(
         PlmUI.view.onRender({
           showProgress: options.showProgress,
           progress: {
-            container: $("#middle-column")
+            container: $("#middle-column"),
+            trickleRate: 0.05,
+            trickleSpeed: 10
           }
         });
         this.contentView.render();
@@ -160,6 +166,35 @@ define(
       },
 
       //
+      // _enableViewNavigation: Setup click events via jQuery for
+      //  hamburger items. Note, we should be able to do this via delgation
+      //  and Backbone's event's hash, but there is a complication with
+      //  event bubling and the pageslide plugin which prevents us from
+      //  doing this.
+      //
+      _enableViewNavigation: function() {
+        var that = this;
+        $('#hamburger .hamburger-item a').on('click', function(e) {
+          that._handleViewNavigation(e);
+        });
+      },
+
+      //
+      // _handleViewNavigation: Respond to clicks which will navigate within the
+      //  view. For example, clicking hamburger items that should navigate the
+      //  user to #home/library/*.
+      //
+      _handleViewNavigation: function(e) {
+        var dp = this._debugPrefix.replace(': ', '._handleNavigation: ');        
+
+        !Plm.debug || console.log(dp + 'Handling navigation to - <' + e.currentTarget.tagName + ' href=' + $(e.currentTarget).attr('href') + '/>');
+
+        e.preventDefault();
+        this._updateView($(e.currentTarget).attr('href').replace('#home/', ''),
+                         { render: true });
+      },
+
+      //
       // _updateView: Handle updating the view.
       //
       //  Args:
@@ -171,22 +206,53 @@ define(
       //        and then render if render is true.
       //
       _updateView: function(path, options) {
+        var that = this;
+
         options = options || {render: false};
         options.render = _.has(options, 'render') ? options.render : false;
         if ((this.path != path) || options.refresh) {
           this.path = path;
 
           if (this.contentView) {
-            this.contentView.teardown();
-            this.contentView.remove();
+            if (this.contentView === this.currentImportView) {
+              this.$el.html('');
+            }
+            else {
+              this.contentView.teardown();
+              this.contentView.remove();
+            }
             this.contentView = undefined;
           }
 
           //
           // Handle the Library nav.
           //
+          if (this.currentImportView === undefined) {
+            $("#hamburger .hamburger-item.current-import").hide();
+          }
           $("#hamburger .hamburger-item").removeClass("selected");
-          if (this.path === 'library/last-import') {
+          if (this.path === 'library/current-import') {
+            if (this.currentImportView) {
+              this.contentView = this.currentImportView;
+            }
+            else {
+              this.contentView = new CurrentImportView();
+              this.currentImportView = this.contentView;
+              this.currentImportView.once(that.currentImportView.id + ':completed', 
+                                          function() {
+                                            if (that.currentImportView && (that.contentView !== that.currentImportView) && (that.currentImportView.state === that.currentImportView.STATE_COMPLETED)) {
+                                              $("#hamburger .hamburger-item.current-import").hide();
+                                              iv = that.currentImportView;
+                                              that.currentImportView = undefined;
+                                              iv.teardown();
+                                              iv.remove();
+                                            }
+                                          });
+            }
+            $("#hamburger .hamburger-item.current-import").show();
+            $("#hamburger .hamburger-item.current-import").addClass("selected");
+          }
+          else if (this.path === 'library/last-import') {
             this.contentView = new LastImportView();
             $("#hamburger .hamburger-item.last-import").addClass("selected");
           }
@@ -209,6 +275,19 @@ define(
           }
           else {
             !Plm.debug || console.log("_updateView: Don't know what to do with path - " + path);
+          }
+          if (this.contentView) {
+            Backbone.history.navigate('home/' + this.path);
+            if (options.onRendered) {
+              this.contentView.once(this.contentView.id + ":rendered",
+                                    options.onRendered);
+            }
+            if (this.currentImportView && (this.contentView !== this.currentImportView) && (this.currentImportView.state === this.currentImportView.STATE_COMPLETED)) {
+              $("#hamburger .hamburger-item.current-import").hide();
+              this.currentImportView.teardown();
+              this.currentImportView.remove();
+              this.currentImportView = undefined;
+            }
           }
           if (options.render) {
             this._doRender({showProgress: true});
@@ -258,62 +337,66 @@ define(
           else {
             that.importInProgress = true;
             that._disableImport();
-            !Plm.debug || console.log("Trying to import images...")
-            window.frame.openDialog({
-              type: 'open', // Either open or save
-              title: 'Open...', // Dialog title, default is window title
-              multiSelect: false, // Allows multiple file selection
-              dirSelect:true, // Directory selector
-              initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
-            }, function( err , files ) {
-              if (err) {
-                !Plm.debug || console.log(db.replace(': ', '.click: ') + 'Dialog cancelled, err - ' + err);
-                that.importInProgress = false;
-                that._enableImport();
-              }
-              else {
+            !Plm.debug || console.log("Trying to import images...");
+            that._updateView("library/current-import",
+                             {
+                               render: true,
+                               onRendered: function() {
+                                 window.frame.openDialog({
+                                   type: 'open', // Either open or save
+                                   title: 'Open...', // Dialog title, default is window title
+                                   multiSelect: false, // Allows multiple file selection
+                                   dirSelect:true, // Directory selector
+                                   initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
+                                 }, function( err , files ) {
+                                   if (err) {
+                                     !Plm.debug || console.log(db.replace(': ', '.click: ') + 'Dialog cancelled, err - ' + err);
+                                     that.importInProgress = false;
+                                     that._enableImport();
+                                   }
+                                   else {
+                                     var dir = String(files[0]);
 
-                var dir = String(files[0]);
+                                     !Plm.debug || console.log(">> dir: " + dir);
 
-                !Plm.debug || console.log(">> dir: " + dir);
+                                     var payload = {
+                                       "import_dir" : dir
+                                     };
 
-                var payload = {
-                  "import_dir" : dir
-                };
-
-                $.ajax({
-                  url: 'http://localhost:9001/api/media-manager/v0/importers',
-                  type: 'POST',
-                  contentType: 'application/json',
-                  data: JSON.stringify(payload),
-                  processData: false,
-                  success: function(data, textStatus, jqXHR) {
-                    !Plm.debug || console.log(">> AJAX success");
-                  },
-                  error: function(jqXHR, textStatus, errorThrown) {
-                    !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
-                    !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
-                    
-                    try {
-                      var rBody = $.parseJSON(jqXHR.responseText);
+                                     $.ajax({
+                                       url: 'http://localhost:9001/api/media-manager/v0/importers',
+                                       type: 'POST',
+                                       contentType: 'application/json',
+                                       data: JSON.stringify(payload),
+                                       processData: false,
+                                       success: function(data, textStatus, jqXHR) {
+                                         !Plm.debug || console.log(">> AJAX success");
+                                       },
+                                       error: function(jqXHR, textStatus, errorThrown) {
+                                         !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
+                                         !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
+                                         try {
+                                           var rBody = $.parseJSON(jqXHR.responseText);
                       
-                      if (rBody.error_code === 1) {
-                        Plm.showFlash('No supported image formats found in ' + dir + '.');
-                      }
-                      else {
-                        Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
-                      }
-                    }
-                    catch (e) {
-                      Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
-                    }
-                    that.importInProgress = false;
-                    that._enableImport();
-                  }
-                });
-              }
-            });
-            // End of Open Save Dialog
+                                           if (rBody.error_code === 1) {
+                                             Plm.showFlash('No supported image formats found in ' + dir + '.');
+                                           }
+                                           else {
+                                             Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
+                                           }
+                                         }
+                                         catch (e) {
+                                           Plm.showFlash('Unknown error occurred while importing images from ' + dir + '.');
+                                         }
+                                         that.importInProgress = false;
+                                         that._enableImport();
+                                       }
+                                     });
+                                   }
+                                 });
+                                 // End of Open Save Dialog
+                               }
+                             });
           }
         });
         // End of button push

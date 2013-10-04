@@ -59,8 +59,7 @@ define(
     var initialize =  function() {
       !Plm.debug || console.log('/js/app/photo-manager/router: Initializing...');
       router = new Router();
-      Backbone.history.start({pushState: true,
-                              root: "/photos#home/library/all-photos"});
+      Backbone.history.start({root: "/photos"});
       router.navigate('#home/library/all-photos', {trigger: true, replace: false});
     };
 

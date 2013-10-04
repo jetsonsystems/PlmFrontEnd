@@ -245,7 +245,6 @@ h1 {
   background-image: url('../imgs/icon-sprite.png');
 
   &.icon-button {
-
     width: 32px;
     height: 31px;
   }
@@ -466,6 +465,24 @@ h1 {
 }
 
 .selection-toolbar { float: right; margin-right: 55px; }
+
+.pagination-controls { 
+  float: right; 
+  margin-right: 55px;
+
+  a {
+
+    &:first-child {
+      margin-right: 10px;
+    }
+    width: 30px;
+    height: 30px;
+    line-height: 30px;  
+    font-size: 40px;
+    font-family: 'entypo';
+    cursor: pointer;
+  }
+}
 
 .main-select-all { margin-top: 9px; float: left; }
 
@@ -988,7 +1005,6 @@ aside {
     line-height: 60%;
 
     &.photos:before { content: "\1F304"; }
-    &.lastimport:before { content: "\1F304"; }
     &.uncategorized:before { content: "\E777"; }
     &.trash:before { content: "\E729"; }
   }
@@ -1025,8 +1041,6 @@ aside {
     font-size: 40px;
     font-family: 'entypo';
   }
-  #import-button {  }
-  #sync-button {  }
 }
 
 
