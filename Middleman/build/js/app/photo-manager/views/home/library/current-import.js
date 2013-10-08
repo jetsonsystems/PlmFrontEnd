@@ -184,6 +184,7 @@ define(
         !Plm.debug || console.log(dp + 'invoking...');
 
         _.each(_.keys(that.subscriptions), function(key) {
+          !Plm.debug || console.log(dp + 'unsubscribing sub. id - ' + key);
           MsgBus.unsubscribe(key);
           delete that.subscriptions[key];
         });
@@ -630,8 +631,8 @@ define(
                                  //    2. Its an image from some other import (weird), just log.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.variant.created ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.variant.created ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.images.variant.created');
                                    }
@@ -655,8 +656,8 @@ define(
                                  //    2. Its an image from some other import (weird), just log and ignore.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.images.imported');
                                    }
@@ -680,8 +681,8 @@ define(
                                  //    2. Its an image from some other import (weird), log and ignore.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.image.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.image.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.image.imported');
                                    }
@@ -705,16 +706,18 @@ define(
                                  //      - finish rendering it.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.completed ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.completed ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._finishIncrementalRender(msg.data);
+                                     !Plm.debug || console.log(dp + 'import.completed, finished incremental render!');
                                    }
                                  });
         that.subscriptions[subId] = {
           channel: channel,
           topic: topic
         };
+        !Plm.debug || console.log(dp + 'Subscribed to (' + channel + ', ' + topic + '), sub. id - ' + subId + '.');
 
       },
 

@@ -246,6 +246,7 @@ define(
                                               that.currentImportView = undefined;
                                               iv.teardown();
                                               iv.remove();
+                                              !Plm.debug || console.log('Current import view removed!');
                                             }
                                           });
             }

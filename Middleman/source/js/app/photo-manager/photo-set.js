@@ -71,10 +71,13 @@ define(
         var col = $(this).parent().siblings(photoSetPhotosSel).toggleClass('open');
         if (col.hasClass('open')) {
           var photoWidth = $(col.find('.photo')[0]).outerWidth();
+
+          var photos = $(col.find('.photo'));
+          var photo = $(photos[0]);
           
-          !Plm.debug || console.log(view._debugPrefix + ': twirl down click open event, collection inner width - ' + col.innerWidth() + ', photos min - ' + photosMin + ', photo width - ' + photoWidth);
+          !Plm.debug || console.log(view._debugPrefix + ': twirl down click open event, parrent collection width - ' + parentCol.width() + ', collection inner width - ' + col.innerWidth() + ', photos min - ' + photosMin + ', ' + photos.length + ' photos in import, photo width - (' + photo.innerWidth() + ', ' + photo.width() + ', ' + photo.outerWidth() + ').');
           
-          if (parentCol.width() > (photosMin * photoWidth)) {
+          if ((photoWidth === 0) || (parentCol.width() > (photosMin * photoWidth))) {
             col.removeClass('photo-set-clip-overflow-cells');
             col.css('width', '100%');
           }

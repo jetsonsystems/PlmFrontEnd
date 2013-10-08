@@ -2,8 +2,9 @@
  postal
  Author: Jim Cowart (http://freshbrewedcode.com/jimcowart)
  License: Dual licensed MIT (http://www.opensource.org/licenses/mit-license) & GPL (http://www.opensource.org/licenses/gpl-license)
- Version 0.8.2
+ Version 0.8.9
  */
+/*jshint -W098 */
 (function ( root, factory ) {
 	if ( typeof define === "function" && define.amd ) {
 		// AMD. Register as an anonymous module.
@@ -16,16 +17,16 @@
 		module.exports = function ( _ ) {
 			_ = _ || require( "underscore" );
 			return factory( _ );
-		}
+		};
 	} else {
 		// Browser globals
 		root.postal = factory( root._, root );
 	}
 }( this, function ( _, global, undefined ) {
 
-	var DEFAULT_CHANNEL = "/",
-		DEFAULT_DISPOSEAFTER = 0,
-		SYSTEM_CHANNEL = "postal";
+	var postal;
+
+	/*jshint -W098 */
 	var ConsecutiveDistinctPredicate = function () {
 		var previous;
 		return function ( data ) {
@@ -41,6 +42,7 @@
 			return !eq;
 		};
 	};
+	/*jshint -W098 */
 	var DistinctPredicate = function () {
 		var previous = [];
 	
@@ -57,8 +59,9 @@
 			return isDistinct;
 		};
 	};
+	/* global postal, SubscriptionDefinition */
 	var ChannelDefinition = function ( channelName ) {
-		this.channel = channelName || DEFAULT_CHANNEL;
+		this.channel = channelName || postal.configuration.DEFAULT_CHANNEL;
 	};
 	
 	ChannelDefinition.prototype.subscribe = function () {
@@ -69,11 +72,15 @@
 	
 	ChannelDefinition.prototype.publish = function () {
 		var envelope = arguments.length === 1 ?
-		                (Object.prototype.toString.call(arguments[0]) === '[object String]' ?
-	                  { topic: arguments[0] } : arguments[0]) : { topic : arguments[0], data : arguments[1] };
+		               ( Object.prototype.toString.call( arguments[0] ) === "[object String]" ?
+		                { topic : arguments[0] } :
+		                arguments[0] ) :
+		               { topic : arguments[0], data : arguments[1] };
 		envelope.channel = this.channel;
 		return postal.configuration.bus.publish( envelope );
 	};
+	/* global postal */
+	/*jshint -W117 */
 	var SubscriptionDefinition = function ( channel, topic, callback ) {
 		this.channel = channel;
 		this.topic = topic;
@@ -81,12 +88,12 @@
 		this.constraints = [];
 		this.context = null;
 		postal.configuration.bus.publish( {
-			channel : SYSTEM_CHANNEL,
-			topic : "subscription.created",
-			data : {
-				event : "subscription.created",
+			channel : postal.configuration.SYSTEM_CHANNEL,
+			topic   : "subscription.created",
+			data    : {
+				event   : "subscription.created",
 				channel : channel,
-				topic : topic
+				topic   : topic
 			}
 		} );
 		postal.configuration.bus.subscribe( this );
@@ -94,22 +101,28 @@
 	
 	SubscriptionDefinition.prototype = {
 		unsubscribe : function () {
-			postal.configuration.bus.unsubscribe( this );
-			postal.configuration.bus.publish( {
-				channel : SYSTEM_CHANNEL,
-				topic : "subscription.removed",
-				data : {
-					event : "subscription.removed",
-					channel : this.channel,
-					topic : this.topic
-				}
-			} );
+			if ( !this.inactive ) {
+				this.inactive = true;
+				postal.configuration.bus.unsubscribe( this );
+				postal.configuration.bus.publish( {
+					channel : postal.configuration.SYSTEM_CHANNEL,
+					topic   : "subscription.removed",
+					data    : {
+						event   : "subscription.removed",
+						channel : this.channel,
+						topic   : this.topic
+					}
+				} );
+			}
 		},
 	
 		defer : function () {
+			var self = this;
 			var fn = this.callback;
-			this.callback = function ( data ) {
-				setTimeout( fn, 0, data );
+			this.callback = function ( data, env ) {
+				setTimeout( function () {
+					fn.call( self.context, data, env );
+				}, 0 );
 			};
 			return this;
 		},
@@ -118,13 +131,14 @@
 			if ( _.isNaN( maxCalls ) || maxCalls <= 0 ) {
 				throw "The value provided to disposeAfter (maxCalls) must be a number greater than zero.";
 			}
+			var self = this;
 			var fn = this.callback;
 			var dispose = _.after( maxCalls, _.bind( function () {
 				this.unsubscribe();
 			}, this ) );
 	
 			this.callback = function () {
-				fn.apply( this.context, arguments );
+				fn.apply( self.context, arguments );
 				dispose();
 			};
 			return this;
@@ -142,6 +156,7 @@
 	
 		once : function () {
 			this.disposeAfter( 1 );
+			return this;
 		},
 	
 		withConstraint : function ( predicate ) {
@@ -167,12 +182,12 @@
 			return this;
 		},
 	
-		withDebounce : function ( milliseconds ) {
+		withDebounce : function ( milliseconds, immediate ) {
 			if ( _.isNaN( milliseconds ) ) {
 				throw "Milliseconds must be a number";
 			}
 			var fn = this.callback;
-			this.callback = _.debounce( fn, milliseconds );
+			this.callback = _.debounce( fn, milliseconds, !!immediate );
 			return this;
 		},
 	
@@ -180,10 +195,11 @@
 			if ( _.isNaN( milliseconds ) ) {
 				throw "Milliseconds must be a number";
 			}
+			var self = this;
 			var fn = this.callback;
-			this.callback = function ( data ) {
+			this.callback = function ( data, env ) {
 				setTimeout( function () {
-					fn( data );
+					fn.call( self.context, data, env );
 				}, milliseconds );
 			};
 			return this;
@@ -203,43 +219,63 @@
 			return this;
 		}
 	};
+	/*jshint -W098 */
 	var bindingsResolver = {
-		cache : { },
+		cache : {},
+		regex : {},
 	
 		compare : function ( binding, topic ) {
-			if ( this.cache[topic] && this.cache[topic][binding] ) {
-				return true;
+			var pattern, rgx, prevSegment, result = ( this.cache[ topic ] && this.cache[ topic ][ binding ] );
+			if ( typeof result !== "undefined" ) {
+				return result;
 			}
-			var pattern = ("^" + binding.replace( /\./g, "\\." )            // escape actual periods
-				                        .replace( /\*/g, "[A-Z,a-z,0-9]*" ) // asterisks match any alpha-numeric 'word'
-				                        .replace( /#/g, ".*" ) + "$")       // hash matches 'n' # of words (+ optional on start/end of topic)
-				                        .replace( "\\..*$", "(\\..*)*$" )   // fix end of topic matching on hash wildcards
-				                        .replace( "^.*\\.", "^(.*\\.)*" );  // fix beginning of topic matching on hash wildcards
-			var rgx = new RegExp( pattern );
-			var result = rgx.test( topic );
-			if ( result ) {
-				if ( !this.cache[topic] ) {
-					this.cache[topic] = {};
-				}
-				this.cache[topic][binding] = true;
+			if ( !( rgx = this.regex[ binding ] )) {
+				pattern = "^" + _.map( binding.split( "." ),function ( segment ) {
+					var res = "";
+					if ( !!prevSegment ) {
+						res = prevSegment !== "#" ? "\\.\\b" : "\\b";
+					}
+					if ( segment === "#" ) {
+						res += "[\\s\\S]*";
+					} else if ( segment === "*" ) {
+						res += "[^.]+";
+					} else {
+						res += segment;
+					}
+					prevSegment = segment;
+					return res;
+				} ).join( "" ) + "$";
+				rgx = this.regex[ binding ] = new RegExp( pattern );
 			}
+			this.cache[ topic ] = this.cache[ topic ] || {};
+			this.cache[ topic ][ binding ] = result = rgx.test( topic );
 			return result;
 		},
 	
 		reset : function () {
 			this.cache = {};
+			this.regex = {};
 		}
 	};
-	var fireSub = function(subDef, envelope) {
-	  if ( postal.configuration.resolver.compare( subDef.topic, envelope.topic ) ) {
-	    if ( _.all( subDef.constraints, function ( constraint ) {
-	      return constraint.call( subDef.context, envelope.data, envelope );
-	    } ) ) {
-	      if ( typeof subDef.callback === 'function' ) {
-	        subDef.callback.call( subDef.context, envelope.data, envelope );
-	      }
-	    }
-	  }
+	/* global postal */
+	var fireSub = function ( subDef, envelope ) {
+		if ( !subDef.inactive && postal.configuration.resolver.compare( subDef.topic, envelope.topic ) ) {
+			if ( _.all( subDef.constraints, function ( constraint ) {
+				return constraint.call( subDef.context, envelope.data, envelope );
+			} ) ) {
+				if ( typeof subDef.callback === "function" ) {
+					subDef.callback.call( subDef.context, envelope.data, envelope );
+				}
+			}
+		}
+	};
+	
+	var pubInProgress = 0;
+	var unSubQueue = [];
+	var clearUnSubQueue = function () {
+		while ( unSubQueue.length ) {
+			unSubQueue.shift().unsubscribe();
+		}
 	};
 	
 	var localBus = {
@@ -255,19 +291,23 @@
 		},
 	
 		publish : function ( envelope ) {
+			++pubInProgress;
 			envelope.timeStamp = new Date();
 			_.each( this.wireTaps, function ( tap ) {
 				tap( envelope.data, envelope );
 			} );
 			if ( this.subscriptions[envelope.channel] ) {
-	      _.each( this.subscriptions[envelope.channel], function ( subscribers ) {
-	        var idx = 0, len = subscribers.length, subDef;
-	        while(idx < len) {
-	          if( subDef = subscribers[idx++] ){
-	            fireSub(subDef, envelope);
-	          }
-	        }
-	      } );
+				_.each( this.subscriptions[envelope.channel], function ( subscribers ) {
+					var idx = 0, len = subscribers.length, subDef;
+					while ( idx < len ) {
+						if ( subDef = subscribers[idx++] ) {
+							fireSub( subDef, envelope );
+						}
+					}
+				} );
+			}
+			if ( --pubInProgress === 0 ) {
+				clearUnSubQueue();
 			}
 			return envelope;
 		},
@@ -286,7 +326,7 @@
 		},
 	
 		subscribe : function ( subDef ) {
-			var idx, found, fn, channel = this.subscriptions[subDef.channel], subs;
+			var channel = this.subscriptions[subDef.channel], subs;
 			if ( !channel ) {
 				channel = this.subscriptions[subDef.channel] = {};
 			}
@@ -303,28 +343,34 @@
 		wireTaps : [],
 	
 		unsubscribe : function ( config ) {
+			if ( pubInProgress ) {
+				unSubQueue.push( config );
+				return;
+			}
 			if ( this.subscriptions[config.channel][config.topic] ) {
 				var len = this.subscriptions[config.channel][config.topic].length,
 					idx = 0;
-				for ( ; idx < len; idx++ ) {
+				while ( idx < len ) {
 					if ( this.subscriptions[config.channel][config.topic][idx] === config ) {
 						this.subscriptions[config.channel][config.topic].splice( idx, 1 );
 						break;
 					}
+					idx += 1;
 				}
 			}
 		}
 	};
-	localBus.subscriptions[SYSTEM_CHANNEL] = {};
-	var postal = {
+	/* global localBus, bindingsResolver, ChannelDefinition, SubscriptionDefinition, postal */
+	/*jshint -W020 */
+	postal = {
 		configuration : {
-			bus : localBus,
-			resolver : bindingsResolver,
-			DEFAULT_CHANNEL : DEFAULT_CHANNEL,
-			SYSTEM_CHANNEL : SYSTEM_CHANNEL
+			bus             : localBus,
+			resolver        : bindingsResolver,
+			DEFAULT_CHANNEL : "/",
+			SYSTEM_CHANNEL  : "postal"
 		},
 	
-		ChannelDefinition : ChannelDefinition,
+		ChannelDefinition      : ChannelDefinition,
 		SubscriptionDefinition : SubscriptionDefinition,
 	
 		channel : function ( channelName ) {
@@ -332,11 +378,11 @@
 		},
 	
 		subscribe : function ( options ) {
-			return new SubscriptionDefinition( options.channel || DEFAULT_CHANNEL, options.topic, options.callback );
+			return new SubscriptionDefinition( options.channel || postal.configuration.DEFAULT_CHANNEL, options.topic, options.callback );
 		},
 	
 		publish : function ( envelope ) {
-			envelope.channel = envelope.channel || DEFAULT_CHANNEL;
+			envelope.channel = envelope.channel || postal.configuration.DEFAULT_CHANNEL;
 			return postal.configuration.bus.publish( envelope );
 		},
 	
@@ -345,17 +391,17 @@
 		},
 	
 		linkChannels : function ( sources, destinations ) {
-			var result   = [];
-			sources      = !_.isArray( sources ) ? [sources] : sources;
+			var result = [];
+			sources = !_.isArray( sources ) ? [ sources ] : sources;
 			destinations = !_.isArray( destinations ) ? [destinations] : destinations;
 			_.each( sources, function ( source ) {
 				var sourceTopic = source.topic || "#";
 				_.each( destinations, function ( destination ) {
-					var destChannel = destination.channel || DEFAULT_CHANNEL;
+					var destChannel = destination.channel || postal.configuration.DEFAULT_CHANNEL;
 					result.push(
 						postal.subscribe( {
-							channel : source.channel || DEFAULT_CHANNEL,
-							topic : source.topic || "#",
+							channel  : source.channel || postal.configuration.DEFAULT_CHANNEL,
+							topic    : sourceTopic,
 							callback : function ( data, env ) {
 								var newEnv = _.clone( env );
 								newEnv.topic = _.isFunction( destination.topic ) ? destination.topic( env.topic ) : destination.topic || env.topic;
@@ -379,7 +425,7 @@
 					tpc = arguments[ 0 ].topic;
 				}
 				if ( postal.configuration.bus.subscriptions[ channel ] &&
-				     postal.configuration.bus.subscriptions[ channel ].hasOwnProperty( tpc ) ) {
+				     Object.prototype.hasOwnProperty.call( postal.configuration.bus.subscriptions[ channel ], tpc ) ) {
 					return postal.configuration.bus.subscriptions[ channel ][ tpc ];
 				}
 				return [];
@@ -391,6 +437,15 @@
 			}
 		}
 	};
+	localBus.subscriptions[postal.configuration.SYSTEM_CHANNEL] = {};
+
+	/*jshint -W106 */
+	if ( global && global.hasOwnProperty( "__postalReady__" ) && _.isArray( global.__postalReady__ ) ) {
+		while(global.__postalReady__.length) {
+			global.__postalReady__.shift().onReady(postal);
+		}
+	}
+	/*jshint +W106 */
 
 	return postal;
 } ));

@@ -234,7 +234,7 @@ define(
           this.paging = response.paging;
         }
         for (var i = 0; i < response.importers.length; i++) {
-          response.importers[0]._index = i;
+          response.importers[i]._index = i;
         }
         return response.importers;
       },

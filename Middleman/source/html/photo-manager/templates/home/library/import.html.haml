@@ -2,7 +2,8 @@
 %div{:id => "import-{{importer.id.replace('$', '')}}", :class => ["photo-manager/home/library/import", "import-collection"], "data-created_at" => "{{createdAt}}"}
   %div.import-header
     %div.import-pip
-    %div{:class => "import-count"} {{_.size(importImages)}} Photos
+    {% numPhotos = importImages.length ? importImages.length : importer.get('num_imported'); %}
+    %div{:class => "import-count"} {{numPhotos}} Photos
     %div{:class => "import-date"}
       %span Imported:
       {% var importedDate = importer.has('completed_at') ? importer.get('completed_at') : ''; %}

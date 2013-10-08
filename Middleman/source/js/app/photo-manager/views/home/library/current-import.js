@@ -184,6 +184,7 @@ define(
         !Plm.debug || console.log(dp + 'invoking...');
 
         _.each(_.keys(that.subscriptions), function(key) {
+          !Plm.debug || console.log(dp + 'unsubscribing sub. id - ' + key);
           MsgBus.unsubscribe(key);
           delete that.subscriptions[key];
         });
@@ -630,8 +631,8 @@ define(
                                  //    2. Its an image from some other import (weird), just log.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.variant.created ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.variant.created ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.images.variant.created');
                                    }
@@ -655,8 +656,8 @@ define(
                                  //    2. Its an image from some other import (weird), just log and ignore.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.lastImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.images.imported');
                                    }
@@ -680,8 +681,8 @@ define(
                                  //    2. Its an image from some other import (weird), log and ignore.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.image.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.image.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._addToIncrementalRender(msg.data.doc, 'import.image.imported');
                                    }
@@ -705,112 +706,18 @@ define(
                                  //      - finish rendering it.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.completed ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.completed ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    if ((that.status === that.STATUS_INCREMENTALLY_RENDERING) && (that.currentImport.importer.id === msg.data.id)) {
                                      that._finishIncrementalRender(msg.data);
+                                     !Plm.debug || console.log(dp + 'import.completed, finished incremental render!');
                                    }
                                  });
         that.subscriptions[subId] = {
           channel: channel,
           topic: topic
         };
-
-      },
-
-      //
-      // _speedTestLastImport: Using AJAX grab each image using thumbnail.url, and then off of the file system.
-      //
-      _speedTestLastImport: function() {
-        var that = this;
-        var dbp = 'photo-manager/views/home._speedTestLastImport: ';
-        var path = require('path');
-        var thumbnailUrls = [];
-        var localUrls = [];
-        //
-        // First get OUR links:
-        //
-        this.currentImport.each(function(image) {
-          !Plm.verbose || console.log('photo-manager/views/home._speedTestLastImport: Have image - ' + image.get('name'));
-          var variants = image.get('variants');
-                var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
-                !Plm.verbose || console.log('photo-manager/views/home._speedTestLastImport:   have ' + filteredVariants.length + ' thumbnail variants...');
-                if (_.size(filteredVariants) > 0) {
-                  thumbnailUrls.push(filteredVariants[0].url);
-                  var localPath = path.join('/file', that.currentImport.importer.get('import_dir'), image.get('name'));
-                  console.log('photo-manager/views/home._speedTestLastImport: local path - ' + localPath + ', import dir - ' + that.currentImport.importer.get('import_dir') + ', image name - ' + image.get('name'));
-                  localUrls.push(localPath);
-                }
-              });
-
-        var startTS = 0;
-        var now = 0;
-
-        var epochSec = function() {
-          return Math.floor(Date.now() / 1000);
-        };
-
-        var logProgress = function(msg) {
-          var logDate = new Date();
-
-          console.log(logDate.toString() + ' ' + (now - startTS) + ' ' + dbp + msg);
-        };
-
-        var numFetched = 0;
-        var fetchUrls = function(urls, onDone) {
-          if (_.size(urls) > 0) {
-            var url = urls.shift();
-            now = epochSec();
-            logProgress('Fetching url - ' + url);
-            $.ajax({
-              url: url,
-              success: function(data, textStatus, jqXHR) {
-                now = epochSec();
-                logProgress('url fetched - ' + url);
-                numFetched = numFetched + 1;
-                fetchUrls(urls, onDone);
-              },
-              error: function(jqXHR) {
-                now = epochSec();
-                logProgress('Error fetching - ' + url);
-                fetchUrls(urls, onDone);
-              }
-            });
-          }
-          else {
-            onDone();
-          }
-        };
-
-        startTS = epochSec();
-        now = startTS;
-        logProgress('Starting to fetch ' + thumbnailUrls.length + ' thumbnails...');
-
-        numFetched = 0;
-        fetchUrls(thumbnailUrls,
-                  function() {
-                    var nps = 0;
-
-                    if (numFetched > 0) {
-                      nps = numFetched / (now - startTS);
-                    }
-                    logProgress(numFetched + 'thumnails fetched, nps - ' + nps);
-
-                    startTS = epochSec();
-                    now = startTS;
-
-                    logProgress('Starting to fetch ' + localUrls.length + ' local assets...');
-                    numFetched = 0;
-                    fetchUrls(localUrls,
-                              function() {
-                                var nps = 0;
-
-                                if (numFetched > 0) {
-                                  nps = numFetched / (now - startTS);
-                                }
-                                logProgress(numFetched + 'local assets fetched, nps - ' + nps);
-                              });
-                  });
+        !Plm.debug || console.log(dp + 'Subscribed to (' + channel + ', ' + topic + '), sub. id - ' + subId + '.');
 
       }
 

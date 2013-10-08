@@ -37,6 +37,8 @@ define([
            //    importer - initialize with a specific instance of an importer.
            //
            initialize: function(models, options) {
+             var that = this;
+
              if (options && _.has(options, 'importer')) {
                this.importer = new ImporterModel(options.importer);
                this.importers = new ImportersCollection([this.importer], 
@@ -49,6 +51,16 @@ define([
                                                                 filterWithoutStartedAt: true
                                                               } );
              }
+             this.importers.on('reset', function() {
+               if (that.importers.length > 0) {
+                 that.importer = that.importers.at(0);               
+               }
+               else {
+                 that.importer = undefined;
+               }
+               that.reset();
+               that.trigger('importer-reset', that.importer);
+             });
            },
 
            url: function() {
@@ -70,6 +82,7 @@ define([
                }
                else {
                  !Plm.debug || console.log(debugPrefix + '.fetch: We have an empty collection of importers!');
+                 that.importer = undefined;
                  if (options && _.has(options, 'success')) {
                    options.success(that, response, options);
                  }
@@ -79,12 +92,16 @@ define([
                !Plm.debug || console.log(debugPrefix + '.fetch: We had an error fetching importers!');
              }
              this.importers.fetch({success: onImportersSuccess,
-                                   error: onImportersError});
+                                   error: onImportersError,
+                                   reset: true});
            },
 
            parse: function(response) {
              !Plm.debug || console.log(debugPrefix + '.parse: Parsing last-import response...');
              !Plm.debug || !Plm.verbose || console.log(debugPrefix + '.parse: response - ' + JSON.stringify(response));
+             for (var i = 0; i < response.importer.images.length; i++) {
+               response.importer.images[i]._index = i;
+             }
              return response.importer.images;
            }
          });
