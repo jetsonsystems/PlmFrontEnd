@@ -224,9 +224,6 @@ define(
           pOpts.trickleRate = _.has(pOpts, 'trickleRate') ? pOpts.trickleRate : 0.05;
           pOpts.trickleSpeed = _.has(pOpts, 'trickleSpeed') ? pOpts.trickleSpeed : 100;
 
-          var util = require('util');
-          console.log('Configuring progress w/ options - ' + util.inspect(pOpts));
-
           this.nprogress = new NProgress(pOpts);
           this.nprogress.start();
         }

@@ -135,8 +135,6 @@ var instCount = 0;
     this.start = function() {
       var that = this;
 
-      console.log('NProgress: inst - ' + this.instCount + ', id - ' + Settings.id);
-
       if (!this.status) this.set(0);
 
       var work = function() {

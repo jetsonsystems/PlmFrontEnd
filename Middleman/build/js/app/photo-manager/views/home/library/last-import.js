@@ -407,7 +407,6 @@ define(
         // Append the template. Note, we may want to insert in case the image was added to the
         // collection somewhere in the middle. But, at the moment, that should NOT happen.
         //
-        !Plm.debug || console.log(dp + 'Appending compiled template - ' + compiledTemplate);
         this.$el.find('.import-photos-collection').append(compiledTemplate);
 
         this._imageSelectionManager.reset();
