@@ -69,6 +69,8 @@ define(
       withCancel: false,
       cancelHandler: undefined,
 
+      nprogress: undefined,
+
       init: function() {
         $("#notifications-collection").hide();
       },
@@ -94,13 +96,14 @@ define(
 
         if (options.withProgressBar) {
           this.withProgressBar = true;
-          NProgress.configure({
+          var nprogress = this.nprogress = new NProgress({
+            id: 'nprogress-notif',
             showSpinner: false,
             trickle: false,
             template: '<div class="progress-bar" role="bar"><div class="peg"></div></div><div class="progress-bar-backdrop"></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>',
             container: $('#notifications-collection')
           });
-          NProgress.start();
+          nprogress.start();
         }
         if (options.withCancel) {
           this.withCancel = true;
@@ -129,10 +132,10 @@ define(
             if (options.progressBarPercent === 1.0) {
               $("#notification-cancel-icon").hide();
             }
-            NProgress.set(options.progressBarPercent);
+            this.nprogress.set(options.progressBarPercent);
           }
           else {
-            NProgress.inc();
+            this.nprogress.inc();
           }
         }
       },
@@ -144,7 +147,8 @@ define(
         }
 
         $("#notification-cancel-icon").hide();
-        NProgress.done();
+        this.nprogress.done();
+        this.nprogress = undefined;
 
         $("#logo").removeClass("rotate");
 
@@ -158,19 +162,22 @@ define(
       }
     };
 
+    var appLoadBar = undefined;
+
     //
     // onReady: To be invoked when the document's onReady event is detected.
     //
     var onReady = function() {
       notif.init();
-      NProgress.configure({
+      appLoadBar = new NProgress({
+        id: 'nprogress-app-load',
         showSpinner: false,
         template: '<div class="app-load-bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>',
         trickle: true,
         trickleRate: 0.05,
         trickleSpeed: 100
       });
-      NProgress.start();
+      appLoadBar.start();
       navManager.onReady();
     };
 
@@ -178,8 +185,9 @@ define(
     // onAppReady: When the application is ready. 
     //
     var onAppReady = function() {
-      NProgress.done();
-      NProgress.remove();
+      appLoadBar.done();
+      appLoadBar.remove();
+      appLoadBar = undefined;
       var loadingAnim = document.querySelectorAll('.appLoadAnimationBackdrop');
       for(var i = 0; i < loadingAnim.length; i++) {
         loadingAnim[i].style.display = "none";
@@ -192,6 +200,9 @@ define(
     //  onRendered: rendered, progress bar completes.
     //    
     var view = {
+
+      nprogress: undefined,
+
       //
       // onRender:
       //  options:
@@ -202,6 +213,8 @@ define(
         options = options || {};
         if (options.showProgress) {
           var pOpts = (options && options.progress) ? options.progress : {};
+
+          pOpts.id = 'nprogress-view';
 
           pOpts.showSpinner = _.has(pOpts, 'showSpinner') ? pOpts.showSpinner : false;
           pOpts.template = _.has(pOpts, 'template') ? 
@@ -214,13 +227,16 @@ define(
           var util = require('util');
           console.log('Configuring progress w/ options - ' + util.inspect(pOpts));
 
-          NProgress.configure(pOpts);
-          NProgress.start();
+          this.nprogress = new NProgress(pOpts);
+          this.nprogress.start();
         }
       },
       onRendered: function() {
-        NProgress.done();
-        NProgress.remove();
+        if (this.nprogress) {
+          this.nprogress.done();
+          this.nprogress.remove();
+          this.nprogress = undefined;
+        }
       }
     };
 

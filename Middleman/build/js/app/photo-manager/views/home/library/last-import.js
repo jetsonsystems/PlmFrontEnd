@@ -46,6 +46,7 @@ define(
       STATUS_UNRENDERED: 0,
       STATUS_UPDATING: 1,
       STATUS_RENDERED: 2,
+
       status: undefined,
 
       dirty: false,
@@ -126,7 +127,7 @@ define(
         that.status = that.STATUS_RENDERED;
         that.trigger(that.id + ":rendered");
 
-        that._update({ context: 'render',
+        that._update({ context: 'render-as-update',
                        triggerEvents: false });
 
         return this;
@@ -164,18 +165,10 @@ define(
         //
         // Importers events which may change the import being rendered.
         //
-        this.lastImport.importers.on('add', function(importerModel) {
-          that._onImportersEvent('add', importerModel);
-        });
-        this.lastImport.importers.on('remove', function(importerModel) {
-          that._onImportersEvent('remove', importerModel);
-        });
-        this.lastImport.importers.on('change', function(importerModel) {
-          that._onImportersEvent('change', importerModel);
-        });
-        this.lastImport.on('importer-reset', function(importer) {
-          that._onImportersEvent('importer-reset', importer);
-        });
+        this.lastImport.importers.on('add', this._onImportersAdd, this);
+        this.lastImport.importers.on('remove', this._onImportersRemove, this);
+        this.lastImport.importers.on('change', this._onImportersChange, this);
+        this.lastImport.on('importer-reset', this._onImporterReset, this);
 
         //
         // Image events within the import being rendered.
@@ -205,10 +198,10 @@ define(
         //
         // Importers events which may change the import being rendered.
         //
-        this.lastImport.importers.off('add');
-        this.lastImport.importers.off('remove');
-        this.lastImport.importers.off('change');
-        this.lastImport.importers.off('reset');
+        this.lastImport.importers.off('add', this._onImportersAdd, this);
+        this.lastImport.importers.off('remove', this._onImportersRemove, this);
+        this.lastImport.importers.off('change', this._onImportersChange, this);
+        this.lastImport.off('importer-reset', this._onImporterReset, this);
 
         //
         // Image events within the import being rendered.
@@ -242,9 +235,13 @@ define(
       //
       _doRender: function() {
         var that = this;
-        // !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home._doRender: Will render ' + _.size(this.lastImport) + ' images...');
+
+        var dp = this._debugPrefix.replace(': ', '._doRender: ');
+
+        !Plm.debug || !Plm.verbose || console.log(dp + 'Will render ' + _.size(this.lastImport) + ' images...');
+
         if (this.lastImport.importers.length === 0) {
-          !Plm.debug || console.log('photo-manager/views/home._doRender: No images have yet been imported!');
+          !Plm.debug || console.log(dp + 'No images have yet been imported!');
           Plm.showFlash('You have not yet imported any images!');
         }
         else {
@@ -254,14 +251,14 @@ define(
           }
           else {
             if (Plm.debug) {
-              console.log('photo-manager/views/home._doRender: Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + importer.get('completed_at'));
+              console.log(dp + 'Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + importer.get('completed_at'));
               // that._speedTestLastImport();
               this.lastImport.each(function(image) {
-                !Plm.verbose || console.log('photo-manager/views/home._doRender: Have image - ' + image.get('name'));
+                !Plm.verbose || console.log(dp + 'Have image - ' + image.get('name'));
                 var variants = image.get('variants');
-                !Plm.verbose || console.log('photo-manager/views/home._doRender:   have ' + variants.length + ' variants...');
+                !Plm.verbose || console.log(dp + '  have ' + variants.length + ' variants...');
                 var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
-                !Plm.verbose || console.log('photo-manager/views/home._doRender:   have ' + filteredVariants.length + ' thumbnail variants...');
+                !Plm.verbose || console.log(dp + '  have ' + filteredVariants.length + ' thumbnail variants...');
               });
             }
           }
@@ -322,7 +319,7 @@ define(
             //
             that._doRender();
             that._disableLastImportEvents();
-            that._enableLastImportEvents();
+             that._enableLastImportEvents();
           }
 
           that.status = that.STATUS_RENDERED;
@@ -362,6 +359,22 @@ define(
                                error: onError});
 
         return this;
+      },
+
+      //
+      // Dispatch to _onImportersEvent:
+      //
+      _onImportersAdd: function(importer) {
+        this._onImportersEvent('add', importer);
+      },
+      _onImportersRemove: function(importer) {
+        this._onImportersEvent('remove', importer);
+      },
+      _onImportersChange: function(importer) {
+        this._onImportersEvent('change', importer);
+      },
+      _onImporterReset: function(importer) {
+        this._onImportersEvent('importer-reset', importer);
       },
 
       //
@@ -576,8 +589,8 @@ define(
                                  // import.images.variants.created callback: Set the dirty flag.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.variant.created ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.variant.created ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    that.dirty = true;
                                  });
         that.subscriptions[subId] = {
@@ -597,8 +610,8 @@ define(
                                  //    2. Its an image from some other import (weird), set the view as dirty.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.images.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.images.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    that.dirty = true;
                                  });
         that.subscriptions[subId] = {
@@ -618,8 +631,8 @@ define(
                                  //    2. Its an image from some other import (weird), set the view as dirty.
                                  //
                                  function(msg) {
-                                   !Plm.debug || console.log('photo-manager/views/home/library/last-import._respondToEvents: import.image.imported ...');
-                                   !Plm.debug || !Plm.verbose || console.log('photo-manager/views/home/library/last-import._respondToEvents: msg - ' + JSON.stringify(msg));
+                                   !Plm.debug || console.log(dp + 'import.image.imported ...');
+                                   !Plm.debug || !Plm.verbose || console.log(dp + 'msg - ' + JSON.stringify(msg));
                                    that.dirty = true;
                                  });
         that.subscriptions[subId] = {
@@ -707,7 +720,9 @@ define(
       //
       _speedTestLastImport: function() {
         var that = this;
-        var dbp = 'photo-manager/views/home._speedTestLastImport: ';
+
+        var dp = that._debugPrefix.replace(': ', '._speedTestLastImport: ');
+
         var path = require('path');
         var thumbnailUrls = [];
         var localUrls = [];
@@ -715,14 +730,14 @@ define(
         // First get OUR links:
         //
         this.lastImport.each(function(image) {
-          !Plm.verbose || console.log('photo-manager/views/home._speedTestLastImport: Have image - ' + image.get('name'));
+          !Plm.verbose || console.log(dp + 'Have image - ' + image.get('name'));
           var variants = image.get('variants');
                 var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
-                !Plm.verbose || console.log('photo-manager/views/home._speedTestLastImport:   have ' + filteredVariants.length + ' thumbnail variants...');
+                !Plm.verbose || console.log(dp + '  have ' + filteredVariants.length + ' thumbnail variants...');
                 if (_.size(filteredVariants) > 0) {
                   thumbnailUrls.push(filteredVariants[0].url);
                   var localPath = path.join('/file', that.lastImport.importer.get('import_dir'), image.get('name'));
-                  console.log('photo-manager/views/home._speedTestLastImport: local path - ' + localPath + ', import dir - ' + that.lastImport.importer.get('import_dir') + ', image name - ' + image.get('name'));
+                  console.log(dp + 'local path - ' + localPath + ', import dir - ' + that.lastImport.importer.get('import_dir') + ', image name - ' + image.get('name'));
                   localUrls.push(localPath);
                 }
               });

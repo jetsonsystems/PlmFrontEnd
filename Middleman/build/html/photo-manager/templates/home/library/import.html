@@ -2,7 +2,7 @@
 <div class='photo-manager/home/library/import import-collection' data-created_at='{{createdAt}}' id="import-{{importer.id.replace('$', '')}}">
   <div class='import-header'>
     <div class='import-pip'></div>
-    {% numPhotos = importImages.length ? importImages.length : importer.get('num_imported'); %}
+    {% numPhotos = (importImages && importImages.length) ? importImages.length : importer.get('num_imported'); %}
     <div class='import-count'>{{numPhotos}} Photos</div>
     <div class='import-date'>
       <span>Imported:</span>
@@ -23,7 +23,7 @@
     <div class='clearfix'></div>
   </div>
   <div class='import-photos-collection'>
-    {% importImages.length && importImages.each(function(image) { %}
+    {% importImages && importImages.length && importImages.each(function(image) { %}
       {{ _.template(imageTemplate, { image : image, importStatus : importStatus, _ : _ }) }}
     {% }); %}
   </div>

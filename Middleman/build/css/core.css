@@ -1866,7 +1866,7 @@ aside {
   visibility: hidden;
 }
 /* line 1152, _base.scss */
-#notifications-collection #nprogress {
+#notifications-collection #nprogress-notif {
   display: block;
   position: relative;
   margin-top: 12px;
@@ -1876,7 +1876,7 @@ aside {
   overflow-x: hidden;
 }
 /* line 1161, _base.scss */
-#notifications-collection #nprogress .progress-bar {
+#notifications-collection #nprogress-notif .progress-bar {
   display: block;
   position: static;
   width: 100%;
@@ -1885,7 +1885,7 @@ aside {
   z-index: 100;
 }
 /* line 1170, _base.scss */
-#notifications-collection #nprogress .progress-bar-backdrop {
+#notifications-collection #nprogress-notif .progress-bar-backdrop {
   display: block;
   position: absolute;
   left: 0;
@@ -1922,14 +1922,14 @@ aside {
  * _progress: General progress bar styles.
  */
 /* Make clicks pass-through */
-/* line 6, _progress.scss */
-#nprogress {
+/* line 7, _progress.scss */
+.nprogress {
   pointer-events: none;
 }
 
 /* Fancy blur effect */
-/* line 11, _progress.scss */
-#nprogress .peg {
+/* line 12, _progress.scss */
+.nprogress .peg {
   display: block;
   position: absolute;
   right: 0px;
@@ -1943,8 +1943,8 @@ aside {
 }
 
 /* Remove these to get rid of the spinner */
-/* line 26, _progress.scss */
-#nprogress .spinner {
+/* line 27, _progress.scss */
+.nprogress .spinner {
   display: block;
   position: fixed;
   z-index: 100;
@@ -1952,8 +1952,8 @@ aside {
   right: 15px;
 }
 
-/* line 34, _progress.scss */
-#nprogress .spinner-icon {
+/* line 35, _progress.scss */
+.nprogress .spinner-icon {
   width: 18px;
   height: 18px;
   box-sizing: border-box;
@@ -1966,24 +1966,24 @@ aside {
 }
 
 @-webkit-keyframes nprogress-spinner {
-  /* line 49, _progress.scss */
+  /* line 50, _progress.scss */
   0% {
     -webkit-transform: rotate(0deg);
   }
 
-  /* line 50, _progress.scss */
+  /* line 51, _progress.scss */
   100% {
     -webkit-transform: rotate(360deg);
   }
 }
 
 @keyframes nprogress-spinner {
-  /* line 53, _progress.scss */
+  /* line 54, _progress.scss */
   0% {
     transform: rotate(0deg);
   }
 
-  /* line 54, _progress.scss */
+  /* line 55, _progress.scss */
   100% {
     transform: rotate(360deg);
   }
@@ -1993,7 +1993,7 @@ aside {
  * _appLoadProgress: Application load progress bar styles.
  */
 /* line 5, _appLoadProgress.scss */
-#nprogress .app-load-bar {
+#nprogress-app-load .app-load-bar {
   background: red;
   position: fixed;
   z-index: 100;
@@ -2007,7 +2007,7 @@ aside {
  * _viewLoadProgress: View load progress bar styles.
  */
 /* line 5, _viewLoadProgress.scss */
-#nprogress .view-load-bar {
+#nprogress-view .view-load-bar {
   background: red;
   z-index: 100;
   height: 2px;

@@ -12,12 +12,13 @@ define([
        function(_, Backbone, Plm, ImportersCollection, ImporterModel, ImageModel) {
 
          var moduleName = 'photo-manager/collections/last-import';
-         var debugPrefix = moduleName + '.LastImportCollection';
 
          //
          // LastImportCollection: collection of the images associated with the most recent import.
          //
          var LastImportCollection = Backbone.Collection.extend({
+
+           _debugPrefix: moduleName + '.LastImportCollection: ',
 
            model: ImageModel,
 
@@ -74,14 +75,17 @@ define([
 
            fetch: function(options) {
              var that = this;
+
+             var dp = that._debugPrefix.replace(': ', '.fetch: ');
+
              var onImportersSuccess = function(importersCollection, response) {
                if (importersCollection.length > 0) {
                  that.importer = importersCollection.at(0);
-                 !Plm.debug || console.log(debugPrefix + '.fetch: Last importer fetched, w/ id - ' + that.importer.id + ', completed at - ' + that.importer.get('completed_at'));
+                 !Plm.debug || console.log(dp + 'Last importer fetched, w/ id - ' + that.importer.id + ', completed at - ' + that.importer.get('completed_at'));
                  Backbone.Collection.prototype.fetch.call(that, options);
                }
                else {
-                 !Plm.debug || console.log(debugPrefix + '.fetch: We have an empty collection of importers!');
+                 !Plm.debug || console.log(dp + 'We have an empty collection of importers!');
                  that.importer = undefined;
                  if (options && _.has(options, 'success')) {
                    options.success(that, response, options);
@@ -89,7 +93,7 @@ define([
                }
              };
              var onImportersError = function(importersCollection, xhr) {
-               !Plm.debug || console.log(debugPrefix + '.fetch: We had an error fetching importers!');
+               !Plm.debug || console.log(dp + 'We had an error fetching importers!');
              }
              this.importers.fetch({success: onImportersSuccess,
                                    error: onImportersError,
@@ -97,8 +101,11 @@ define([
            },
 
            parse: function(response) {
-             !Plm.debug || console.log(debugPrefix + '.parse: Parsing last-import response...');
-             !Plm.debug || !Plm.verbose || console.log(debugPrefix + '.parse: response - ' + JSON.stringify(response));
+             var dp = this._debugPrefix.replace(': ', '.parse: ');
+
+             !Plm.debug || console.log(dp + 'Parsing last-import response...');
+             !Plm.debug || !Plm.verbose || console.log(dp + 'response - ' + JSON.stringify(response));
+
              for (var i = 0; i < response.importer.images.length; i++) {
                response.importer.images[i]._index = i;
              }
