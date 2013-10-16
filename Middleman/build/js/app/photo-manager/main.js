@@ -4,10 +4,6 @@
 // First configure any aliases along with where they live.
 //
 
-// var requirejs = undefined;
-
-console.log('app/photo-manager/main: Adding app-ready event listener...');
-
 requirejs.config({
   nodeRequire: require,
   text: { env: 'xhr' },
