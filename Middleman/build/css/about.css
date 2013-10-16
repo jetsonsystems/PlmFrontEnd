@@ -1,0 +1,163 @@
+/* line 2, _mixins.scss */
+.ir {
+  display: block;
+  border: 0;
+  text-indent: -999em;
+  overflow: hidden;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  text-align: left;
+  direction: ltr;
+  *line-height: 0;
+}
+
+/* line 3, _mixins.scss */
+.ir br {
+  display: none;
+}
+
+/* line 5, _mixins.scss */
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+/* line 7, _mixins.scss */
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+/* line 9, _mixins.scss */
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/* line 11, _mixins.scss */
+.invisible {
+  visibility: hidden;
+}
+
+/* line 13, _mixins.scss */
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+}
+
+/* line 14, _mixins.scss */
+.clearfix:after {
+  clear: both;
+}
+
+/* line 15, _mixins.scss */
+.clearfix {
+  *zoom: 1;
+}
+
+/* ---===|| Curse Blocks Helper Mixins ||===--- */
+@-webkit-keyframes rotate {
+  /* line 311, _mixins.scss */
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  /* line 312, _mixins.scss */
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+/* line 7, _reset.scss */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: Arial;
+  vertical-align: baseline;
+}
+
+/* line 19, _reset.scss */
+*:focus {
+  outline: none;
+}
+
+/* line 23, _reset.scss */
+body {
+  line-height: 1;
+  color: black;
+  background: white;
+}
+
+/* line 29, _reset.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 33, _reset.scss */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* line 38, _reset.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+}
+
+/* line 43, _reset.scss */
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+}
+
+/* line 47, _reset.scss */
+blockquote, q {
+  quotes: "" "";
+}
+
+/* line 51, _reset.scss */
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 11, about.scss */
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 16, about.scss */
+body {
+  background: #636363;
+  overflow-y: hidden;
+}
+/* line 20, about.scss */
+body h1 {
+  line-height: 2em;
+  font-size: 1.75em;
+  margin-top: 8px;
+  text-align: center;
+}
+/* line 27, about.scss */
+body #version {
+  line-height: 1.25em;
+  font-size: 1em;
+  text-align: center;
+}

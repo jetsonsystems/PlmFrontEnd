@@ -47,6 +47,11 @@ ignore '/js/app/boilerplate.js'
 # end
 
 #
+# About does NOT have a template.
+#
+page "/html/about.html", :layout => false
+
+#
 # All our templates which should NOT have a layout.
 #
 page "/html/photo-manager/templates/*", :layout => false
