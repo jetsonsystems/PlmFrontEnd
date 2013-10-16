@@ -18,7 +18,9 @@
  */
 
 
-var ApiWorkers = require('MediaManagerAppSupport/lib/ApiWorkers');
+var fs = require('fs');
+var path = require('path');
+var plist = require('plist');
 
 define(
   [
@@ -28,9 +30,31 @@ define(
   ],
   function($, _, PlmUI) {
 
+    function getVersion() {
+      var version = '?.?.?';
+      if (_.has(process.env, 'PLM_APP_BUNDLE_DIR')) {
+        if (fs.existsSync(process.env.PLM_APP_BUNDLE_DIR)) {
+          var bDirStat = fs.statSync(process.env.PLM_APP_BUNDLE_DIR);
+          if (bDirStat.isDirectory()) {
+            var infoFile = path.join(process.env.PLM_APP_BUNDLE_DIR, 'Contents/Info.plist');
+            if (fs.existsSync(infoFile)) {
+              try {
+                var info = plist.parseFileSync(infoFile);
+                version = info.CFBundleVersion;
+              }
+              catch (e) {
+                console.log('Error fetching version - ' + e);
+              }
+            }
+          }
+        }
+      }
+      return version;
+    }
+
     var PLM = {};
 
-    PLM.VERSION = '0.0.22';
+    PLM.VERSION = getVersion();
 
     PLM.debug = false;
 
