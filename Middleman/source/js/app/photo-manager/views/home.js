@@ -271,7 +271,6 @@ define(
           }
           else if (this.path === 'library/last-search') {
               this.contentView = new LastSearchView();
-              console.log("LOADING LASTSEARCHVIEW");
               $("#hamburger .hamburger-item.last-search").addClass("selected");
           }
           else {
@@ -343,6 +342,7 @@ define(
                              {
                                render: true,
                                onRendered: function() {
+                                 var dpOnR = dp.replace(': ', '.click.onRendered: ');
                                  window.frame.openDialog({
                                    type: 'open', // Either open or save
                                    title: 'Open...', // Dialog title, default is window title
@@ -351,14 +351,14 @@ define(
                                    initialValue: '~/Pictures' // Initial save or open file name. Remember to escape backslashes.
                                  }, function( err , files ) {
                                    if (err) {
-                                     !Plm.debug || console.log(db.replace(': ', '.click: ') + 'Dialog cancelled, err - ' + err);
+                                     !Plm.debug || console.log(dpOnR + 'Dialog cancelled, err - ' + err);
                                      that.importInProgress = false;
                                      that._enableImport();
                                    }
                                    else {
                                      var dir = String(files[0]);
 
-                                     !Plm.debug || console.log(">> dir: " + dir);
+                                     !Plm.debug || console.log(dpOnR + "dir: " + dir);
 
                                      var payload = {
                                        "import_dir" : dir
@@ -371,11 +371,11 @@ define(
                                        data: JSON.stringify(payload),
                                        processData: false,
                                        success: function(data, textStatus, jqXHR) {
-                                         !Plm.debug || console.log(">> AJAX success");
+                                         !Plm.debug || console.log(dpOnR + "AJAX success");
                                        },
                                        error: function(jqXHR, textStatus, errorThrown) {
-                                         !Plm.debug || console.log(">> AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
-                                         !Plm.debug || console.log('>>  textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
+                                         !Plm.debug || console.log(dpOnR + "AJAX failure, response headers - " + jqXHR.getAllResponseHeaders());
+                                         !Plm.debug || console.log(dpOnR + 'textStatus - ' + textStatus + ', errorThrown - ' + errorThrown + ', response text - ' + jqXHR.responseText);
                                          try {
                                            var rBody = $.parseJSON(jqXHR.responseText);
                       
@@ -469,28 +469,15 @@ define(
       },
 
       _handleSearch: function(searchTerm) {
+        var newSearch = localStorage["lastsearch"] !== searchTerm;
         // Assign the search term to local storage
         localStorage["lastsearch"] = searchTerm;
 
         // Forward user to the search page, which will automatically pick
         // up the stored term.
-        if (window.location === "/photos#home/library/last-search") {
-          //
-          // If the location is the same, routing won't happen unless we explicitly
-          // route. We could call _updateView but the the history won't get updated
-          // so this is a bit more correct.
-          //
-          Router.navigate("/photos#home/library/last-search",
-                          {trigger: true});
-          //
-          // this._updateView("library/last-search",
-          //   {refresh: true,
-          //    render: true});
-          //
-        }
-        else {
-          window.location = "/photos#home/library/last-search";
-        }
+        this._updateView("library/last-search",
+                         {refresh: newSearch,
+                          render: true});
       },
 
       //

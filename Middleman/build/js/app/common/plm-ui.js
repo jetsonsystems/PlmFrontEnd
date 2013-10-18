@@ -221,8 +221,8 @@ define(
             pOpts.template : 
             '<div class="view-load-bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>';
           pOpts.trickle = _.has(pOpts, 'trickle') ? pOpts.trickle : true;
-          pOpts.trickleRate = _.has(pOpts, 'trickleRate') ? pOpts.trickleRate : 0.05;
-          pOpts.trickleSpeed = _.has(pOpts, 'trickleSpeed') ? pOpts.trickleSpeed : 100;
+          pOpts.trickleRate = _.has(pOpts, 'trickleRate') ? pOpts.trickleRate : 0.20;
+          pOpts.trickleSpeed = _.has(pOpts, 'trickleSpeed') ? pOpts.trickleSpeed : 200;
 
           this.nprogress = new NProgress(pOpts);
           this.nprogress.start();

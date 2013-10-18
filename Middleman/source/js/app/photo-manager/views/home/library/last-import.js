@@ -124,11 +124,11 @@ define(
         //
         // Get the initial template in the DOM so width's etc. get set.
         //
-        that.status = that.STATUS_RENDERED;
-        that.trigger(that.id + ":rendered");
+        // that.status = that.STATUS_RENDERED;
+        // that.trigger(that.id + ":rendered");
 
-        that._update({ context: 'render-as-update',
-                       triggerEvents: false });
+        that._update({ context: 'render',
+                       triggerEvents: true });
 
         return this;
       },
@@ -312,16 +312,6 @@ define(
                                  onSuccessOptions) {
           !Plm.debug || !Plm.verbose || console.log(dp.replace(': ', '.onSuccess: ') + 'Successfully loaded recent uploads...');
 
-          if (options.context === 'render') {
-            //
-            // We have ALL the data and we are doing an initial render, so just render the whole thing at once.
-            // After we render, enable all the events associated with the model.
-            //
-            that._doRender();
-            that._disableLastImportEvents();
-             that._enableLastImportEvents();
-          }
-
           that.status = that.STATUS_RENDERED;
 
           if (options.triggerEvents) {
@@ -331,6 +321,16 @@ define(
             else {
               that.trigger(that.id + ":updated");
             }
+          }
+
+          if (options.context === 'render') {
+            //
+            // We have ALL the data and we are doing an initial render, so just render the whole thing at once.
+            // After we render, enable all the events associated with the model.
+            //
+            that._doRender();
+            that._disableLastImportEvents();
+            that._enableLastImportEvents();
           }
         };
 
