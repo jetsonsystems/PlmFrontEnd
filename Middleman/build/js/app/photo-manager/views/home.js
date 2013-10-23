@@ -341,6 +341,7 @@ define(
             that._updateView("library/current-import",
                              {
                                render: true,
+                               refresh: true,
                                onRendered: function() {
                                  var dpOnR = dp.replace(': ', '.click.onRendered: ');
                                  window.frame.openDialog({

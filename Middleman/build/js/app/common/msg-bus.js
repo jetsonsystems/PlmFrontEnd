@@ -118,7 +118,7 @@ define(
       };
 
       function doSubscriptions(ws) {
-        console.log(dp + 'Subscribing to notification events');
+        !Plm.debug || console.log(dp + 'Subscribing to notification events');
         ws.send(JSON.stringify({
           "resource": "_client",
           "event": "subscribe",
@@ -137,15 +137,15 @@ define(
           "data": {
             "resource": "/storage/changes-feed"
           }}));
-        console.log(dp + 'Subscribed to notification events');
+        !Plm.debug || console.log(dp + 'Subscribed to notification events');
       };
 
       ws.onerror = function() {
-        console.log('js/app/common/msg-bus: websocket error!');
+        !Plm.debug || console.log('js/app/common/msg-bus: websocket error!');
       };
 
       ws.onmessage = function(msg) {
-        console.log(dp + msg.data);
+        !Plm.debug || console.log(dp + msg.data);
           
         var parsedMsg = JSON.parse(msg.data);
 
@@ -160,11 +160,11 @@ define(
             msgBus[channel].publish(topic, parsedMsg);
           }
           else {
-            console.log('app/msg-bus._listToApiEvents: channel does NOT exist - ' + channel);
+            !Plm.debug || console.log('app/msg-bus._listToApiEvents: channel does NOT exist - ' + channel);
           }
         }
         else {
-          console.log('/js/app/common/msg-bus._listenToApiEvents.onmessage: message NOT understood - ' + msg.data);
+          !Plm.debug || console.log('/js/app/common/msg-bus._listenToApiEvents.onmessage: message NOT understood - ' + msg.data);
         }
 
       };
@@ -181,7 +181,7 @@ define(
           '_client.view:/photo-manager/home' : postal.channel('_notif-api:/photo-manager/home', '#')
         };
 
-        console.log('app/msg-bus.initialize: Creating web-socket...');
+        !Plm.debug || console.log('app/msg-bus.initialize: Creating web-socket...');
 
         var that = this;
         ws = new WebSocket('ws://localhost:9002/notifications');
