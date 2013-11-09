@@ -282,561 +282,47 @@
  * Photo Set header - date associated with the photo set.
  */
 /*
+ * Photo Set header - select all images in the set.
+ */
+/*
  * Collection of phots with the photo set.
  */
-/*
- * Apply photo set mixins to photos in an import, ie: last-import and all-photos views.
- */
-/* line 16, apps/photo-manager/_index.scss */
-.import-collection {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 19, apps/photo-manager/_index.scss */
-.import-collection .import-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 22, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.import-collection .import-header .import-pip.open {
-  background-position: 0 0;
-}
-/* line 23, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-count {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 24, apps/photo-manager/_index.scss */
-.import-collection .import-header .import-date {
-  float: left;
-  margin-left: 10px;
-  font-size: 14px;
-}
-/* line 56, apps/photo-manager/_photoSet.scss */
-.import-collection .import-header .import-date span {
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-right: 5px;
-}
-/* line 27, apps/photo-manager/_index.scss */
-.import-collection .import-photos-collection {
-  font-size: 0;
-  white-space: nowrap;
-}
-/* line 69, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection.open {
-  white-space: normal;
-}
-/* line 73, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection.photo-set-clip-overflow-cells {
-  overflow: hidden;
-}
-/* line 77, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo {
-  display: inline-block;
-  padding: 10px;
-  width: 160px;
-  min-height: 160px;
-}
-/* line 84, apps/photo-manager/_photoSet.scss */
-.photo-edit .import-collection .import-photos-collection .photo {
-  cursor: pointer;
-}
-/* line 86, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 90, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo:hover .edit-photo {
-  display: block;
-}
-/* line 97, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell {
-  width: 140px;
-  height: 134px;
-  text-align: center;
-  font-size: 0;
-}
-/* line 103, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell:before {
-  content: '';
-  display: inline-block;
-  box-sizing: content-box;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  width: 0px;
-  height: 134px;
-  vertical-align: middle;
-}
-/* line 115, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
-  display: inline-block;
-  box-sizing: content-box;
-  border: 1px solid black;
-}
-/* line 120, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
-  width: 132px;
-  height: 132px;
-}
-/* line 125, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
-  height: 132px;
-}
-/* line 129, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
-  width: 132px;
-  vertical-align: middle;
-}
-/* line 139, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo[data-import-status="imported"] .photo-link {
-  cursor: pointer;
-}
-/* line 144, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 147, apps/photo-manager/_photoSet.scss */
-.import-collection .import-photos-collection .photo:hover img.edit-photo {
-  display: block;
-}
-
-/* line 31, apps/photo-manager/_index.scss */
-.import h4 {
-  color: #c2c2c2;
-  font-family: Arial;
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-left: 20px;
-  margin-top: 10px;
-}
-/* line 42, apps/photo-manager/_index.scss */
-.import .imported-timestamp {
-  margin-left: 40px;
-}
-
-/*
- * Apply photo set mixins to photos as a result of a search.
- */
-/* line 50, apps/photo-manager/_index.scss */
-.search-photos {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 53, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 56, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header .search-photos-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-header .search-photos-pip.open {
-  background-position: 0 0;
-}
-/* line 59, apps/photo-manager/_index.scss */
-.search-photos .search-photos-header .search-photos-size {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 64, apps/photo-manager/_index.scss */
-.search-photos .search-photos-collection {
-  font-size: 0;
-  white-space: nowrap;
-}
-/* line 69, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection.open {
-  white-space: normal;
-}
-/* line 73, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection.photo-set-clip-overflow-cells {
-  overflow: hidden;
-}
-/* line 77, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo {
-  display: inline-block;
-  padding: 10px;
-  width: 160px;
-  min-height: 160px;
-}
-/* line 84, apps/photo-manager/_photoSet.scss */
-.photo-edit .search-photos .search-photos-collection .photo {
-  cursor: pointer;
-}
-/* line 86, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 90, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo:hover .edit-photo {
-  display: block;
-}
-/* line 97, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell {
-  width: 140px;
-  height: 134px;
-  text-align: center;
-  font-size: 0;
-}
-/* line 103, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell:before {
-  content: '';
-  display: inline-block;
-  box-sizing: content-box;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  width: 0px;
-  height: 134px;
-  vertical-align: middle;
-}
-/* line 115, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
-  display: inline-block;
-  box-sizing: content-box;
-  border: 1px solid black;
-}
-/* line 120, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
-  width: 132px;
-  height: 132px;
-}
-/* line 125, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
-  height: 132px;
-}
-/* line 129, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
-  width: 132px;
-  vertical-align: middle;
-}
-/* line 139, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo[data-import-status="imported"] .photo-link {
-  cursor: pointer;
-}
-/* line 144, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 147, apps/photo-manager/_photoSet.scss */
-.search-photos .search-photos-collection .photo:hover img.edit-photo {
-  display: block;
-}
-
-/* line 69, apps/photo-manager/_index.scss */
-.trash-photos {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 72, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-  line-height: 38px;
-}
-/* line 76, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-header .trash-size {
-  display: inline-block;
-  font-size: 1.125em;
-}
-/* line 80, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-header .select-all {
-  display: inline-block;
-  padding-top: 5px;
-  margin-right: 60px;
-  line-height: 1.1em;
-  font-size: 1.1em;
-}
-/* line 88, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-header .button-group {
-  display: inline-block;
-}
-/* line 91, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-header .button-group li {
-  display: inline-block;
-  line-height: 100%;
-  font-size: 100%;
-}
-/* line 99, apps/photo-manager/_index.scss */
-.trash-photos .trash-photos-collection {
-  font-size: 0;
-  white-space: nowrap;
-}
-/* line 69, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection.open {
-  white-space: normal;
-}
-/* line 73, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection.photo-set-clip-overflow-cells {
-  overflow: hidden;
-}
-/* line 77, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo {
-  display: inline-block;
-  padding: 10px;
-  width: 160px;
-  min-height: 160px;
-}
-/* line 84, apps/photo-manager/_photoSet.scss */
-.photo-edit .trash-photos .trash-photos-collection .photo {
-  cursor: pointer;
-}
-/* line 86, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 90, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo:hover .edit-photo {
-  display: block;
-}
-/* line 97, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell {
-  width: 140px;
-  height: 134px;
-  text-align: center;
-  font-size: 0;
-}
-/* line 103, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell:before {
-  content: '';
-  display: inline-block;
-  box-sizing: content-box;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  width: 0px;
-  height: 134px;
-  vertical-align: middle;
-}
-/* line 115, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
-  display: inline-block;
-  box-sizing: content-box;
-  border: 1px solid black;
-}
-/* line 120, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
-  width: 132px;
-  height: 132px;
-}
-/* line 125, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
-  height: 132px;
-}
-/* line 129, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
-  width: 132px;
-  vertical-align: middle;
-}
-/* line 139, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo[data-import-status="imported"] .photo-link {
-  cursor: pointer;
-}
-/* line 144, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 147, apps/photo-manager/_photoSet.scss */
-.trash-photos .trash-photos-collection .photo:hover img.edit-photo {
-  display: block;
-}
-
-/*
- * Apply photo set mixins to generic classes in case we just do it vanilla, ie: don't want to override anything.
- */
-/* line 107, apps/photo-manager/_index.scss */
-.photo-set-collection {
-  color: #d0d0d0;
-  overflow: hidden;
-}
-/* line 110, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header {
-  padding-bottom: 11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #111111;
-}
-/* line 113, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header .photo-set-pip {
-  width: 19px;
-  height: 19px;
-  display: inline-block;
-  cursor: pointer;
-  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
-  float: left;
-  margin-right: 5px;
-}
-/* line 36, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-header .photo-set-pip.open {
-  background-position: 0 0;
-}
-/* line 116, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-header .photo-set-size {
-  float: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-/* line 121, apps/photo-manager/_index.scss */
-.photo-set-collection .photo-set-photos-collection {
-  font-size: 0;
-  white-space: nowrap;
-}
-/* line 69, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection.open {
-  white-space: normal;
-}
-/* line 73, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection.photo-set-clip-overflow-cells {
-  overflow: hidden;
-}
-/* line 77, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo {
-  display: inline-block;
-  padding: 10px;
-  width: 160px;
-  min-height: 160px;
-}
-/* line 84, apps/photo-manager/_photoSet.scss */
-.photo-edit .photo-set-collection .photo-set-photos-collection .photo {
-  cursor: pointer;
-}
-/* line 86, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 90, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo:hover .edit-photo {
-  display: block;
-}
-/* line 97, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell {
-  width: 140px;
-  height: 134px;
-  text-align: center;
-  font-size: 0;
-}
-/* line 103, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell:before {
-  content: '';
-  display: inline-block;
-  box-sizing: content-box;
-  margin: 0;
-  border: 0;
-  padding: 0;
-  width: 0px;
-  height: 134px;
-  vertical-align: middle;
-}
-/* line 115, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
-  display: inline-block;
-  box-sizing: content-box;
-  border: 1px solid black;
-}
-/* line 120, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
-  width: 132px;
-  height: 132px;
-}
-/* line 125, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
-  height: 132px;
-}
-/* line 129, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
-  width: 132px;
-  vertical-align: middle;
-}
-/* line 139, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo[data-import-status="imported"] .photo-link {
-  cursor: pointer;
-}
-/* line 144, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo:hover {
-  -webkit-box-shadow: 0px 0px 10px #333333;
-  -moz-box-shadow: 0px 0px 10px #333333;
-  -ms-box-shadow: 0px 0px 10px #333333;
-  -o-box-shadow: 0px 0px 10px #333333;
-  box-shadow: 0px 0px 10px #333333;
-  background: #555555;
-}
-/* line 147, apps/photo-manager/_photoSet.scss */
-.photo-set-collection .photo-set-photos-collection .photo:hover img.edit-photo {
-  display: block;
-}
-
-/* line 126, apps/photo-manager/_index.scss */
+/* line 13, apps/photo-manager/_index.scss */
 .photos-header {
   padding: 22px 0 0 10px;
   overflow: hidden;
   min-height: 75px;
 }
-/* line 131, apps/photo-manager/_index.scss */
+/* line 18, apps/photo-manager/_index.scss */
 .photos-header h2 {
   font-size: 25px;
   float: left;
 }
+/* line 20, apps/photo-manager/_index.scss */
+.photos-header .select-all {
+  position: relative;
+  top: 8px;
+}
+/* line 25, apps/photo-manager/_index.scss */
+.photos-header .pagination-controls {
+  float: right;
+  margin: 0 55px 0 0;
+}
+/* line 29, apps/photo-manager/_index.scss */
+.photos-header .pagination-controls a {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 40px;
+  font-family: 'entypo';
+  cursor: pointer;
+}
+/* line 31, apps/photo-manager/_index.scss */
+.photos-header .pagination-controls a:first-child {
+  margin-right: 10px;
+}
 
-/* line 135, apps/photo-manager/_index.scss */
+/* line 44, apps/photo-manager/_index.scss */
 .photos-collection {
   *display: inline-block;
   position: absolute;
@@ -857,7 +343,599 @@
   visibility: hidden;
 }
 
-/* line 150, apps/photo-manager/_index.scss */
+/*
+ * Apply photo set mixins to photos in an import, ie: last-import and all-photos views.
+ */
+/* line 61, apps/photo-manager/_index.scss */
+.import-collection {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+/* line 64, apps/photo-manager/_index.scss */
+.import-collection .import-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+  line-height: 1.5em;
+  vertical-align: middle;
+}
+/* line 67, apps/photo-manager/_index.scss */
+.import-collection .import-header .import-pip {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  cursor: pointer;
+  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+/* line 38, apps/photo-manager/_photoSet.scss */
+.import-collection .import-header .import-pip.open {
+  background-position: 0 0;
+}
+/* line 68, apps/photo-manager/_index.scss */
+.import-collection .import-header .import-count {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+/* line 69, apps/photo-manager/_index.scss */
+.import-collection .import-header .import-date {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 1.125em;
+  vertical-align: middle;
+}
+/* line 61, apps/photo-manager/_photoSet.scss */
+.import-collection .import-header .import-date span {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+/* line 70, apps/photo-manager/_index.scss */
+.import-collection .import-header .select-all {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+}
+/* line 72, apps/photo-manager/_index.scss */
+.import-collection .import-header .pagination-controls {
+  display: inline-block;
+  height: 1.5em;
+  margin: 0 0 0 15px;
+  line-height: 1.5em;
+}
+/* line 78, apps/photo-manager/_index.scss */
+.import-collection .import-header .pagination-controls.hidden {
+  display: none;
+}
+/* line 82, apps/photo-manager/_index.scss */
+.import-collection .import-header .pagination-controls a {
+  font-size: 2em;
+  vertical-align: middle;
+  font-family: 'entypo';
+  cursor: pointer;
+}
+/* line 84, apps/photo-manager/_index.scss */
+.import-collection .import-header .pagination-controls a:first-child {
+  margin-right: 10px;
+}
+/* line 95, apps/photo-manager/_index.scss */
+.import-collection .import-photos-collection {
+  font-size: 0;
+  white-space: nowrap;
+}
+/* line 83, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection.open {
+  white-space: normal;
+}
+/* line 87, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection.photo-set-clip-overflow-cells {
+  overflow: hidden;
+}
+/* line 91, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo {
+  display: inline-block;
+  padding: 10px;
+  width: 160px;
+  min-height: 160px;
+}
+/* line 98, apps/photo-manager/_photoSet.scss */
+.photo-edit .import-collection .import-photos-collection .photo {
+  cursor: pointer;
+}
+/* line 100, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 104, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo:hover .edit-photo {
+  display: block;
+}
+/* line 111, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell {
+  width: 140px;
+  height: 134px;
+  text-align: center;
+  font-size: 0;
+}
+/* line 117, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell:before {
+  content: '';
+  display: inline-block;
+  box-sizing: content-box;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: 0px;
+  height: 134px;
+  vertical-align: middle;
+}
+/* line 129, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
+  display: inline-block;
+  box-sizing: content-box;
+  border: 1px solid black;
+}
+/* line 134, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
+  width: 132px;
+  height: 132px;
+}
+/* line 139, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
+  height: 132px;
+}
+/* line 143, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
+  width: 132px;
+  vertical-align: middle;
+}
+/* line 153, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 158, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 161, apps/photo-manager/_photoSet.scss */
+.import-collection .import-photos-collection .photo:hover img.edit-photo {
+  display: block;
+}
+
+/* line 99, apps/photo-manager/_index.scss */
+.import h4 {
+  color: #c2c2c2;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+/* line 109, apps/photo-manager/_index.scss */
+.import .imported-timestamp {
+  margin-left: 40px;
+}
+
+/*
+ * Apply photo set mixins to photos as a result of a search.
+ */
+/* line 117, apps/photo-manager/_index.scss */
+.search-photos {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+/* line 120, apps/photo-manager/_index.scss */
+.search-photos .search-photos-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+  line-height: 1.5em;
+  vertical-align: middle;
+}
+/* line 123, apps/photo-manager/_index.scss */
+.search-photos .search-photos-header .search-photos-pip {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  cursor: pointer;
+  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+/* line 38, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-header .search-photos-pip.open {
+  background-position: 0 0;
+}
+/* line 124, apps/photo-manager/_index.scss */
+.search-photos .search-photos-header .search-photos-size {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+/* line 125, apps/photo-manager/_index.scss */
+.search-photos .search-photos-header .select-all {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+}
+/* line 128, apps/photo-manager/_index.scss */
+.search-photos .search-photos-collection {
+  font-size: 0;
+  white-space: nowrap;
+}
+/* line 83, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection.open {
+  white-space: normal;
+}
+/* line 87, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection.photo-set-clip-overflow-cells {
+  overflow: hidden;
+}
+/* line 91, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo {
+  display: inline-block;
+  padding: 10px;
+  width: 160px;
+  min-height: 160px;
+}
+/* line 98, apps/photo-manager/_photoSet.scss */
+.photo-edit .search-photos .search-photos-collection .photo {
+  cursor: pointer;
+}
+/* line 100, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 104, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo:hover .edit-photo {
+  display: block;
+}
+/* line 111, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell {
+  width: 140px;
+  height: 134px;
+  text-align: center;
+  font-size: 0;
+}
+/* line 117, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell:before {
+  content: '';
+  display: inline-block;
+  box-sizing: content-box;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: 0px;
+  height: 134px;
+  vertical-align: middle;
+}
+/* line 129, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
+  display: inline-block;
+  box-sizing: content-box;
+  border: 1px solid black;
+}
+/* line 134, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
+  width: 132px;
+  height: 132px;
+}
+/* line 139, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
+  height: 132px;
+}
+/* line 143, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
+  width: 132px;
+  vertical-align: middle;
+}
+/* line 153, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 158, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 161, apps/photo-manager/_photoSet.scss */
+.search-photos .search-photos-collection .photo:hover img.edit-photo {
+  display: block;
+}
+
+/* line 133, apps/photo-manager/_index.scss */
+.trash-photos {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+/* line 136, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+  line-height: 1.5em;
+  vertical-align: middle;
+  line-height: 38px;
+}
+/* line 140, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-header .trash-size {
+  display: inline-block;
+  font-size: 1.125em;
+}
+/* line 144, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-header .select-all {
+  display: inline-block;
+  padding-top: 5px;
+  margin-right: 60px;
+  line-height: 1.1em;
+  font-size: 1.1em;
+}
+/* line 152, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-header .button-group {
+  display: inline-block;
+}
+/* line 155, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-header .button-group li {
+  display: inline-block;
+  line-height: 100%;
+  font-size: 100%;
+}
+/* line 163, apps/photo-manager/_index.scss */
+.trash-photos .trash-photos-collection {
+  font-size: 0;
+  white-space: nowrap;
+}
+/* line 83, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection.open {
+  white-space: normal;
+}
+/* line 87, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection.photo-set-clip-overflow-cells {
+  overflow: hidden;
+}
+/* line 91, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo {
+  display: inline-block;
+  padding: 10px;
+  width: 160px;
+  min-height: 160px;
+}
+/* line 98, apps/photo-manager/_photoSet.scss */
+.photo-edit .trash-photos .trash-photos-collection .photo {
+  cursor: pointer;
+}
+/* line 100, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 104, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo:hover .edit-photo {
+  display: block;
+}
+/* line 111, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell {
+  width: 140px;
+  height: 134px;
+  text-align: center;
+  font-size: 0;
+}
+/* line 117, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell:before {
+  content: '';
+  display: inline-block;
+  box-sizing: content-box;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: 0px;
+  height: 134px;
+  vertical-align: middle;
+}
+/* line 129, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
+  display: inline-block;
+  box-sizing: content-box;
+  border: 1px solid black;
+}
+/* line 134, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
+  width: 132px;
+  height: 132px;
+}
+/* line 139, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
+  height: 132px;
+}
+/* line 143, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
+  width: 132px;
+  vertical-align: middle;
+}
+/* line 153, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 158, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 161, apps/photo-manager/_photoSet.scss */
+.trash-photos .trash-photos-collection .photo:hover img.edit-photo {
+  display: block;
+}
+
+/*
+ * Apply photo set mixins to generic classes in case we just do it vanilla, ie: don't want to override anything.
+ */
+/* line 171, apps/photo-manager/_index.scss */
+.photo-set-collection {
+  color: #d0d0d0;
+  overflow: hidden;
+}
+/* line 174, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header {
+  padding-bottom: 11px;
+  margin-bottom: 11px;
+  border-bottom: 1px solid #111111;
+  line-height: 1.5em;
+  vertical-align: middle;
+}
+/* line 177, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header .photo-set-pip {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  cursor: pointer;
+  background: url("/imgs/import-pip-sprite.png") -19px 0 no-repeat;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+/* line 38, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-header .photo-set-pip.open {
+  background-position: 0 0;
+}
+/* line 178, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header .photo-set-size {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+/* line 179, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-header .select-all {
+  display: inline-block;
+  font-size: 1.125em;
+  vertical-align: middle;
+}
+/* line 182, apps/photo-manager/_index.scss */
+.photo-set-collection .photo-set-photos-collection {
+  font-size: 0;
+  white-space: nowrap;
+}
+/* line 83, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection.open {
+  white-space: normal;
+}
+/* line 87, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection.photo-set-clip-overflow-cells {
+  overflow: hidden;
+}
+/* line 91, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo {
+  display: inline-block;
+  padding: 10px;
+  width: 160px;
+  min-height: 160px;
+}
+/* line 98, apps/photo-manager/_photoSet.scss */
+.photo-edit .photo-set-collection .photo-set-photos-collection .photo {
+  cursor: pointer;
+}
+/* line 100, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 104, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo:hover .edit-photo {
+  display: block;
+}
+/* line 111, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell {
+  width: 140px;
+  height: 134px;
+  text-align: center;
+  font-size: 0;
+}
+/* line 117, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell:before {
+  content: '';
+  display: inline-block;
+  box-sizing: content-box;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  width: 0px;
+  height: 134px;
+  vertical-align: middle;
+}
+/* line 129, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail {
+  display: inline-block;
+  box-sizing: content-box;
+  border: 1px solid black;
+}
+/* line 134, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.square-orientation {
+  width: 132px;
+  height: 132px;
+}
+/* line 139, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.portrait-orientation {
+  height: 132px;
+}
+/* line 143, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo .photo-thumbnail-cell .photo-thumbnail.landscape-orientation {
+  width: 132px;
+  vertical-align: middle;
+}
+/* line 153, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo[data-import-status="imported"] .photo-link {
+  cursor: pointer;
+}
+/* line 158, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo:hover {
+  -webkit-box-shadow: 0px 0px 10px #333333;
+  -moz-box-shadow: 0px 0px 10px #333333;
+  -ms-box-shadow: 0px 0px 10px #333333;
+  -o-box-shadow: 0px 0px 10px #333333;
+  box-shadow: 0px 0px 10px #333333;
+  background: #555555;
+}
+/* line 161, apps/photo-manager/_photoSet.scss */
+.photo-set-collection .photo-set-photos-collection .photo:hover img.edit-photo {
+  display: block;
+}
+
+/* line 188, apps/photo-manager/_index.scss */
 .photo-caption {
   margin-top: 10px;
   line-height: 18px;
@@ -869,29 +947,29 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
-/* line 161, apps/photo-manager/_index.scss */
+/* line 199, apps/photo-manager/_index.scss */
 .photo-caption img {
   margin-bottom: -5px;
   margin-right: 10px;
 }
-/* line 166, apps/photo-manager/_index.scss */
+/* line 204, apps/photo-manager/_index.scss */
 .photo-caption .edit-photo {
   float: right;
   margin-right: 0;
   display: none;
 }
-/* line 172, apps/photo-manager/_index.scss */
+/* line 210, apps/photo-manager/_index.scss */
 .photo-caption img.edit-photo {
   float: right;
   margin-right: 0;
   display: none;
 }
 
-/* line 180, apps/photo-manager/_index.scss */
+/* line 218, apps/photo-manager/_index.scss */
 .pm-trash h1 {
   padding-left: 30px;
 }
-/* line 182, apps/photo-manager/_index.scss */
+/* line 220, apps/photo-manager/_index.scss */
 .pm-trash h1 .plm-icon {
   position: absolute;
   top: 2px;

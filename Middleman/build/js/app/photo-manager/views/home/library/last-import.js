@@ -13,12 +13,14 @@ define(
     'app/lightbox',
     'app/tag-dialog',
     'app/models/image',
-    'app/collections/last-import',
+    'app/collections/importers',
     'text!/html/photo-manager/templates/home/library/last-import.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImageModel, LastImportCollection, lastImportTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImageModel, ImportersCollection, lastImportTemplate, importTemplate, importImageTemplate) {
+
+    var util = require('util');
 
     var moduleName = '/app/photo-manager/views/home/library/last-import';
 
@@ -51,7 +53,10 @@ define(
 
       dirty: false,
 
-      lastImport: undefined,
+      //
+      // Collection of importers, were we ONLY fetch one.
+      //
+      importers: undefined,
 
       subscriptions: {},
 
@@ -71,7 +76,13 @@ define(
         _.extend(this, TagDialog.handlersFactory());
 
         this.status = this.STATUS_UNRENDERED;
-        this.lastImport = new LastImportCollection();
+        this.importers = new ImportersCollection(undefined,
+                                                 {
+                                                   numToFetch: 1,
+                                                   fetchImages: true,
+                                                   imagesWithPagination: true,
+                                                   imagesPageSize: 100
+                                                 });
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
           if (that._imageSelectionManager.anySelected()) {
@@ -110,9 +121,6 @@ define(
       //
       // render: Render an entire view.
       //
-      //  options:
-      //    context: 'render' || 'rerender'
-      //
       render: function() {
         var that = this;
 
@@ -120,12 +128,6 @@ define(
 
         var compiledTemplate = _.template(lastImportTemplate);
         that.$el.html(compiledTemplate);
-
-        //
-        // Get the initial template in the DOM so width's etc. get set.
-        //
-        // that.status = that.STATUS_RENDERED;
-        // that.trigger(that.id + ":rendered");
 
         that._update({ context: 'render',
                        triggerEvents: true });
@@ -153,107 +155,137 @@ define(
       },
 
       //
-      // _enableLastImportEvents: Setup events for changes on the last import.
+      // _enableImportersEvents: Setup events for changes on the importers.
       //
-      _enableLastImportEvents: function() {
+      _enableImportersEvents: function() {
         var that = this;
 
-        var dp = this._debugPrefix.replace(': ', '._enableLastImportEvents: ');
+        var dp = this._debugPrefix.replace(': ', '._enableImportersEvents: ');
 
         !Plm.debug || console.log(dp + 'enabling last import events...');
 
         //
         // Importers events which may change the import being rendered.
         //
-        this.lastImport.importers.on('add', this._onImportersAdd, this);
-        this.lastImport.importers.on('remove', this._onImportersRemove, this);
-        this.lastImport.importers.on('change', this._onImportersChange, this);
-        this.lastImport.on('importer-reset', this._onImporterReset, this);
+        this.importers.on('importers-add', that._onImporterAdded, that);
+        this.importers.on('importers-remove', that._onImporterRemoved, that);
+        this.importers.on('change', that._onImporterChanged, that);
+        this.importers.on('importers-reset', that._onImportersReset, that);
 
         //
         // Image events within the import being rendered.
         //
-        this.lastImport.on('add', function(imageModel, lastImport) {
-          that._onImageAdded(imageModel);          
+        this.importers.on('importer-images-add', function(image, images, importer) {
+          that._onImageAdded(image);          
         });
-        this.lastImport.on('remove', function(imageModel, lastImport) {
-          that._onImageRemoved(imageModel);                    
+        this.importers.on('importer-images-remove', function(image, images, importer) {
+          that._onImageRemoved(image);
         });
-        this.lastImport.on('reset', function(lastImport) {
+        this.importers.on('importer-images-reset', function(images, importer) {
           that._onImportReset();
         });
-        this.lastImport.on('change', function(imageModel) {
-          that._onImageChanged(imageModel);
+        this.importers.on('importer-image-change', function(image, importer) {
+          that._onImageChanged(image);
         });
       },
 
       //
-      // _disableLastImportEvents: Disable events on the last import.
+      // _disableImportersEvents: Disable events on the last import.
       //
-      _disableLastImportEvents: function() {
-        var dp = this._debugPrefix.replace(': ', '._disableLastImportEvents: ');
+      _disableImportersEvents: function() {
+        var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._disableImportersEvents: ');
 
         !Plm.debug || console.log(dp + 'disabling last import events...');
 
         //
         // Importers events which may change the import being rendered.
         //
-        this.lastImport.importers.off('add', this._onImportersAdd, this);
-        this.lastImport.importers.off('remove', this._onImportersRemove, this);
-        this.lastImport.importers.off('change', this._onImportersChange, this);
-        this.lastImport.off('importer-reset', this._onImporterReset, this);
+        this.importers.off('importers-add', that._onImporterAdded);
+        this.importers.off('importers-remove', that._onImporterRemoved);
+        this.importers.off('change', that._onImporterChanged);
+        this.importers.off('importers-reset', that._onImportersReset);
 
         //
         // Image events within the import being rendered.
         //
-        this.lastImport.off('add');
-        this.lastImport.off('remove');
-        this.lastImport.off('reset');
-        this.lastImport.off('change');
+        this.importers.off('importer-images-add');
+        this.importers.off('importer-images-remove');
+        this.importers.off('importer-images-reset');
+        this.importers.off('importer-image-change');
       },
 
       //
       // _reRender: a combination of initialize + render to fetch
       //  the true last import and re-render the view.
+      //
+      //  options:
+      //    pageTo: first || previous || next || at.
       //   
-      _reRender: function() {
+      _reRender: function(options) {
         var dp = this._debugPrefix.replace(': ', '._reRender: ');
-        !Plm.debug || console.log(dp + 're-rendering, status - ' + this.status + ', dirty - ' + this.dirty);
+        !Plm.debug || console.log(dp + 're-rendering, status - ' + this.status + ', dirty - ' + this.dirty + ', options - ' + util.inspect(options));
         this.status = this.STATUS_UNRENDERED;
+
+        if (options.pageTo) {
+          this.$el.find('.import-photos-collection').html('');
+        }
+        else {
+          this.$el.find('.photos-collection').html('');
+        }
+
+        this._disableImportersEvents();
+        if (!options.pageTo || (this.importers === undefined)) {
+          this.importers = new ImportersCollection(undefined,
+                                                   {
+                                                     numToFetch: 1,
+                                                     fetchImages: true,
+                                                     imagesWithPagination: true,
+                                                     imagesPageSize: 10
+                                                   });
+        }
+        this._enableImportersEvents();
+
+        var updateOpts = _.clone(options);
+
+        updateOpts.context = options.pageTo ? 'update' : 'render';
+        updateOpts.triggerEvents = false;
+        this._update(updateOpts);
+
         this.dirty = false;
-        this.$el.html('');
-        this._disableLastImportEvents();
-        this.lastImport = new LastImportCollection();
-        this._enableLastImportEvents();
-        this._update({ context: 'update',
-                       triggerEvents: false });
         return this;
       },
 
       //
       // _doRender: We have loaded the data, its safe to render.
       //
-      _doRender: function() {
+      _doRender: function(imagesAvailable) {
         var that = this;
+
+        imagesAvailable = (imagesAvailable || (imagesAvailable === false)) ? imagesAvailable : true;
 
         var dp = this._debugPrefix.replace(': ', '._doRender: ');
 
-        !Plm.debug || !Plm.verbose || console.log(dp + 'Will render ' + _.size(this.lastImport) + ' images...');
-
-        if (this.lastImport.importers.length === 0) {
+        if (this.importers.length === 0) {
           !Plm.debug || console.log(dp + 'No images have yet been imported!');
           Plm.showFlash('You have not yet imported any images!');
         }
         else {
-          var importer = this.lastImport.importers.at(0);
-          if ((importer.get('images') && (importer.get(images).length === 0)) || (importer.get('num_imported') === 0)) {
+          var importer = this.importers.at(0);
+          var images = this.importers.images(importer.id);
+
+          !Plm.debug || !Plm.verbose || console.log(dp + 'Will render ' + _.size(images) + ' images...');
+
+          if (!importer || (imagesAvailable && !images) || (imagesAvailable && images && (images.size() === 0)) || (importer.get('num_imported') === 0)) {
+            !Plm.debug || console.log(dp + '# importers - ' + this.importers.size() + ', has images - ' + (images && (images.size() > 0)));
             Plm.showFlash('You\'re most recent import has no images!');
           }
           else {
             if (Plm.debug) {
-              console.log(dp + 'Rendering import of size - ' + _.size(this.lastImport) + ', imported at - ' + importer.get('completed_at'));
+              console.log(dp + 'Rendering import of size - ' + _.size(images) + ', imported at - ' + importer.get('completed_at'));
               // that._speedTestLastImport();
-              this.lastImport.each(function(image) {
+              images.each(function(image) {
                 !Plm.verbose || console.log(dp + 'Have image - ' + image.get('name'));
                 var variants = image.get('variants');
                 !Plm.verbose || console.log(dp + '  have ' + variants.length + ' variants...');
@@ -263,11 +295,13 @@ define(
             }
           }
           var compiledTemplate = _.template(importTemplate, { importer: importer,
-                                                              importImages: this.lastImport,
+                                                              numPhotos: _.has(images, 'paging') ? images.paging.total_size : undefined,
+                                                              importImages: images,
                                                               imageTemplate: importImageTemplate,
                                                               importStatus: "imported",
                                                               _: _,
                                                               formatDate: Plm.localDateTimeString});
+          !Plm.debug || console.log(dp + 'Replacing w/ compiled template - ' + compiledTemplate);
           this.$el.find('.import-collection').replaceWith(compiledTemplate);
 
           this._imageSelectionManager.reset();
@@ -277,20 +311,24 @@ define(
           //
           this.$el.find('.import-collection').find('.import-pip').on('click', this._twirlDownHandler);
           this._twirlDownHandler.call(this.$el.find('.import-collection').find('.import-pip'));
+          if (imagesAvailable) {
+            this._enablePaginationControls();
+          }
           this._onResizeHandler();
           return this;
         }
       },
 
       //
-      // _update: Trigger a fetch of the lastImport collection to update the view.
+      // _update: Trigger a fetch of the importers collection to update the view.
       //  No view contents are modified. That is deferred to events emitted by the
-      //  lastImport collection.
+      //  importers collection.
       //
       //  options:
       //    context: Invokation context. Default is 'update'.
       //      context ::= 'render' || 'update' || 'render-as-update'
       //    triggerEvents: trigger :rendered or :updated events. Default: true.
+      //    pageTo: first || previous || next || at
       //
       //  events: Triggers <id>:rendered or <id>:updated once the last import
       //   is fetched.
@@ -307,7 +345,7 @@ define(
 
         that.status = that.STATUS_UPDATING;
 
-        var onSuccess = function(lastImport,
+        var onSuccess = function(importers,
                                  response,
                                  onSuccessOptions) {
           !Plm.debug || !Plm.verbose || console.log(dp.replace(': ', '.onSuccess: ') + 'Successfully loaded recent uploads...');
@@ -328,9 +366,9 @@ define(
             // We have ALL the data and we are doing an initial render, so just render the whole thing at once.
             // After we render, enable all the events associated with the model.
             //
-            that._doRender();
-            that._disableLastImportEvents();
-            that._enableLastImportEvents();
+            that._doRender(false);
+            that._disableImportersEvents();
+            that._enableImportersEvents();
           }
         };
 
@@ -350,13 +388,57 @@ define(
         //
         // If its an update, then enable events to update the view.
         //
-        this._disableLastImportEvents();
-        if ((options.context === 'update') || ('render-as-update')) {
-          this._enableLastImportEvents();
+        this._disableImportersEvents();
+        if ((options.context === 'update') || (options.context === 'render-as-update')) {
+          this._enableImportersEvents();
         }
 
-        this.lastImport.fetch({success: onSuccess,
-                               error: onError});
+        this._disablePaginationControls();
+
+        var fetchOpts = {
+          success: onSuccess,
+          error: onError
+        };
+
+        if (options.pageTo === 'first') {
+          var importer = this.importers.at(0);
+          var images = importer ? this.importers.images(importer.id) : undefined;
+
+          if (images) {
+            fetchOpts.reset = true;
+            images.fetchFirst(fetchOpts);
+          }
+        }
+        else if (options.pageTo === 'previous') {
+          var importer = this.importers.at(0);
+          var images = importer ? this.importers.images(importer.id) : undefined;
+
+          if (images) {
+            fetchOpts.reset = true;
+            images.fetchPrevious(fetchOpts);
+          }
+        }
+        else if (options.pageTo === 'next') {
+          var importer = this.importers.at(0);
+          var images = importer ? this.importers.images(importer.id) : undefined;
+
+          if (images) {
+            fetchOpts.reset = true;
+            images.fetchNext(fetchOpts);
+          }
+        }
+        else if (options.pageTo === 'at') {
+          var importer = this.importers.at(0);
+          var images = importer ? this.importers.images(importer.id) : undefined;
+
+          if (images) {
+            fetchOpts.reset = true;
+            images.fetchAt(fetchOpts);
+          }
+        }
+        else {
+          this.importers.fetch(fetchOpts);
+        }
 
         return this;
       },
@@ -364,17 +446,17 @@ define(
       //
       // Dispatch to _onImportersEvent:
       //
-      _onImportersAdd: function(importer) {
+      _onImporterAdded: function(importer, importers) {
         this._onImportersEvent('add', importer);
       },
-      _onImportersRemove: function(importer) {
+      _onImporterRemoved: function(importer, importers) {
         this._onImportersEvent('remove', importer);
       },
-      _onImportersChange: function(importer) {
+      _onImporterChanged: function(importer) {
         this._onImportersEvent('change', importer);
       },
-      _onImporterReset: function(importer) {
-        this._onImportersEvent('importer-reset', importer);
+      _onImportersReset: function(importer) {
+        this._onImportersEvent('importers-reset', importer);
       },
 
       //
@@ -384,8 +466,8 @@ define(
         var dp = this._debugPrefix.replace(': ', '._onImportersEvent: ');
 
         !Plm.debug || console.log(dp + 'Importers event - ' + ev + ', importer w/ id - ' + importerModel.id);
-        if (((ev === 'add') && (this.lastImport.importers.at(0).id === importerModel.id)) || (ev === 'importer-reset')) {
-          this._doRender();
+        if (((ev === 'add') && (this.importers.at(0).id === importerModel.id)) || (ev === 'importers-reset')) {
+          this._doRender(false);
         }
         return this;
       },
@@ -438,6 +520,8 @@ define(
         var dp = this._debugPrefix.replace(': ', '._onImportReset: ');
 
         !Plm.debug || console.log(dp + 'Reseting last import...');
+
+        this._doRender(true);
         return this;
       },
 
@@ -532,7 +616,7 @@ define(
               imageModel.save({'in_trash': true},
                               {success: function(model, response, options) {
                                 !Plm.debug || console.log(dp + "Success saving image, id - " + model.id);
-                                that.lastImport.remove(imageModel);                                
+                                that.importers.removeImage(imageModel, that.importers.at(0).id);
                                 updateStatus(0);
                               },
                                error: function(model, xhr, options) {
@@ -548,6 +632,79 @@ define(
 
         openTrashDialog();
 
+      },
+
+      //
+      // _toPreviousPage: Go to the previoua page of imports.
+      //
+      _toPreviousPage: function() {
+        var dp = this._debugPrefix.replace(': ', '._toPreviousPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to previous page...');
+
+        this._reRender({pageTo: 'previous'});
+
+        return this;
+      },
+
+      //
+      // _toNextPage: Go to the next page of imports.
+      //
+      _toNextPage: function() {
+        var dp = this._debugPrefix.replace(': ', '._toNextPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to next page...');
+
+        this._reRender({pageTo: 'next'});
+
+        return this;
+      },
+
+      //
+      // _enablePaginationControls: Based upon pagination data received from the
+      //  API enable previous / next arrows as appropriate, alone with click events.
+      //
+      _enablePaginationControls: function() {
+        var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._enablePaginationControls: ');
+
+        !Plm.debug || console.log(dp + 'Checking pagination cursors...');
+        var importer = this.importers ? this.importers.at(0) : undefined;
+        var images = (this.importers && importer) ? this.importers.images(importer.id) : undefined;
+        var enablePrevious = (images && images.paging && images.paging.cursors && images.paging.cursors.previous && (images.paging.cursors.previous !== -1)) ? true : false;
+        var enableNext = (images && images.paging && images.paging.cursors && images.paging.cursors.next && (images.paging.cursors.next !== -1)) ? true : false;
+
+        if (enablePrevious || enableNext) {
+          this.$el.find('.pagination-controls').removeClass('hidden');
+        }
+
+        if (enablePrevious) {
+          var prevControl = this.$el.find('.pagination-controls .previous-page');
+          prevControl.on('click', function() {
+            that._disablePaginationControls();            
+            that._toPreviousPage();
+          });
+          prevControl.removeClass('disabled');
+          console.log(dp + 'Previous page enabled...');
+        }
+
+        if (enableNext) {
+          var nextControl = this.$el.find('.pagination-controls .next-page');
+          nextControl.on('click', function() {
+            that._disablePaginationControls();            
+            that._toNextPage();
+          });
+          nextControl.removeClass('disabled');
+          console.log(dp + 'Next page enabled...');
+        }
+        return this;
+      },
+
+      //
+      // _disablePaginationControls: disable them.
+      //
+      _disablePaginationControls: function() {
       },
 
       //
@@ -728,15 +885,15 @@ define(
         //
         // First get OUR links:
         //
-        this.lastImport.each(function(image) {
+        this.importers.images(that.importers.at(0).id).each(function(image) {
           !Plm.verbose || console.log(dp + 'Have image - ' + image.get('name'));
           var variants = image.get('variants');
                 var filteredVariants = _.filter(image.get('variants'), function(variant) { return variant.name === 'thumbnail.jpg'; });
                 !Plm.verbose || console.log(dp + '  have ' + filteredVariants.length + ' thumbnail variants...');
                 if (_.size(filteredVariants) > 0) {
                   thumbnailUrls.push(filteredVariants[0].url);
-                  var localPath = path.join('/file', that.lastImport.importer.get('import_dir'), image.get('name'));
-                  console.log(dp + 'local path - ' + localPath + ', import dir - ' + that.lastImport.importer.get('import_dir') + ', image name - ' + image.get('name'));
+                  var localPath = path.join('/file', that.importers.at(0).get('import_dir'), image.get('name'));
+                  console.log(dp + 'local path - ' + localPath + ', import dir - ' + that.importers.at(0).get('import_dir') + ', image name - ' + image.get('name'));
                   localUrls.push(localPath);
                 }
               });

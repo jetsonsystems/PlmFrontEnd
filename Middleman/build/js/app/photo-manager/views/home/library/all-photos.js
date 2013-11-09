@@ -12,15 +12,13 @@ define(
     'app/photo-set',
     'app/lightbox',
     'app/tag-dialog',
-    'app/models/importer',
     'app/models/image',
     'app/collections/importers',
-    'app/collections/importers-images',
     'text!/html/photo-manager/templates/home/library/all-photos.html',
     'text!/html/photo-manager/templates/home/library/import.html',
     'text!/html/photo-manager/templates/home/library/import-image.html'
   ],
-  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImporterModel, ImageModel, ImportersCollection, ImportersImagesCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
+  function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImageModel, ImportersCollection, allPhotosTemplate, importTemplate, importImageTemplate) {
 
     var moduleName = 'photo-manager/views/home/library/all-photos';
 
@@ -145,7 +143,6 @@ define(
 
       teardown: function() {
         var that = this;
-
         var dp = this._debugPrefix.replace(': ', '.teardown: ');
 
         !Plm.debug || console.log(dp + 'invoking...');
@@ -325,6 +322,7 @@ define(
         !Plm.debug || console.log(dp + 'Rendering importer w/ id - ' + importer.id + ', import_dir - ' + importer.import_dir);
 
         var compiledTemplate = _.template(importTemplate, { importer: importer,
+                                                            numPhotos: undefined,
                                                             importImages: this.importers.images(importer.id),
                                                             imageTemplate: importImageTemplate,
                                                             importStatus: "imported",
@@ -741,11 +739,15 @@ define(
         !Plm.debug || console.log(dp + 'Checking pagination cursors...');
 
         var enablePrevious = (this.importers && this.importers.paging && this.importers.paging.cursors && this.importers.paging.cursors.previous && (this.importers.paging.cursors.previous !== -1)) ? true : false;
-        var enableNext = (this.importers && this.importers.paging && this.importers.paging.cursors && this.importers.paging.cursors.next && (this.importers.paging.cursors.next !== -1)) ? true : false;;
+        var enableNext = (this.importers && this.importers.paging && this.importers.paging.cursors && this.importers.paging.cursors.next && (this.importers.paging.cursors.next !== -1)) ? true : false;
 
         !Plm.debug || console.log(dp + 'enable previous - ' + enablePrevious + ', enable next - ' + enableNext);
 
         that._disablePaginationControls();
+
+        if (enablePrevious || enableNext) {
+          this.$el.find('.pagination-controls').removeClass('hidden');
+        }
 
         if (enablePrevious) {
           var prevControl = this.$el.find('.pagination-controls .previous-page');

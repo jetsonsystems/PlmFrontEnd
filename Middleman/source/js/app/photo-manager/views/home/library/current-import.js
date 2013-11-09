@@ -385,6 +385,7 @@ define(
           !Plm.debug || console.log(dp + 'initiating incremental rendering...');
           this._initWithImporter(importer);
           var compiledTemplate = _.template(importTemplate, { importer: this.currentImport.importer,
+                                                              numPhotos: undefined,
                                                               importImages: this.currentImport,
                                                               imageTemplate: importImageTemplate,
                                                               importStatus: "imported",

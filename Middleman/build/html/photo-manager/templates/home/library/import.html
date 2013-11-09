@@ -2,7 +2,7 @@
 <div class='photo-manager/home/library/import import-collection' data-created_at='{{createdAt}}' id="import-{{importer.id.replace('$', '')}}">
   <div class='import-header'>
     <div class='import-pip'></div>
-    {% numPhotos = (importImages && importImages.length) ? importImages.length : importer.get('num_imported'); %}
+    {% numPhotos = (numPhotos !== undefined) ? numPhotos : (importImages && importImages.length) ? importImages.length : importer.get('num_imported'); %}
     <div class='import-count'>{{numPhotos}} Photos</div>
     <div class='import-date'>
       <span>Imported:</span>
@@ -20,6 +20,10 @@
         <span class='cb-text'>Select All</span>
       </label>
     </div>
+    <div class='pagination-controls hidden'>
+  <a class='previous-page disabled' title='Previous'>&#59237</a>
+  <a class='next-page disabled' title='Next'>&#59238</a>
+</div>
     <div class='clearfix'></div>
   </div>
   <div class='import-photos-collection'>

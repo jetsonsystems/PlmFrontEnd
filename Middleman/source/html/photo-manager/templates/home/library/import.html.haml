@@ -2,7 +2,7 @@
 %div{:id => "import-{{importer.id.replace('$', '')}}", :class => ["photo-manager/home/library/import", "import-collection"], "data-created_at" => "{{createdAt}}"}
   %div.import-header
     %div.import-pip
-    {% numPhotos = (importImages && importImages.length) ? importImages.length : importer.get('num_imported'); %}
+    {% numPhotos = (numPhotos !== undefined) ? numPhotos : (importImages && importImages.length) ? importImages.length : importer.get('num_imported'); %}
     %div{:class => "import-count"} {{numPhotos}} Photos
     %div{:class => "import-date"}
       %span Imported:
@@ -13,6 +13,7 @@
       {% formatedDate = formatDate(importedDate, true); %}
       != "{{formatedDate}}"
     = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "importer" }
+    = partial "html/photo-manager/templates/home/library/pagination-controls"
     .clearfix
 
   %div{:class => "import-photos-collection"}

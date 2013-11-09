@@ -29,6 +29,11 @@ a {
     color: gray;
     cursor: default !important;
   }
+
+  &.hidden {
+    display: none;
+    cursor: default !important;
+  }
 }
 
 .selected {
@@ -465,24 +470,6 @@ h1 {
 }
 
 .selection-toolbar { float: right; margin-right: 55px; }
-
-.pagination-controls { 
-  float: right; 
-  margin-right: 55px;
-
-  a {
-
-    &:first-child {
-      margin-right: 10px;
-    }
-    width: 30px;
-    height: 30px;
-    line-height: 30px;  
-    font-size: 40px;
-    font-family: 'entypo';
-    cursor: pointer;
-  }
-}
 
 .main-select-all { margin-top: 9px; float: left; }
 
@@ -1114,13 +1101,7 @@ aside {
 
 .select-all {
   display: inline-block;
-  position: relative;
-  top: 2px;
   font-size: 1.1em;
-
-  .photos-header & {
-    top: 8px;
-  }
 }
 
 .plm-cb-label {

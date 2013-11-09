@@ -9,6 +9,8 @@ define(
   ],
   function(_, Backbone, Plm, ImporterModel, ImportersImagesCollection) {
 
+    var util = require('util');
+
     var moduleName = 'photo-manager/collections/importers';
 
     //
@@ -24,6 +26,8 @@ define(
     //          calling one of the fetch* methods.
     //        fetchImages: triggers fetching and maintaining collections of images
     //          associated with importers. Default: false.
+    //        imagesWithPagination: whether associated images should be paginated.
+    //        imagesPageSize: page size to use for paginating images.
     //
     //  Either non-paged results can be obtained, or paginated results:
     //
@@ -103,22 +107,25 @@ define(
       pageSize: undefined,
       paging: undefined,
 
+      //
+      // Pagination for images:
+      //
+      imagesWithPagination: false,
+      imagesPageSize: undefined,
+
       _fetchImages: false,
 
       //
       // When fetchImages === true:
       //  importer.id -> ImportersImagesCollection
       //
-      _imageCollections: {},
+      _imageCollections: undefined,
 
       //
-      // initialize:
-      //
-      //  Args:
-      //    options:
-      //      numToFetch: Number of importers to fetch.
+      // initialize: Constructor initialization. See Constructor above.
       //
       initialize: function(models, options) {
+        this._imageCollections = {};
         if (options) {
           if (_.has(options, 'numToFetch') && options.numToFetch) {
             if (_.has(options, 'withPagination') && options.withPagination) {
@@ -139,6 +146,12 @@ define(
           }
           if (_.has(options, 'fetchImages')) {
             this._fetchImages = options.fetchImages;
+          }
+          if (_.has(options, 'imagesWithPagination')) {
+            this.imagesWithPagination = options.imagesWithPagination;
+          }
+          if (_.has(options, 'imagesPageSize')) {
+            this.imagesPageSize = options.imagesPageSize;
           }
         }
         this._handleEvents();
@@ -285,6 +298,10 @@ define(
       // fetch* methods:
       //
       fetch: function(options) {
+        var dp = this._debugPrefix.replace(': ', '.fetch: ');
+
+        !Plm.debug || console.log(dp + 'Fetching importers, have image collections for - ' + util.inspect(_.keys(this._imageCollections)));
+
         this.url = this.selectUrl;
         Backbone.Collection.prototype.fetch.call(this, options);
       },
@@ -384,7 +401,7 @@ define(
 
         var dp = that._debugPrefix.replace(': ', '._onImporterAdded: ');
 
-        !Plm.debug || console.log(dp + 'Importer added w/ id - ' + importer.id);
+        !Plm.debug || console.log(dp + 'Importer added w/ id - ' + importer.id + ', have images - ' + _.has(this._imageCollections, importer.id));
 
         this.trigger('importers-add', importer, this);
 
@@ -428,7 +445,15 @@ define(
         var dp = that._debugPrefix.replace(': ', '._createImportersImagesCollection: ');
 
         if (!_.has(this._imageCollections, importer.id)) {
-          var importerImages = new ImportersImagesCollection(undefined, {importerId: importer.id});
+          !Plm.debug || console.log(dp + 'Preparing to fetch images collection for importer w/ id - ' + importer.id);
+          var opts = {importerId: importer.id};
+          if (this.imagesWithPagination) {
+            opts.withPagination = true;
+            if (this.imagesPageSize) {
+              opts.pageSize = this.imagesPageSize;
+            }
+          }
+          var importerImages = new ImportersImagesCollection(undefined, opts);
 
           this._imageCollections[importer.id] = importerImages;
 
@@ -451,6 +476,8 @@ define(
                             }, 
                             this);
 
+          !Plm.debug || console.log(dp + 'About to fetch images collection for importer w/ id - ' + importer.id);
+
           importerImages.fetch({
             reset: true
           });
@@ -460,6 +487,7 @@ define(
           return importerImages;
         }
         else {
+          !Plm.debug || console.log(dp + 'Returning existing image collection for importer w/ id - ' + importer.id + ', image collection size - ' + this._imageCollections[importer.id].size());
           return this._imageCollections[importer.id];
         }
       },

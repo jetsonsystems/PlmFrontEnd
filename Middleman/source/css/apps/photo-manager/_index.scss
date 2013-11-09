@@ -9,6 +9,51 @@
  */
 @import "photoSet";
 
+.photos-header {
+  padding: $leading 0 0 10px;
+  overflow: hidden;
+  min-height: 75px;
+
+  h2 { font-size: 25px; float: left; }
+
+  .select-all {
+    position: relative;
+    top: 8px;
+  }
+
+  .pagination-controls { 
+    float: right; 
+    margin: 0 55px 0 0;
+
+    a {
+
+      &:first-child {
+        margin-right: 10px;
+      }
+      width: 30px;
+      height: 30px;
+      line-height: 30px;  
+      font-size: 40px;
+      font-family: 'entypo';
+      cursor: pointer;
+    }
+  }
+}
+
+.photos-collection {
+  @include clearfix;
+
+  position: absolute;
+  top: 75px;
+  right: 0;
+  bottom: $standard-spacing * 2;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding-left: $standard-spacing - 5px;
+}
+
 /*
  * Apply photo set mixins to photos in an import, ie: last-import and all-photos views.
  */
@@ -18,9 +63,32 @@
   .import-header {
     @include photo-set-header;
 
-    .import-pip { @include photo-set-pip; }
+    .import-pip   { @include photo-set-pip; }
     .import-count { @include photo-set-size; }
-    .import-date { @include photo-set-date; }
+    .import-date  { @include photo-set-date; }
+    .select-all   { @include photo-set-select-all; }
+
+    .pagination-controls { 
+      display: inline-block;
+      height: 1.5em;
+      margin: 0 0 0 15px;
+      line-height: 1.5em;
+
+      &.hidden {
+        display: none;
+      }
+
+      a {
+
+        &:first-child {
+          margin-right: 10px;
+        }
+        font-size: 2em;
+        vertical-align: middle;
+        font-family: 'entypo';
+        cursor: pointer;
+      }
+    }
   }
 
   .import-photos-collection { @include photo-set-photos-collection; }
@@ -37,7 +105,6 @@
     margin-top: $small-spacing;
   }
 
-
   .imported-timestamp {
     margin-left: $standard-spacing*2;
   }
@@ -52,12 +119,9 @@
   .search-photos-header {
     @include photo-set-header;
 
-    .search-photos-pip {
-      @include photo-set-pip;
-    }
-    .search-photos-size {
-      @include photo-set-size;
-    }
+    .search-photos-pip  { @include photo-set-pip; }
+    .search-photos-size { @include photo-set-size; }
+    .select-all         { @include photo-set-select-all; }
   }
 
   .search-photos-collection {
@@ -109,40 +173,14 @@
   .photo-set-header {
     @include photo-set-header;
 
-    .photo-set-pip {
-      @include photo-set-pip;
-    }
-    .photo-set-size {
-      @include photo-set-size;
-    }
+    .photo-set-pip  { @include photo-set-pip; }
+    .photo-set-size { @include photo-set-size; }
+    .select-all     { @include photo-set-select-all; }
   }
 
   .photo-set-photos-collection {
     @include photo-set-photos-collection;
   }
-}
-
-.photos-header {
-  padding: $leading 0 0 10px;
-  overflow: hidden;
-  min-height: 75px;
-
-  h2 { font-size: 25px; float: left; }
-
-}
-
-.photos-collection {
-  @include clearfix;
-
-  position: absolute;
-  top: 75px;
-  right: 0;
-  bottom: $standard-spacing * 2;
-  left: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  padding-left: $standard-spacing - 5px;
 }
 
 // Right column photo labels: 13px Arial bold
