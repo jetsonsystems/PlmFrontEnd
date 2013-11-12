@@ -80,7 +80,9 @@ define(
                                                  {
                                                    withPagination: true,
                                                    pageSize: this._getOptimalPageSize(),
-                                                   fetchImages: true
+                                                   fetchImages: true,
+                                                   imagesWithPagination: true,
+                                                   imagesPageSize: 100
                                                  });
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
@@ -223,7 +225,9 @@ define(
           this.importers = new ImportersCollection(undefined, 
                                                    {
                                                      withPagination: true,
-                                                     pageSize: this._getOptimalPageSize()
+                                                     pageSize: this._getOptimalPageSize(),
+                                                     imagesWithPagination: true,
+                                                     imagesPageSize: 100
                                                    });
         }
 
@@ -319,11 +323,13 @@ define(
 
         var dp = this._debugPrefix.replace(': ', '._renderImport: ');
 
-        !Plm.debug || console.log(dp + 'Rendering importer w/ id - ' + importer.id + ', import_dir - ' + importer.import_dir);
+        !Plm.debug || console.log(dp + 'Rendering importer w/ id - ' + importer.id + ', import_dir - ' + importer.get('import_dir'));
+
+        var images = this.importers.images(importer.id);
 
         var compiledTemplate = _.template(importTemplate, { importer: importer,
-                                                            numPhotos: undefined,
-                                                            importImages: this.importers.images(importer.id),
+                                                            numPhotos: (images && _.has(images, 'paging')) ? images.paging.total_size : undefined,
+                                                            importImages: images,
                                                             imageTemplate: importImageTemplate,
                                                             importStatus: "imported",
                                                             _: _,
@@ -358,9 +364,11 @@ define(
         }
 
         if (options.activate) {
+          !Plm.debug || console.log(dp + 'Activating import...');
           that._imageSelectionManager.reset();
           importerEl = that.$el.find('#' + importerElId);
           importerEl.find('.import-pip').on('click', that._twirlDownHandler);
+          that._enableImportPaginationControls(importer);
         }
 
         return this;
@@ -377,6 +385,13 @@ define(
       //    context: Invokation context. Default is 'update'.
       //      context ::= 'render' || 'update'
       //    triggerEvents: trigger :rendered or :updated events. Default: true.
+      //    pagingContext: When paging, the context:
+      //
+      //      pagingContext ::= <this.importers> || <importer>
+      //
+      //        <this.importers>: Page over importers.
+      //        <importer>: Page over iamges within an import.
+      //
       //    pageTo: first || previous || next || at
       //
       //  events: Triggers <id>:rendered or <id>:updated once the last import
@@ -399,7 +414,10 @@ define(
                                  onSuccessOptions) {
           !Plm.debug || !Plm.verbose || console.log(dp.replace(': ', '.onSuccess: ') + 'Successfully loaded importers...');
 
-          that._enablePaginationControls();
+          that._enableImportersPaginationControls();
+          if (options.pagingContext && (options.pagingContext !== that.importers)) {
+            that._enableImportPaginationControls(options.pagingContext);
+          }
 
           that.status = that.STATUS_RENDERED;
 
@@ -432,30 +450,39 @@ define(
         this._disableImportersEvents();
         this._enableImportersEvents();
 
-        that._disablePaginationControls();
+        that._disableImportersPaginationControls();
 
         that.importers.pageSize = that._getOptimalPageSize();
 
         var fetchOpts = {
           success: onSuccess,
           error: onError,
-          reset: (options.context === 'render') ? true : false
+          reset: ((options.context === 'render') || options.pageTo) ? true : false
         };
 
+        var toFetch = that.importers;
+
+        if (options.pagingContext && (options.pagingContext !== that.importers)) {
+          var importer = options.pagingContext;
+
+          that._disableImportPaginationControls(importer);
+          toFetch = that.importers.images(importer.id);
+        }
+
         if (options.pageTo === 'first') {
-          that.importers.fetchFirst(fetchOpts);
+          toFetch.fetchFirst(fetchOpts);
         }
         else if (options.pageTo === 'previous') {
-          that.importers.fetchPrevious(fetchOpts);
+          toFetch.fetchPrevious(fetchOpts);
         }
         else if (options.pageTo === 'next') {
-          that.importers.fetchNext(fetchOpts);
+          toFetch.fetchNext(fetchOpts);
         }
         else if (options.pageTo === 'at') {
-          that.importers.fetchAt(fetchOpts);
+          toFetch.fetchAt(fetchOpts);
         }
         else {
-          that.importers.fetch(fetchOpts);
+          toFetch.fetch(fetchOpts);
         }
 
         return this;
@@ -526,6 +553,7 @@ define(
       // _onImporterImagesAdd: Image is added, adjust dom.
       //
       _onImporterImagesAdd: function(image, images, importer) {
+        var that = this;
         var importerElId = "import-" + importer.id.replace('$', '');
         var importerEl = that.$el.find('#' + importerElId);
 
@@ -630,7 +658,7 @@ define(
             numError = numError + 1;
           }
           if ((numSuccess + numError) === numTodo) {
-            that._enablePaginationControls();
+            that._enableImportersPaginationControls();
             if (numError > 0) {
               that._update({
                 context: 'update',
@@ -665,7 +693,7 @@ define(
         };
 
         var trashDialogConfirm = function() {
-          that._disablePaginationControls();
+          that._disableImportersPaginationControls();
           _.each(selected, function(selectedItem) {
             !Plm.debug || console.log(dp + 'Attempting to locate model for selected item w/ id - ' + selectedItem.id);
 
@@ -728,13 +756,14 @@ define(
       },
 
       //
-      // _enablePaginationControls: Based upon pagination data received from the
-      //  API enable previous / next arrows as appropriate, alone with click events.
+      // _enableImportersPaginationControls: Based upon pagination data received from the
+      //  API enable previous / next arrows as appropriate, alone with click events
+      //  to page across imports (not images within an import).
       //
-      _enablePaginationControls: function() {
+      _enableImportersPaginationControls: function() {
         var that = this;
 
-        var dp = this._debugPrefix.replace(': ', '._enablePaginationControls: ');
+        var dp = this._debugPrefix.replace(': ', '._enableImportersPaginationControls: ');
 
         !Plm.debug || console.log(dp + 'Checking pagination cursors...');
 
@@ -743,16 +772,16 @@ define(
 
         !Plm.debug || console.log(dp + 'enable previous - ' + enablePrevious + ', enable next - ' + enableNext);
 
-        that._disablePaginationControls();
+        that._disableImportersPaginationControls();
 
         if (enablePrevious || enableNext) {
-          this.$el.find('.pagination-controls').removeClass('hidden');
+          this.$el.find('.photos-header .pagination-controls').removeClass('hidden');
         }
 
         if (enablePrevious) {
-          var prevControl = this.$el.find('.pagination-controls .previous-page');
+          var prevControl = this.$el.find('.photos-header .pagination-controls .previous-page');
           prevControl.on('click', function() {
-            that._disablePaginationControls();            
+            that._disableImportersPaginationControls();            
             that._toPreviousPage();
           });
           prevControl.removeClass('disabled');
@@ -760,9 +789,9 @@ define(
         }
 
         if (enableNext) {
-          var nextControl = this.$el.find('.pagination-controls .next-page');
+          var nextControl = this.$el.find('.photos-header .pagination-controls .next-page');
           nextControl.on('click', function() {
-            that._disablePaginationControls();            
+            that._disableImportersPaginationControls();            
             that._toNextPage();
           });
           nextControl.removeClass('disabled');
@@ -773,13 +802,13 @@ define(
       },
 
       //
-      // _disablePaginationControls: disable them.
+      // _disableImportersPaginationControls: disable them.
       //
-      _disablePaginationControls: function() {
-        var prevControl = this.$el.find('.pagination-controls .previous-page');
+      _disableImportersPaginationControls: function() {
+        var prevControl = this.$el.find('.photos-header .pagination-controls .previous-page');
         prevControl.off('click');
         prevControl.addClass('disabled');
-        var nextControl = this.$el.find('.pagination-controls .next-page');
+        var nextControl = this.$el.find('.photos-header .pagination-controls .next-page');
         nextControl.off('click');
         nextControl.addClass('disabled');
       },
@@ -814,6 +843,112 @@ define(
         }
         !Plm.debug || console.log(dp + 'optimal page size - ' + pageSize);
         return pageSize;
+      },
+
+      //
+      // _enableImportPaginationControls: Enable per import pagination controls as appropriate.
+      //  These controls allow paging accross images within an import.
+      //
+      _enableImportPaginationControls: function(importer) {
+        var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._enableImportPaginationControls: ');
+
+        !Plm.debug || console.log(dp + 'importer w/ id - ' + importer.id);
+
+        var images = this.importers.images(importer.id);
+
+        var enablePrevious = (images && images.paging && images.paging.cursors && images.paging.cursors.previous && (images.paging.cursors.previous !== -1)) ? true : false;
+        var enableNext = (images && images.paging && images.paging.cursors && images.paging.cursors.next && (images.paging.cursors.next !== -1)) ? true : false;        
+
+        !Plm.debug || console.log(dp + 'enable previous - ' + enablePrevious + ', enable next - ' + enableNext);
+
+        that._disableImportPaginationControls(importer);
+
+        var importerEl = that.$el.find('#' + "import-" + importer.id.replace('$', ''));
+
+        if (enablePrevious || enableNext) {
+          importerEl.find('.pagination-controls').removeClass('hidden');
+        }
+
+        if (enablePrevious) {
+          var prevControl = importerEl.find('.pagination-controls .previous-page');
+          prevControl.on('click', function() {
+            that._disableImportPaginationControls(importer);
+            that._toPreviousImportPage(importer);
+          });
+          prevControl.removeClass('disabled');
+          console.log(dp + 'Import previous page enabled...');
+        }
+
+        if (enableNext) {
+          var nextControl = importerEl.find('.pagination-controls .next-page');
+          nextControl.on('click', function() {
+            that._disableImportPaginationControls(importer);
+            that._toNextImportPage(importer);
+          });
+          nextControl.removeClass('disabled');
+          console.log(dp + 'Import next page enabled...');
+        }
+
+        return this;
+      },
+
+      //
+      // _disableImportPaginationControls: Disable the pagination controls associated with an
+      //  import and its images.
+      //
+      _disableImportPaginationControls: function(importer) {
+        var that = this;
+
+        var dp = this._debugPrefix.replace(': ', '._disableImportPaginationControls: ');
+
+        !Plm.debug || console.log(dp + 'Disabling pagination controls for importer w/ id - ' + importer.id);
+
+        var importerEl = that.$el.find('#' + "import-" + importer.id.replace('$', ''));
+        var prevControl = importerEl.find('.pagination-controls .previous-page');
+        prevControl.off('click');
+        prevControl.addClass('disabled');
+        var nextControl = importerEl.find('.pagination-controls .next-page');
+        nextControl.off('click');
+        nextControl.addClass('disabled');
+
+        return this;
+      },
+
+      //
+      // _toPreviousImportPage: Go to the previoua page of images within 
+      //  an import.
+      //
+      _toPreviousImportPage: function(importer) {
+        var dp = this._debugPrefix.replace(': ', '._toPreviousImportPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to previous page of images within importer w/ id - ' + importer.id);
+
+        this._update({
+          context: 'update',
+          triggerEvents: false,
+          pagingContext: importer,
+          pageTo: 'previous'
+        });
+        return this;
+      },
+
+      //
+      // _toNextImportPage: Go to the next page of images within an import.
+      //
+      _toNextImportPage: function(importer) {
+        var dp = this._debugPrefix.replace(': ', '._toNextImportPage: ');
+
+        !Plm.debug || console.log(dp + 'Paging to next page of images within importer w/ id - ' + importer.id);
+
+        this._update({
+          context: 'update',
+          triggerEvents: false,
+          pagingContext: importer,
+          pageTo: 'next'
+        });
+        return this;
       },
 
       //
