@@ -69,6 +69,27 @@
   vertical-align: middle;
 }
 
+@mixin photo-set-pagination-controls {
+  display: inline-block;
+  height: 1.5em;
+  margin: 0 0 0 15px;
+  line-height: 1.5em;
+
+  &.hidden {
+    display: none;
+  }
+
+  a {
+    &:first-child {
+      margin-right: 10px;
+    }
+    font-size: 2em;
+    vertical-align: middle;
+    font-family: 'entypo';
+    cursor: pointer;
+  }
+}
+
 /*
  * Collection of phots with the photo set.
  */

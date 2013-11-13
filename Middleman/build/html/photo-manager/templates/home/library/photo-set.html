@@ -1,7 +1,8 @@
 <div class='photo-set-collection'>
   <div class='photo-set-header'>
     <div class='photo-set-pip'></div>
-    <div class='photo-set-size'>{{_.size(images)}} Photos</div>
+    {% numPhotos = (numPhotos !== undefined) ? numPhotos : (images && images.length) ? images.length : "" %}
+    <div class='photo-set-size'>{{numPhotos}} Photos</div>
     <div class='select-all'>
       <label class='plm-cb-label'>
         <input class='plm-cb' data-select-scope='photo-set-collection' type='checkbox'>
@@ -9,6 +10,10 @@
         <span class='cb-text'>Select All</span>
       </label>
     </div>
+    <div class='pagination-controls hidden'>
+  <a class='previous-page disabled' title='Previous'>&#59237</a>
+  <a class='next-page disabled' title='Next'>&#59238</a>
+</div>
     <div class='clearfix'></div>
   </div>
   <div class='photo-set-photos-collection'>

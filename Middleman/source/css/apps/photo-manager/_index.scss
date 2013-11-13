@@ -176,6 +176,7 @@
     .photo-set-pip  { @include photo-set-pip; }
     .photo-set-size { @include photo-set-size; }
     .select-all     { @include photo-set-select-all; }
+    .pagination-controls { @include photo-set-pagination-controls; }
   }
 
   .photo-set-photos-collection {

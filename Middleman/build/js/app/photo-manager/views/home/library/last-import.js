@@ -315,8 +315,8 @@ define(
             this._enablePaginationControls();
           }
           this._onResizeHandler();
-          return this;
         }
+        return this;
       },
 
       //

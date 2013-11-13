@@ -1,8 +1,10 @@
 %div.photo-set-collection
   %div.photo-set-header
     %div.photo-set-pip
-    %div{:class => "photo-set-size"} {{_.size(images)}} Photos
+    {% numPhotos = (numPhotos !== undefined) ? numPhotos : (images && images.length) ? images.length : "" %}
+    %div{:class => "photo-set-size"} {{numPhotos}} Photos
     = partial "html/photo-manager/templates/home/library/select-all", :locals => { :selectScope => "photo-set-collection" }
+    = partial "html/photo-manager/templates/home/library/pagination-controls"
     .clearfix
 
   %div{:class => "photo-set-photos-collection"}
