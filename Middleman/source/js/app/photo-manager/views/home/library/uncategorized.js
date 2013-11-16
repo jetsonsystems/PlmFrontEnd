@@ -22,6 +22,8 @@ define(
 
     var moduleName = 'photo-manager/views/home/library/uncategorized';
 
+    var util = require('util');
+
     //
     // UncategorizedView: The photo-manager/home/library/uncategorized view.
     //
@@ -45,6 +47,8 @@ define(
       },
 
       initialize: function() {
+        var that = this;
+
         var dp = this._debugPrefix + '.initialize: ';
 
         !Plm.debug || console.log(dp + 'Initializing...');
@@ -56,7 +60,28 @@ define(
         }));
         _.extend(this, Trash.handlersFactory('.photo-set-collection',
                                              '.photo-set-size',
-                                             '.photo'));
+                                             '.photo',
+                                             function(numSuccess, numError) {
+                                               var updateOpts = {
+                                                 context: 'update',
+                                                 triggerEvents: false
+                                               };
+                                               if (numError === 0) {
+                                                 if (that.images && that.images.paging && that.images.paging.cursors) {
+                                                   !Plm.debug || console.log(dp + 'Images removed, images size - ' + that.images.size() + ', cursors - ' + util.inspect(that.images.paging.cursors));
+                                                   if (that.images.size() || (that.images.paging.cursors.next && (that.images.paging.cursors.next !== -1))) {
+                                                     updateOpts.pageTo = 'at';
+                                                   }
+                                                   else if (that.images.paging.cursors.previous && (that.images.paging.cursors.previous !== -1)) {
+                                                     updateOpts.pageTo = 'previous';
+                                                   }
+                                                   else {
+                                                     updateOpts.pageTo = 'first';
+                                                   }
+                                                 }
+                                               }
+                                               that._update(updateOpts);
+                                             }));
 
         this.images = new UncategorizedImagesCollection(null,
                                                         {
@@ -323,7 +348,7 @@ define(
           this.images.fetchNext(fetchOpts);
         }
         else if (options.pageTo === 'at') {
-          this.images.fetchAt(fetchOpts);
+          this.images.fetchAt(this.images.paging.cursors.start, fetchOpts);
         }
         else {
           this.images.fetch(fetchOpts);
@@ -363,15 +388,12 @@ define(
         var $photoSetColEl = this.$el.find('.photo-set-collection');
         this.$el.find('.photo-set-photos-collection [data-id="' + imageModel.id + '"]').remove();
         var $photoEls = $photoSetColEl.find('.photo');
-        if ($photoEls.length > 0) {
-          $photoSetColEl.find('.photo-set-size').html($photoEls.length + " Photos");
+        if (this.images) {
+          $photoSetColEl.find('.import-count').html(_.has(images, 'paging') ? images.paging.total_size : $photoEls.length + " Photos");
         }
         else {
-          $photoSetColEl.find('.photo-set-size').html("0 Photos");
-          this._update({ context: 'update',
-                         triggerEvents: false });
+          $photoSetColEl.find('.import-count').html("0 Photos");
         }
-
         this._imageSelectionManager.reset();
         return this;
       },

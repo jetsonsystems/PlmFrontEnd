@@ -338,7 +338,12 @@ define(
         var importerElId = "import-" + importer.id.replace('$', '');
         var importerEl = that.$el.find('#' + importerElId);
 
+        var openTwirlDown = false;
+
         if (importerEl.length) {
+          if (importerEl.find('.import-pip').hasClass('open')) {
+            openTwirlDown = true;
+          }
           importerEl.replaceWith(compiledTemplate);
         }
         else {
@@ -369,6 +374,10 @@ define(
           importerEl = that.$el.find('#' + importerElId);
           importerEl.find('.import-pip').on('click', that._twirlDownHandler);
           that._enableImportPaginationControls(importer);
+        }
+
+        if (openTwirlDown) {
+          this._twirlDownHandler.call(importerEl.find('.import-pip'));
         }
 
         return this;
@@ -479,7 +488,7 @@ define(
           toFetch.fetchNext(fetchOpts);
         }
         else if (options.pageTo === 'at') {
-          toFetch.fetchAt(fetchOpts);
+          toFetch.fetchAt(toFetch.paging.cursors.start, fetchOpts);
         }
         else {
           toFetch.fetch(fetchOpts);
@@ -616,7 +625,7 @@ define(
           //
           // Update the size of the import.
           //
-          importerEl.find('.import-count').text(images.size() + " Photos");
+          importerEl.find('.import-count').text(_.has(images, 'paging') ? images.paging.total_size : images.size() + " Photos");
 
           importerEl.find('.import-photos-collection [data-id="' + image.id + '"]').remove();
         }
@@ -649,21 +658,50 @@ define(
         var numTodo = selected.length;
         var numSuccess = 0;
         var numError = 0;
+        var importers = {};
 
-        var updateStatus = function(status) {
+        var updateStatus = function(status, importerId) {
           if (status === 0) {
             numSuccess = numSuccess + 1;
+            importers[importerId] = true;
           }
           else {
             numError = numError + 1;
           }
           if ((numSuccess + numError) === numTodo) {
             that._enableImportersPaginationControls();
-            if (numError > 0) {
-              that._update({
+            var updateOpts = {
                 context: 'update',
-                triggerEvents: false,
-                pageTo: 'at'
+                triggerEvents: false
+            }
+            if (numError > 0) {
+              that._update(updateOpts);
+            }
+            else {
+              _.each(_.keys(importers), function(importerId) {
+                var importer = that.importers.get(importerId);
+                if (importer) {
+                  var images = that.importers.images(importerId);
+                  if (images && images.paging && images.paging.cursors) {
+                    !Plm.debug || console.log(dp + 'Images removed, images size - ' + images.size());
+
+                    var updateOpts = {
+                      context: 'update',
+                      triggerEvents: false,
+                      pagingContext: importer
+                    }
+                    if (images.size() || (images.paging.cursors.next && (images.paging.cursors.next !== -1))) {
+                      updateOpts.pageTo = 'at';
+                    }
+                    else if (images.paging.cursors.previous && (images.paging.cursors.previous !== -1)) {
+                      updateOpts.pageTo = 'previous';
+                    }
+                    else {
+                      updateOpts.pageTo = 'first';
+                    }
+                    that._update(updateOpts);
+                  }
+                }
               });
             }
           }
@@ -717,11 +755,11 @@ define(
                                 success: function(model, response, options) {
                                   !Plm.debug || console.log(dp + "Success saving image, id - " + model.id + ', in importer w/ id - ' + importerId);
                                   that.importers.removeImage(imageModel, importerId);
-                                  updateStatus(0);
+                                  updateStatus(0, importerId);
                                 },
                                 error: function(model, xhr, options) {
                                   !Plm.debug || console.log(dp + "Error saving image, id - " + model.id);
-                                  updateStatus(1);
+                                  updateStatus(1, importerId);
                                 }});
             })(imageModel, updateStatus);
           });

@@ -341,7 +341,7 @@ define(
         options = options || {context: 'update', triggerEvents: true};
         options.triggerEvents = _.has(options, 'triggerEvents') ? options.triggerEvents : true;
 
-        !Plm.debug || console.log(dp + 'Updating w/ context - ' + options.context);
+        !Plm.debug || console.log(dp + 'Updating w/ context - ' + options.context + ', pageTo - ' + options.pageTo + ', trigger events - ' + options.triggerEvents);
 
         that.status = that.STATUS_UPDATING;
 
@@ -433,7 +433,7 @@ define(
 
           if (images) {
             fetchOpts.reset = true;
-            images.fetchAt(fetchOpts);
+            images.fetchAt(images.paging.cursors.start, fetchOpts);
           }
         }
         else {
@@ -502,16 +502,19 @@ define(
         !Plm.debug || console.log(dp + 'Removing image w/ id - ' + imageModel.id);
         var $importColEl = this.$el.find('.import-collection');
         this.$el.find('.import-photos-collection [data-id="' + imageModel.id + '"]').remove();
-        var $photoEls = $importColEl.find('.photo');
-        if ($photoEls.length > 0) {
-          $importColEl.find('.import-count').html($photoEls.length + " Photos");
+        if (this.importers.size()) {
+          var images = this.importers.images(this.importers.at(0).id);
+          var $photoEls = $importColEl.find('.photo');
+          if (images && images.size() > 0) {
+            $importColEl.find('.import-count').html(_.has(images, 'paging') ? images.paging.total_size : $photoEls.length + " Photos");
+          }
+          else {
+            $importColEl.find('.import-count').html("0 Photos");
+          }
         }
         else {
           $importColEl.find('.import-count').html("0 Photos");
-          this._update({ context: 'update',
-                         triggerEvents: false });
         }
-
         this._imageSelectionManager.reset();
         return this;
       },
@@ -570,10 +573,28 @@ define(
             numError = numError + 1;
           }
           if ((numSuccess + numError) === numTodo) {
-            if (numError > 0) {
-              that._update({ context: 'update',
-                             triggerEvents: false });
+            var updateOpts = {
+              context: 'update',
+              triggerEvents: false
+            };
+            if (numError === 0) {
+              if (that.importers.size()) {
+                var images = that.importers.images(that.importers.at(0).id);
+                if (images && images.paging && images.paging.cursors) {
+                  !Plm.debug || console.log(dp + 'Images removed, images size - ' + images.size() + ', cursors - ' + util.inspect(images.paging.cursors));
+                  if (images.size() || (images.paging.cursors.next && (images.paging.cursors.next !== -1))) {
+                    updateOpts.pageTo = 'at';
+                  }
+                  else if (images.paging.cursors.previous && (images.paging.cursors.previous !== -1)) {
+                    updateOpts.pageTo = 'previous';
+                  }
+                  else {
+                    updateOpts.pageTo = 'first';
+                  }
+                }
+              }
             }
+            that._update(updateOpts);
           }
         };
 

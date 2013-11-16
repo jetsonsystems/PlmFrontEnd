@@ -365,9 +365,20 @@ define(
 
           importerImages.remove(imageModel);
           if (importerImages.size() === 0) {
-            that._deleteImportersImagesCollection(importerId);
-            that.remove(that.get(importerId));
-            !Plm.debug || !Plm.verbose || console.log(dp + 'Removed importer w/ id - ' + importerId + ' which now has no images.');
+            //
+            // Delete the images collection / importer IFF either of the following is true:
+            //
+            //  - there is NO pagination involved
+            //  - this is pagination involved, and this is the ONLY page
+            //
+            if (!importerImages.paging || (importerImages.paging && importerImages.paging.cursors && !importerImages.paging.cursors.previous && !importerImages.paging.cursors.next)) {
+              that._deleteImportersImagesCollection(importerId);
+              that.remove(that.get(importerId));
+              !Plm.debug || !Plm.verbose || console.log(dp + 'Removed importer w/ id - ' + importerId + ' which now has no images.');
+            }
+            else {
+              !Plm.debug || !Plm.verbose || console.log(dp + 'Not removing importer w/ id - ' + importerId + ' as there are other pages of data to load.');
+            }
           }
           else {
             !Plm.debug || !Plm.verbose || console.log(dp + 'After image removal import still has ' + importerImages.size() + ' images.');

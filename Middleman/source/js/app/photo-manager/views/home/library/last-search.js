@@ -58,7 +58,12 @@ define(
         }));
         _.extend(this, Trash.handlersFactory('.photo-set-collection',
                                              '.photo-set-size',
-                                             '.photo'));
+                                             '.photo',
+                                             function(numSuccess, numError) {
+                                               if (numError > 0) {
+                                                 that._reRender();
+                                               }
+                                             }));
 
         this.images = new SearchImagesCollection();
 
@@ -131,6 +136,7 @@ define(
           var compiledTemplate = _.template(photoSetTemplate,
                                             {
                                               images: this.images,
+                                              numPhotos: _.has(this.images, 'paging') ? this.images.paging.total_size : this.images.size(),
                                               photoTemplate: photoSetPhotoTemplate
                                             });
           this.$el.find('.photos-collection').html(compiledTemplate);

@@ -54,7 +54,7 @@ define(
     //  _trashDialogHandler: Open/close dialog, make ajax call to change trash state,
     //    remove image from current view, and adjust collections count.
     //
-    var handlersFactory = function(photoSetColSelector, photoSetSizeSelector, photoSelector) {
+    var handlersFactory = function(photoSetColSelector, photoSetSizeSelector, photoSelector, onDone) {
       //
       // _trashDialogHandler: Manage the trash dialog.
       //
@@ -78,8 +78,8 @@ define(
             numError = numError + 1;
           }
           if ((numSuccess + numError) === numTodo) {
-            if (numError > 0) {
-              that._reRender();
+            if (onDone) {
+              onDone(numSuccess, numError);
             }
           }
         };
