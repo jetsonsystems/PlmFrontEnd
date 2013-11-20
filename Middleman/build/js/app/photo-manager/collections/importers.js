@@ -477,13 +477,28 @@ define(
           importerImages.on('remove', 
                             function(imageModel, importerImages) {
                               !Plm.debug || console.log(dp + 'on remove, image w/ id - ' + imageModel.id);
-                              this.trigger('importer-images-remove', imageModel, importerImages, importer);
+                              if ((importerImages.size() === 0) && (!importerImages.paging || (importerImages.paging && importerImages.paging.cursors && !importerImages.paging.cursors.previous && !importerImages.paging.cursors.next))) {
+                                that._deleteImportersImagesCollection(importer.id);
+                                that.remove(importer);
+                                !Plm.debug || !Plm.verbose || console.log(dp + 'Removed importer w/ id - ' + importer.id + ' which now has no images.');
+                              }
+                              else {
+                                this.trigger('importer-images-remove', imageModel, importerImages, importer);
+                              }
                             }, 
                             this);
 
           importerImages.on('reset', 
                             function() {
-                              this.trigger('importer-images-reset', importerImages, importer);
+                              !Plm.debug || console.log(dp + 'on reset...');
+                              if ((importerImages.size() === 0) && (!importerImages.paging || (importerImages.paging && importerImages.paging.cursors && !importerImages.paging.cursors.previous && !importerImages.paging.cursors.next))) {
+                                that._deleteImportersImagesCollection(importer.id);
+                                that.remove(importer);
+                                !Plm.debug || !Plm.verbose || console.log(dp + 'Removed importer w/ id - ' + importer.id + ' which now has no images.');
+                              }
+                              else {
+                                this.trigger('importer-images-reset', importerImages, importer);
+                              }
                             }, 
                             this);
 

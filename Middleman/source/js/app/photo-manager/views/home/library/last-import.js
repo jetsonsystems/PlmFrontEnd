@@ -66,6 +66,7 @@ define(
       },
 
       _photosMin: 6,
+      _imagesPageSize: 100,
     
       initialize: function() {
         var that = this;
@@ -81,7 +82,7 @@ define(
                                                    numToFetch: 1,
                                                    fetchImages: true,
                                                    imagesWithPagination: true,
-                                                   imagesPageSize: 100
+                                                   imagesPageSize: this._imagesPageSize
                                                  });
         this._imageSelectionManager = new ImageSelectionManager(this.$el, '.import-collection', 'importer');
         this._imageSelectionManager.on('change', function() {
@@ -226,13 +227,16 @@ define(
       _reRender: function(options) {
         var dp = this._debugPrefix.replace(': ', '._reRender: ');
         !Plm.debug || console.log(dp + 're-rendering, status - ' + this.status + ', dirty - ' + this.dirty + ', options - ' + util.inspect(options));
+
+        options = options || {};
+
         this.status = this.STATUS_UNRENDERED;
 
         if (options.pageTo) {
           this.$el.find('.import-photos-collection').html('');
         }
         else {
-          this.$el.find('.photos-collection').html('');
+          this.$el.find('.import-collection').html('');
         }
 
         this._disableImportersEvents();
@@ -242,7 +246,7 @@ define(
                                                      numToFetch: 1,
                                                      fetchImages: true,
                                                      imagesWithPagination: true,
-                                                     imagesPageSize: 10
+                                                     imagesPageSize: this._imagesPageSize
                                                    });
         }
         this._enableImportersEvents();
@@ -468,6 +472,9 @@ define(
         !Plm.debug || console.log(dp + 'Importers event - ' + ev + ', importer w/ id - ' + importerModel.id);
         if (((ev === 'add') && (this.importers.at(0).id === importerModel.id)) || (ev === 'importers-reset')) {
           this._doRender(false);
+        }
+        else if (ev === 'remove') {
+          this._reRender();
         }
         return this;
       },

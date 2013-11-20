@@ -147,8 +147,11 @@ define(
         }
 
         $("#notification-cancel-icon").hide();
-        this.nprogress.done();
+        if (this.withProgressBar && this.nprogress) {
+          this.nprogress.done();
+        }
         this.nprogress = undefined;
+        this.withProgressBar = false;
 
         $("#logo").removeClass("rotate");
 
