@@ -20,6 +20,8 @@ define(
   ],
   function($, _, Backbone, Plm, MsgBus, ImageSelectionManager, PhotoSet, Lightbox, TagDialog, ImageModel, CurrentImportCollection, currentImportTemplate, importTemplate, importImageTemplate) {
 
+    var util = require('util');
+
     var moduleName = '/app/photo-manager/views/home/library/current-import';
 
     //
@@ -81,6 +83,15 @@ define(
         'click .selection-toolbar .to-trash': "_toTrashHandler"
       },
 
+      //
+      // _showMax: Maximum number of imported images to render.
+      //
+      _showMax: 1000,
+      _seenIds: {},
+      //
+      // _photosMin: Minimum number of photos to render in a row. IE: less than this
+      //  width, and we clip.
+      //
       _photosMin: 6,
     
       initialize: function() {
@@ -226,15 +237,16 @@ define(
           this.status = this.STATUS_INCREMENTALLY_RENDERING;
           this.state = this.STATE_ABORTING;
         }
+        that._seenIds = {};
         if ((this.state === this.STATE_INPROGRESS) || (this.state === this.STATE_ABORTING)) {
           //
           // Setup collection add/change/remove events for individual models which would
           // trigger DOM adjustments.
           //
-          this.currentImport.on('add', function(imageModel, currentImport) {
+          this.currentImport.on('image-added', function(imageModel, currentImport) {
             that._onImageAdded(imageModel);
           });
-          this.currentImport.on('remove', function(imageModel, currentImport) {
+          this.currentImport.on('image-removed', function(imageModel, currentImport) {
             that._onImageRemoved(imageModel);
           });
           this.currentImport.on('reset', function(currentImport) {
@@ -306,7 +318,7 @@ define(
         //
         // Update the size of the import.
         //
-        this.$el.find('.import-count').text(this.currentImport.size() + " Photos");
+        this.$el.find('.import-count').text(_.size(this._seenIds) + " Photos");
         //
         // Also add the image to the view.
         //
@@ -358,8 +370,8 @@ define(
         var $importColEl = this.$el.find('.import-collection');
         this.$el.find('.import-photos-collection [data-id="' + imageModel.id + '"]').remove();
         var $photoEls = $importColEl.find('.photo');
-        if ($photoEls.length > 0) {
-          $importColEl.find('.import-count').html($photoEls.length + " Photos");
+        if (_.size(this._seenIds) > 0) {
+          $importColEl.find('.import-count').html(_.size(this._seenIds) + " Photos");
         }
         else {
           $importColEl.find('.import-count').html("0 Photos");
@@ -427,13 +439,30 @@ define(
               !Plm.debug || console.log(dp + 'Skipping image which has been moved to the trash, image w/ id - ' + image.id);
             }
             else if (!that.currentImport.get(image.id)) {
-              !Plm.debug || console.log(dp + 'Adding image w/ id - ' + image.id + ', to view.');
+              !Plm.debug || console.log(dp + 'Adding image w/ id - ' + image.id + ', to view, total images - ' + _.size(that._seenIds) + '.');
               //
               // Add to the collection.
               //
               image._last_event = eventTopic.split('.').splice(2).join('.');
+
               var imageModel = new ImageModel(image);
-              that.currentImport.add(imageModel);
+
+              that.currentImport.add(imageModel, { silent: true });
+
+              that._seenIds[image.id] = true;
+
+              var addedModel = that.currentImport.get(imageModel.id);
+              if (addedModel) {
+                that.currentImport.trigger('image-added', addedModel);
+              }
+
+              !Plm.debug || console.log(dp + 'After adding, total images - ' + _.size(that._seenIds));
+
+              while (that.currentImport.size() > that._showMax) {
+                var toRemove = that.currentImport.at(0);
+                that.currentImport.remove(toRemove, { silent: true });
+                that.currentImport.trigger('image-removed', toRemove);
+              }
             }
             else if ((eventTopic === 'import.images.imported') || (eventTopic === 'import.image.imported')) {
               //
@@ -562,7 +591,9 @@ define(
               imageModel.save({'in_trash': true},
                               {success: function(model, response, options) {
                                 !Plm.debug || console.log(dp + "Success saving image, id - " + model.id);
-                                that.currentImport.remove(imageModel);
+                                that.currentImport.remove(imageModel, { silent: true });
+                                delete that._seenIds[model.id];
+                                that.currentImport.trigger('image-removed', imageModel);
                                 updateStatus(0);
                               },
                                error: function(model, xhr, options) {

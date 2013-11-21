@@ -389,6 +389,7 @@ define(
         this.$el.find('.photo-set-photos-collection [data-id="' + imageModel.id + '"]').remove();
         var $photoEls = $photoSetColEl.find('.photo');
         if (this.images) {
+          var images = this.images;
           $photoSetColEl.find('.import-count').html(_.has(images, 'paging') ? images.paging.total_size : $photoEls.length + " Photos");
         }
         else {
@@ -526,19 +527,40 @@ define(
                                   hadTagsRemoved,
                                   withSuccess,
                                   withError) {
-        !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed.');
+        var that = this;
+
+        var dp = that._debugPrefix.replace(': ', '._onTagDialogClose: ');
+
+        !Plm.debug || console.log(dp + 'Tag dialog closed.');
 
         if ((withError && withError.length) || (hadTagsRemoved && hadTagsRemoved.length)) {
           //
           // Note, one could have added tags, and then removed one or more. So, if any were removed,
           // the entire view needs to be re-rendered.
           //
-          this._reRender();
+          this._reRender({pageTo: 'at'});
         }
         else if (hadTagsAdded && hadTagsAdded.length) {
           _.each(hadTagsAdded, function(selected) {
-            selected.$el.remove();
+            that.images.remove(that.images.get(selected.id));
           });
+          var updateOpts = {
+            context: 'update',
+            triggerEvents: false
+          };
+          if (that.images && that.images.paging && that.images.paging.cursors) {
+            !Plm.debug || console.log(dp + 'Images removed, images size - ' + that.images.size() + ', cursors - ' + util.inspect(that.images.paging.cursors));
+            if (that.images.size() || (that.images.paging.cursors.next && (that.images.paging.cursors.next !== -1))) {
+              updateOpts.pageTo = 'at';
+            }
+            else if (that.images.paging.cursors.previous && (that.images.paging.cursors.previous !== -1)) {
+              updateOpts.pageTo = 'previous';
+            }
+            else {
+              updateOpts.pageTo = 'first';
+            }
+          }
+          that._update(updateOpts);
         }
         else {
           !Plm.debug || console.log(this._debugPrefix + '._onTagDialogClose: Tag dialog closed, nothing to do, had tags added - ' + hadTagsAdded.length + ', had tags removed - ' + hadTagsRemoved.length + ', with success - ' + withSuccess.length + ', with error - ' + withError.length + '.');

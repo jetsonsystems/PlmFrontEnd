@@ -39,6 +39,8 @@ define(
 
       images: undefined,
 
+      _maxImages: 1000,
+
       searchTerm: undefined,
 
       events: {
@@ -65,7 +67,7 @@ define(
                                                }
                                              }));
 
-        this.images = new SearchImagesCollection();
+        this.images = new SearchImagesCollection({}, { maxImages: this._maxImages });
 
         if(typeof localStorage["lastsearch"] !== "undefined" ) {
           this.searchTerm = localStorage["lastsearch"];
@@ -123,7 +125,7 @@ define(
         var that = this;
         !Plm.debug || console.log(that._debugPrefix + '._reRender: re-rendering...');
         this.$el.html('');
-        this.images = new SearchImagesCollection();
+        this.images = new SearchImagesCollection({}, { maxImages: this._maxImages });
         this.render();
         return this;
       },
